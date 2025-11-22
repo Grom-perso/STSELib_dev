@@ -65,9 +65,9 @@ The `stse_platform_ecc.c` file provides ECC functions for the STSecureElement li
 
 **Implementation directives**: This abstraction function should implement or call a platform function/driver that performs NIST key wrapping encryption.
 
-## implementation example :
+## Implementation Example:
 
-Please find below an example of the stse_platform_ecc implemntation for the STM32 CMOX library :
+Please find below an example of the `stse_platform_ecc.c` implementation for the STM32 CMOX library:
 
 ```c
  /******************************************************************************
