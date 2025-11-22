@@ -1,4 +1,4 @@
-# stse_platform_hash.c{#stse_platform_hash}
+# stse_platform_hash.c {#stse_platform_hash}
 
 The `stse_platform_hash.c` file provides hash and HMAC functions for the STSecureElement library, abstracting the platform-specific details of hash and HMAC operations.
 
@@ -43,9 +43,9 @@ The `stse_platform_hash.c` file provides hash and HMAC functions for the STSecur
 
 **Implementation directives**: This abstraction function should implement or call a platform function/driver that performs the HMAC-SHA256 expansion.
 
-## implementation example :
+## Implementation Example:
 
-Please find below an example of the stse_platform_hash.c implemntation for the STM32 CMOX library :
+Please find below an example of the `stse_platform_hash.c` implementation for the STM32 CMOX library:
 
 ```c
 /******************************************************************************

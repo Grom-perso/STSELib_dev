@@ -1,13 +1,21 @@
-# Library configuration
+# Library Configuration
 
-To operate , the STSELib relies on specific configuration parametters to be defined in each applicative projects embedding the library .
-A template of the  STSELib_config.h file to be added to each project is available in the template directory of the library.
-It is recommended to included the file in each projects along with a path to this file in compiler pre-processor include path.
+To operate, the STSELib relies on specific configuration parameters to be defined in each application project embedding the library. The configuration file (`stse_conf.h`) should be added to each project along with a path to this file in the compiler preprocessor include path.
 
-This configuration file allows the adjustment of API/Services/Core performance , platform call-back adaptation and size optimization of the library .
-It is recommended to adjust each application configuration file according to end-application requirements and ST SecureElement type and perso profile. Please also note that the configuration of these parametters allows to simplify the STSELib porting requirement as it helps identifying the low-level callbacks to be implemented at application level to integrate the library on a specific host MCU/MPU host platform   .
+This configuration file allows you to:
+- Adjust API/Services/Core performance
+- Adapt platform callbacks
+- Optimize the library size
 
-Here is a typical STSELib_config.h definition, followed by an explanation of each parameter:
+It is recommended to adjust each application configuration file according to:
+- End-application requirements
+- ST SecureElement type and personalization profile
+
+The configuration of these parameters simplifies the STSELib porting requirements by helping identify the low-level callbacks to be implemented at the application level to integrate the library on a specific host MCU/MPU platform.
+
+## Configuration File Template
+
+Here is a typical `stse_conf.h` definition, followed by an explanation of each parameter:
 
 ```c
 
@@ -126,7 +134,9 @@ extern "C" {
 ```
 
 
-The following table lits all parametters
+## Configuration Parameters
+
+The following table lists all configuration parameters:
 
 
 | <b>Definition</b> | <b>Description</b> | <b>Associated STSE Product Family</b>

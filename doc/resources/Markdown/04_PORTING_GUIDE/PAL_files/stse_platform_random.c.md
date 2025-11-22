@@ -16,7 +16,7 @@ The `stse_platform_random.c` file provides random number generation functions fo
 
 **Implementation directives**: This abstraction function should implement or call a platform function/driver that generates a random number.
 
-## Implementation example:
+## Implementation Example:
 
 Please find below an example of the `stse_platform_random.c` implementation for the STM32 platform:
 

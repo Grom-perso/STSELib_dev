@@ -11,9 +11,16 @@ Please check the following points before posting an issue:
 * Make sure your issue is a question/feedback/suggestions **related to** the software provided in this repository. Otherwise, please refer to section [3](CONTRIBUTING.md#3-support-requests-and-questions) below.
 * Make sure your issue is not already reported/fixed on GitHub or discussed on a previous issue. Do not forget to browse into the **closed** issues.
 
-### 1.2 Posting the issue
+### 1.2 Posting the Issue
 
 When you have checked the previous points, create a new report from the **Issues** tab of this repository. A template is available [here](../../issues/new/choose) to help you report the issue you are facing or the enhancement you would like to propose.
+
+#### What to Include in Your Issue
+- **Clear description**: Explain the problem or enhancement in detail
+- **Steps to reproduce**: For bugs, provide clear reproduction steps
+- **Expected vs. actual behavior**: Describe what should happen and what actually happens
+- **Environment details**: Include platform, compiler, library version, etc.
+- **Code snippets**: Provide minimal reproducible code examples if applicable
 
 ## 2. Pull Requests
 
@@ -29,11 +36,14 @@ Please note that:
 * The Corporate CLA will always take precedence over the Individual CLA.
 * One CLA submission is sufficient, for any project proposed by STMicroelectronics.
 
-### 2.2 How to proceed
+### 2.2 How to Proceed
 
-* We recommend to engage first a communication thru an issue, in order to present your proposal, just to confirm that it corresponds to STMicroelectronics' domain or scope.
-* Then fork the project to your GitHub account to further develop your contribution. Please use the latest commit version.
-* Please, submit one pull-request per new feature or proposal. This will ease the analysis and the final merge if accepted.
+1. **Engage first**: We recommend opening an issue first to discuss your proposal and confirm it aligns with STMicroelectronics' domain or scope.
+2. **Fork the repository**: Fork the project to your GitHub account to develop your contribution. Please use the latest commit version.
+3. **One PR per feature**: Submit one pull request per new feature or proposal. This eases the analysis and final merge process.
+4. **Follow coding standards**: Ensure your code follows the existing code style and conventions in the repository.
+5. **Test your changes**: Verify your changes work correctly and don't break existing functionality.
+6. **Document your changes**: Update relevant documentation and add comments where necessary.
 
 ## 3. Support requests and questions
 
@@ -41,14 +51,30 @@ For support requests or any other question related to the product, the tools, th
 
 ---
 
-### 4. Commit message guidelines
+## 4. Commit Message Guidelines
 
 To help maintain a clear history, please format your commit messages using the following convention:
 
 ```
 [scope] short summary
+
+Optional detailed description explaining the change.
 ```
 
-- **Scope**: one of the directories or areas affected (e.g. `api/certificate`, `doc`, `git`, `Admin`).
-- **Short summary**: present tense, no trailing period, under 72 characters, starting with a lowercase verb; if related to an opened issue, append `#<number>`
-- **Body**: if necessary, or when the summary exceeds 72 characters, provide additional details explaining the motivation and how this change differs from previous behavior.
+### Format Rules
+- **Scope**: One of the directories or areas affected (e.g., `api/certificate`, `doc`, `services`, `core`)
+- **Short summary**: Present tense, no trailing period, under 72 characters, starting with a lowercase verb
+- **Issue reference**: If related to an opened issue, append `#<number>` to the summary
+- **Body**: Optional, but recommended when:
+  - The summary exceeds 72 characters
+  - Additional context would help reviewers understand the change
+  - You want to explain the motivation or how this differs from previous behavior
+
+### Examples
+```
+[api] add support for STSAFE-L010 authentication
+
+[services/stsafea] fix frame encrypt/decrypt and MAC issues #123
+
+[doc] update porting guide with clearer examples
+```
