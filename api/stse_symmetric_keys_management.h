@@ -16,8 +16,8 @@
  ******************************************************************************
  */
 
-#ifndef STSE_SYMMETRIC_KEY_MANAGMENT_H
-#define STSE_SYMMETRIC_KEY_MANAGMENT_H
+#ifndef STSE_SYMMETRIC_KEY_MANAGEMENT_H
+#define STSE_SYMMETRIC_KEY_MANAGEMENT_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "services/stsafea/stsafea_aes.h"
@@ -300,4 +300,4 @@ stse_ReturnCode_t stse_establish_symmetric_key_authenticated(
 
 /** \}*/
 
-#endif /*STSAFE_SYMMETRIC_KEY_CRYPTO_H*/
+#endif /* STSE_SYMMETRIC_KEY_MANAGEMENT_H */

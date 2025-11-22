@@ -364,4 +364,4 @@ stse_ReturnCode_t stsafea_erase_symmetric_key_slot(
 
 /** \}*/
 
-#endif /*STSAFEA_SYMMETRIC_KEY_SLOTS_H*/
+#endif /* STSAFEA_SYMMETRIC_KEY_SLOTS_H */

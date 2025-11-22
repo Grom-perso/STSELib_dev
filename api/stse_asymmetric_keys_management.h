@@ -16,8 +16,8 @@
  ******************************************************************************
  */
 
-#ifndef STSE_ASYMMETRIC_KEY_MANAGMENT_H
-#define STSE_ASYMMETRIC_KEY_MANAGMENT_H
+#ifndef STSE_ASYMMETRIC_KEY_MANAGEMENT_H
+#define STSE_ASYMMETRIC_KEY_MANAGEMENT_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "core/stse_session.h"
@@ -154,4 +154,4 @@ stse_ReturnCode_t stse_sign_for_generic_public_key_slot(
 
 /** \}*/
 
-#endif /*STSE_ASYMMETRIC_KEY_CRYPTO_H*/
+#endif /* STSE_ASYMMETRIC_KEY_MANAGEMENT_H */

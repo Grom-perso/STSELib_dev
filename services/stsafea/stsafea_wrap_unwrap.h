@@ -73,4 +73,4 @@ stse_ReturnCode_t stsafea_unwrap_payload(
 
 /** \}*/
 
-#endif /*STSAFEA_WRAP_UNWRAP_H*/
+#endif /* STSAFEA_WRAP_UNWRAP_H */

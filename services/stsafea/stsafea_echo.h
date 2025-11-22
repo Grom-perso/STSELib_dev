@@ -49,4 +49,4 @@ stse_ReturnCode_t stsafea_echo(
 
 /** \}*/
 
-#endif /*STSAFEA_ECHO_H*/
+#endif /* STSAFEA_ECHO_H */

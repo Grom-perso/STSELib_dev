@@ -209,4 +209,4 @@ stse_ReturnCode_t stsafea_update_data_zone(stse_Handler_t *pSTSE,
 
 /** \}*/
 
-#endif /*STSAFE_DATA_PARTITION_H*/
+#endif /* STSAFEA_DATA_PARTITION_H */

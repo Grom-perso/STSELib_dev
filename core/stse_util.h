@@ -39,4 +39,4 @@
 #define UI32_B2_SET(ui8) ((ui8) << 16)
 #define UI32_B3_SET(ui8) ((ui8) << 24)
 
-#endif /*STSAFE_UTIL_H*/
+#endif /* STSAFE_UTIL_H */

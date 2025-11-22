@@ -61,4 +61,4 @@ stse_ReturnCode_t stsafea_delete_password(stse_Handler_t *pSTSE);
 
 /** \}*/
 
-#endif /*STSAFEA_PASSWORD_H*/
+#endif /* STSAFEA_PASSWORD_H */

@@ -45,4 +45,4 @@ stse_ReturnCode_t stsafea_hibernate(stse_Handler_t *pSTSAFE,
 
 /** \}*/
 
-#endif /*STSAFEA_LOW_POWER_H*/
+#endif /* STSAFEA_LOW_POWER_H */

@@ -110,4 +110,4 @@ stse_ReturnCode_t stse_compute_hash(
 
 #endif
 
-#endif /*STSE_HASH_H*/
+#endif /* STSE_HASH_H */

@@ -130,4 +130,4 @@ stse_ReturnCode_t stsafea_generate_ECDHE_key_pair(
 
 /** \}*/
 
-#endif /*STSAFEA_ASYMMETRIC_KEY_SLOTS_H*/
+#endif /* STSAFEA_ASYMMETRIC_KEY_SLOTS_H */

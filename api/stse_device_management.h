@@ -189,4 +189,4 @@ stse_ReturnCode_t stse_put_i2c_parameters(
 
 /** \}*/
 
-#endif /* STSE_SE_MANAGEMENT_H */
+#endif /* STSAFE_SE_MANAGEMENT_H */

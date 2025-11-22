@@ -120,4 +120,4 @@ stse_ReturnCode_t stse_ecc_decompress_public_key(
 
 /** @}*/
 
-#endif /*STSE_ECC_H*/
+#endif /* STSE_ECC_H */

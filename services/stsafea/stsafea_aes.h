@@ -478,4 +478,4 @@ stse_ReturnCode_t stsafea_aes_gcm_decrypt_finish(
 
 /** \}*/
 
-#endif /*STSAFEA_AES_H */
+#endif /* STSAFEA_AES_H */

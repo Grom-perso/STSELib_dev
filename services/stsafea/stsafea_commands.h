@@ -284,4 +284,4 @@ void stsafea_perso_info_set_ext_rsp_encrypt_flag(stse_perso_info_t *pPerso,
 
 /** \}*/
 /** \}*/
-#endif /*STSAFE_COMMANDS_H*/
+#endif /* STSAFE_COMMANDS_H */

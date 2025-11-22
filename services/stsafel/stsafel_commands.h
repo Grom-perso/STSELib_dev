@@ -69,4 +69,4 @@ extern const PLAT_UI16 stsafel_maximum_command_length[STSAFEL_PRODUCT_COUNT];
 
 /** \}*/
 /** \}*/
-#endif /*STSAFEL_COMMANDS_H*/
+#endif /* STSAFEL_COMMANDS_H */

@@ -475,4 +475,4 @@ stse_ReturnCode_t stse_aes_gcm_decrypt_finish(
 
 /** @}*/
 
-#endif /*STSE_AES_H*/
+#endif /* STSE_AES_H */
