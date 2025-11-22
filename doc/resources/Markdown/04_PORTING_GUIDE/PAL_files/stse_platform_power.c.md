@@ -1,4 +1,4 @@
-# stse_platform_power.c{#stse_platform_power}
+# stse_platform_power.c {#stse_platform_power}
 
 The `stse_platform_power.c` file provides power control functions for the STSecureElement library.
 
@@ -29,7 +29,7 @@ The `stse_platform_power.c` file provides power control functions for the STSecu
 
 **Implementation directives**: This abstraction function should implement or call a platform function/driver that powers off the device.
 
-## Implementation example:
+## Implementation Example:
 
 Please find below an example of the `stse_platform_power.c` implementation for the STM32 platform:
 
