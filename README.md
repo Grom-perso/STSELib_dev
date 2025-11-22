@@ -2,42 +2,46 @@
 
 ![STSELib](doc/resources/Pictures/STSELib.png)
 
-The STSELib middleware provides a complete set of high-level Application Programming Interface functions to the embedded system developer. This Middleware abstract the build and the sequencing of the commands required to ensure device , accessories and consumable brand protection using STMicroelectronics STSAFE-A secure element family.
+The STSELib middleware provides a complete set of high-level Application Programming Interface (API) functions for embedded system developers. This middleware abstracts the construction and sequencing of commands required to ensure device, accessory, and consumable brand protection using STMicroelectronics' STSAFE-A secure element family.
 
-This middleware allows a seamless integration of one or multiple STSAFE-A in various host MCU/MPU ecosystem.
+This middleware enables seamless integration of one or multiple STSAFE-A secure elements in various host MCU/MPU ecosystems.
+
+## Architecture
 
 The STSELib middleware is composed of three software modules as illustrated in the figure below. Each layer provides a different level of system abstraction to the embedded system developer.
 
-![STSELib](doc/resources/Pictures/STSELib_arch.png)
+![STSELib Architecture](doc/resources/Pictures/STSELib_arch.png)
 
-<b>- Application Programming Interface (API) layer</b>
-This software layer is the entry point for the system application. It provides a set of high level functions allowing interaction with STMicroelectronics Secure Elements.
+### Software Layers
 
-<b>- Service layer</b>
-Provides a set of product services that format all commands supported by the targeted secure element and reports response to higher layers API/Application . This layer can be used directly from Application (for advanced user).
+**Application Programming Interface (API) Layer**  
+This software layer is the entry point for the system application. It provides a set of high-level functions allowing interaction with STMicroelectronics Secure Elements.
 
-<b>- Core layer</b>
-Contains generic definition for ST Secure Element and functions for communicating with target secure element.
+**Service Layer**  
+Provides a set of product services that format all commands supported by the targeted secure element and reports responses to higher layers (API/Application). This layer can be used directly from the application (for advanced users).
 
-## Package documentation 
+**Core Layer**  
+Contains generic definitions for ST Secure Elements and functions for communicating with the target secure element.
 
-HTML documentation can either be downloaded as standalone package from the STSELib github repository [release section](https://github.com/STMicroelectronics/STSELib/releases)
-or compiled from the library sources by executing following commands from the STSELib root directory:
+## Documentation
+
+Complete HTML documentation can be:
+- Downloaded as a standalone package from the STSELib GitHub repository [release section](https://github.com/STMicroelectronics/STSELib/releases)
+- Compiled from the library sources by executing the following commands from the STSELib root directory:
 
 ```bash
-    cd Middleware/STSELib/doc/resources/
-    doxygen STSELib.doxyfile
+cd Middleware/STSELib/doc/resources/
+doxygen STSELib.doxyfile
 ```
 
 > [!NOTE]
->
 > Doxygen version 1.14.0 is required to build the documentation  
 
-## STSELib Integration    
+## Quick Start
 
-### 1. Add STSELib as a Git submodule
+### 1. Add STSELib as a Git Submodule
 
-From your project root:
+From your project root directory:
 
 ```bash
 git submodule add https://github.com/STMicroelectronics/STSELib.git lib/stselib
@@ -46,25 +50,30 @@ git submodule update --init --recursive
 
 > [!NOTE]
 >
-> Don’t forget to add lib/stselib to your CMakeLists.txt include paths.
+> Remember to add `lib/stselib` to your CMakeLists.txt include paths.
 
-### 2. Base configuration
+### 2. Required Configuration Files
 
-Two headers files are mantatories, [`stse_conf.h`](doc/resources/Markdown/03_LIBRARY_CONFIGURATION/03_LIBRARY_CONFIGURATION.md) and [`stse_platform_generic.h`](doc/resources/Markdown/04_PORTING_GUIDE/PAL_files/stse_platform_generic.h.md).
+Two header files are mandatory:
+- [`stse_conf.h`](doc/resources/Markdown/03_LIBRARY_CONFIGURATION/03_LIBRARY_CONFIGURATION.md) - Library configuration
+- [`stse_platform_generic.h`](doc/resources/Markdown/04_PORTING_GUIDE/PAL_files/stse_platform_generic.h.md) - Platform abstraction layer
 
-### 3. Optional files
+### 3. Platform-Specific Implementation
 
-For platform-specific integrations and STSafe use-cases, you may implement additional headers. Detailed specifications are available in the HTML documentation included in the release ZIP.
-Reference implementation for most common STSE applicative use case can be found in section "Reference applicative examples" of this ReadMe file
+For platform-specific integrations and STSafe use cases, you may need to implement additional platform abstraction layer (PAL) functions. Detailed specifications are available in:
+- The [Porting Guide](doc/resources/Markdown/04_PORTING_GUIDE/03_PORTING_GUIDE.md)
+- The HTML documentation included in the release package
 
-## Reference applicative examples
+Reference implementations for common STSE use cases can be found in the "Reference Examples" section below.
 
-Following applicative project can be used as reference for STSELib integration and usage.
+## Reference Examples
 
-- STSAFE-A
-    - [STSAFE-A_Examples](https://github.com/STMicroelectronics/STSAFE-A120_examples)
+The following reference projects demonstrate STSELib integration and usage:
 
-- STSAFE-L
-    - [STSAFE-L_echo](https://github.com/STMicroelectronics/STSAFE-L_echo)
-    - [STSAFE-L_device_authentication](https://github.com/STMicroelectronics/STSAFE-L_device_authentication)
-    - [STSAFE-L_secure_data_storage](https://github.com/STMicroelectronics/STSAFE-L_secure_data_storage)
+### STSAFE-A Examples
+- [STSAFE-A120 Examples](https://github.com/STMicroelectronics/STSAFE-A120_examples) - Comprehensive examples for STSAFE-A120
+
+### STSAFE-L Examples
+- [STSAFE-L Echo](https://github.com/STMicroelectronics/STSAFE-L_echo) - Basic communication example
+- [STSAFE-L Device Authentication](https://github.com/STMicroelectronics/STSAFE-L_device_authentication) - Device authentication implementation
+- [STSAFE-L Secure Data Storage](https://github.com/STMicroelectronics/STSAFE-L_secure_data_storage) - Secure data storage use case
