@@ -120,4 +120,4 @@ stse_ReturnCode_t stse_aes_gmac_verify(
 
 /** @}*/
 
-#endif /*STSE_MAC_H*/
+#endif /* STSE_MAC_H */

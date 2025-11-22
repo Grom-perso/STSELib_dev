@@ -156,4 +156,4 @@ stse_ReturnCode_t stsafea_finish_hash(
 
 #endif
 
-#endif /*STSAFEA_HASH_H*/
+#endif /* STSAFEA_HASH_H */

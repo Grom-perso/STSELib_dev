@@ -666,4 +666,4 @@ stse_ReturnCode_t stse_platform_st1wire_receive_stop(
 
 /** @}*/
 
-#endif /*STSE_PLATFORM_H*/
+#endif /* STSE_PLATFORM_H */

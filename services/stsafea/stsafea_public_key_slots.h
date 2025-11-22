@@ -122,4 +122,4 @@ stse_ReturnCode_t stsafea_set_generic_public_slot_configuration_flag(
 
 /** \}*/
 
-#endif /*STSAFEA_PUBLIC_KEY_SLOTS_H */
+#endif /* STSAFEA_PUBLIC_KEY_SLOTS_H */

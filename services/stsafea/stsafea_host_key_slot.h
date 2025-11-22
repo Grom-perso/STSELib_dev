@@ -220,4 +220,4 @@ stse_ReturnCode_t stsafea_establish_host_key_authenticated(
 
 /** \}*/
 
-#endif /*STSAFEA_HOST_KEY_SLOT_H*/
+#endif /* STSAFEA_HOST_KEY_SLOT_H */

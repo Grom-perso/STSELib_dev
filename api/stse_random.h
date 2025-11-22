@@ -43,4 +43,4 @@ stse_ReturnCode_t stse_generate_random(
 
 /** @}*/
 
-#endif /*STSE_RANDOM_H*/
+#endif /* STSE_RANDOM_H */

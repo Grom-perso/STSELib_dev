@@ -49,4 +49,4 @@ stse_ReturnCode_t stsafea_generate_random(
 
 /** \}*/
 
-#endif /*STSAFEA_RANDOM_H*/
+#endif /* STSAFEA_RANDOM_H */

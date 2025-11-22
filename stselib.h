@@ -6,7 +6,7 @@
  ******************************************************************************
  * \attention
  *
- * "h2""center"&copy; COPYRIGHT 2022 STMicroelectronics"/center""/h2"
+ * <h2><center>&copy; COPYRIGHT 2022 STMicroelectronics</center></h2>
  *
  * This software is licensed under terms that can be found in the LICENSE file in
  * the root directory of this software component.
