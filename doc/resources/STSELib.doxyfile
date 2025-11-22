@@ -1064,7 +1064,8 @@ EXCLUDE_PATTERNS       = *.o \
                          */Debug \
                          */__html \
                          */Platforms/* \
-                         *README*
+                         *README* \
+                         */Markdown/INDEX.md
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
