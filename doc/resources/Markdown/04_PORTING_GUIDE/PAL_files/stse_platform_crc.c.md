@@ -27,7 +27,7 @@ The `stse_platform_crc.c` file provides CRC16 functions for the STSecureElement 
   - `length`: Length of the buffer.
 - **Return Value**: Returns the accumulated CRC16 checksum.
 
-**Implementation directives**: This abstraction function should implement or call a platform function/driver that performs CRC16 accumulate process.
+**Implementation directives**: This abstraction function should implement or call a platform function/driver that performs the CRC16 accumulate process.
 
 ## Implementation Example:
 
