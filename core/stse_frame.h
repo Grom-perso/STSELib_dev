@@ -106,6 +106,16 @@ extern PLAT_UI8 stse_rsp_frame_element_count;
     stse_frame_t frame = {0, 0, STSE_CONF_RSP_FRAME_MAX_ELEMENTS, stse_rsp_frame_elements};
 
 /**
+ * \brief Allocate a local/temporary frame with its own stack-based element array
+ * \details Use this for temporary frames that should not conflict with global arrays
+ * \param frame Frame variable name
+ * \param max_elem Maximum number of elements for this frame
+ */
+#define stse_frame_allocate_local(frame, max_elem) \
+    stse_frame_element_t frame##_elements[max_elem]; \
+    stse_frame_t frame = {0, 0, max_elem, frame##_elements};
+
+/**
  * \brief Allocate a frame element (for temporary/local use)
  */
 #define stse_frame_element_allocate(element, len, data) \

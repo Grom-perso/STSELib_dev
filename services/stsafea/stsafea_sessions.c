@@ -306,7 +306,7 @@ static stse_ReturnCode_t stsafea_session_frame_c_mac_compute(stse_session_t *pSe
     cmd_payload_length = pCmd_frame->length - pFirst_element->length;
 
     /*- create C-MAC Frame : [0x00] [CMD HEADER] [CMD PAYLOAD LENGTH] [CMD PAYLOAD] */
-    stse_frame_allocate(c_mac_frame);
+    stse_frame_allocate_local(c_mac_frame, 16);
     stse_frame_element_allocate_push(&c_mac_frame, eMACType, 1, &mac_type);
     stse_frame_element_allocate_push(&c_mac_frame,
                                      eCMD_HEADER,
@@ -454,7 +454,7 @@ static stse_ReturnCode_t stsafea_session_frame_r_mac_verify(stse_session_t *pSes
         stse_platform_aes_cmac_append(aes_cmac_block, STSAFEA_HOST_AES_BLOCK_SIZE);
 
         /*- Prepare AES CMAC input for response MAC verification  */
-        stse_frame_allocate(r_mac_frame);
+        stse_frame_allocate_local(r_mac_frame, 16);
 
         /*- Create r_mac_frame head :[MAC TYPE] [CMD HEADER] [CMD PAYLOAD LENGTH] [CMD PAYLOAD] ... */
         stse_frame_element_allocate_push(
