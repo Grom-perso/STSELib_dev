@@ -31,7 +31,7 @@ stse_ReturnCode_t stse_init(stse_Handler_t *pSTSE) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    switch (pSTSE->io.BusType) {
+    switch (pSTSE->io.bus_type) {
 #if defined(STSE_CONF_STSAFE_A_SUPPORT) || \
     (defined(STSE_CONF_STSAFE_L_SUPPORT) && defined(STSE_CONF_USE_I2C))
     case STSE_BUS_TYPE_I2C:
@@ -48,12 +48,12 @@ stse_ReturnCode_t stse_init(stse_Handler_t *pSTSE) {
             return ret;
         }
 
-        pSTSE->io.BusSendStart = stse_platform_st1wire_send_start;
-        pSTSE->io.BusSendContinue = stse_platform_st1wire_send_continue;
-        pSTSE->io.BusSendStop = stse_platform_st1wire_send_stop;
-        pSTSE->io.BusRecvStart = stse_platform_st1wire_receive_start;
-        pSTSE->io.BusRecvContinue = stse_platform_st1wire_receive_continue;
-        pSTSE->io.BusRecvStop = stse_platform_st1wire_receive_stop;
+        pSTSE->io.bus_send_start = stse_platform_st1wire_send_start;
+        pSTSE->io.bus_send_continue = stse_platform_st1wire_send_continue;
+        pSTSE->io.bus_send_stop = stse_platform_st1wire_send_stop;
+        pSTSE->io.bus_recv_start = stse_platform_st1wire_receive_start;
+        pSTSE->io.bus_recv_continue = stse_platform_st1wire_receive_continue;
+        pSTSE->io.bus_recv_stop = stse_platform_st1wire_receive_stop;
         break;
 #endif /* STSE_CONF_USE_ST1WIRE */
 
@@ -140,13 +140,13 @@ stse_ReturnCode_t stse_device_power_on(stse_Handler_t *pSTSE) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    /* - Check STSE PowerLineOn callback initialization */
-    if (pSTSE->io.PowerLineOn == NULL) {
+    /* - Check STSE power_line_on callback initialization */
+    if (pSTSE->io.power_line_on == NULL) {
         return (STSE_API_INVALID_PARAMETER);
     }
 
     /* - Power-on the device */
-    pSTSE->io.PowerLineOn(pSTSE->io.busID, pSTSE->io.Devaddr);
+    pSTSE->io.power_line_on(pSTSE->io.busID, pSTSE->io.devaddr);
 
     /* - Wait for device to boot (tboot) */
     stse_platform_Delay_ms(stsafea_boot_time[pSTSE->device_type]);
@@ -159,13 +159,13 @@ stse_ReturnCode_t stse_device_power_off(stse_Handler_t *pSTSE) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    /* - Check STSE PowerLineOff callback initialization */
-    if (pSTSE->io.PowerLineOff == NULL) {
+    /* - Check STSE power_line_off callback initialization */
+    if (pSTSE->io.power_line_off == NULL) {
         return (STSE_API_INVALID_PARAMETER);
     }
 
     /* - Power-Off the device */
-    pSTSE->io.PowerLineOff(pSTSE->io.busID, pSTSE->io.Devaddr);
+    pSTSE->io.power_line_off(pSTSE->io.busID, pSTSE->io.devaddr);
     return (STSE_OK);
 }
 

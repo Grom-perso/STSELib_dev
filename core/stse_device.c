@@ -29,23 +29,23 @@ stse_ReturnCode_t stse_set_default_handler_value(stse_Handler_t *pStseHandler) {
     memset(&pStseHandler->perso_info, 0, sizeof(pStseHandler->perso_info));
     pStseHandler->pActive_host_session = NULL;
     pStseHandler->pActive_other_session = NULL;
-    pStseHandler->io.BusRecvStart = stse_platform_i2c_receive_start;
-    pStseHandler->io.BusRecvContinue = stse_platform_i2c_receive_continue;
-    pStseHandler->io.BusRecvStop = stse_platform_i2c_receive_stop;
-    pStseHandler->io.BusSendStart = stse_platform_i2c_send_start;
-    pStseHandler->io.BusSendContinue = stse_platform_i2c_send_continue;
-    pStseHandler->io.BusSendStop = stse_platform_i2c_send_stop;
-    pStseHandler->io.IOLineGet = NULL;
-    pStseHandler->io.BusWake = stse_platform_i2c_wake;
-    pStseHandler->io.BusRecovery = NULL;
-    pStseHandler->io.PowerLineOff = stse_platform_power_off;
-    pStseHandler->io.PowerLineOn = stse_platform_power_on;
+    pStseHandler->io.bus_recv_start = stse_platform_i2c_receive_start;
+    pStseHandler->io.bus_recv_continue = stse_platform_i2c_receive_continue;
+    pStseHandler->io.bus_recv_stop = stse_platform_i2c_receive_stop;
+    pStseHandler->io.bus_send_start = stse_platform_i2c_send_start;
+    pStseHandler->io.bus_send_continue = stse_platform_i2c_send_continue;
+    pStseHandler->io.bus_send_stop = stse_platform_i2c_send_stop;
+    pStseHandler->io.io_line_get = NULL;
+    pStseHandler->io.bus_wake = stse_platform_i2c_wake;
+    pStseHandler->io.bus_recovery = NULL;
+    pStseHandler->io.power_line_off = stse_platform_power_off;
+    pStseHandler->io.power_line_on = stse_platform_power_on;
     pStseHandler->io.busID = 0;
-    pStseHandler->io.Devaddr = 0x20;
-    pStseHandler->io.BusSpeed = 100;
+    pStseHandler->io.devaddr = 0x20;
+    pStseHandler->io.bus_speed = 100;
 #if defined(STSE_CONF_STSAFE_A_SUPPORT) || \
     (defined(STSE_CONF_STSAFE_L_SUPPORT) && defined(STSE_CONF_USE_I2C))
-    pStseHandler->io.BusType = STSE_BUS_TYPE_I2C;
+    pStseHandler->io.bus_type = STSE_BUS_TYPE_I2C;
 #endif /* STSE_CONF_STSAFE_A_SUPPORT || (STSE_CONF_STSAFE_L_SUPPORT && defined(STSE_CONF_USE_I2C) */
     return STSE_OK;
 }

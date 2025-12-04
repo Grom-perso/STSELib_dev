@@ -56,19 +56,19 @@ stse_ReturnCode_t stsafel_frame_transmit(stse_Handler_t *pSTSE, stse_frame_t *pF
     ret = STSE_PLATFORM_BUS_ACK_ERROR;
     while ((retry_count != 0) && (ret == STSE_PLATFORM_BUS_ACK_ERROR)) {
         /* - Receive frame length from target STSAFE */
-        ret = pSTSE->io.BusSendStart(
+        ret = pSTSE->io.bus_send_start(
             pSTSE->io.busID,
-            pSTSE->io.Devaddr,
-            pSTSE->io.BusSpeed,
+            pSTSE->io.devaddr,
+            pSTSE->io.bus_speed,
             pFrame->length);
 
         if (ret == STSE_OK) {
             pCurrent_element = pFrame->first_element;
             while (pCurrent_element != pFrame->last_element) {
-                ret = pSTSE->io.BusSendContinue(
+                ret = pSTSE->io.bus_send_continue(
                     pSTSE->io.busID,
-                    pSTSE->io.Devaddr,
-                    pSTSE->io.BusSpeed,
+                    pSTSE->io.devaddr,
+                    pSTSE->io.bus_speed,
                     pCurrent_element->pData,
                     pCurrent_element->length);
                 if (ret != STSE_OK) {
@@ -77,10 +77,10 @@ stse_ReturnCode_t stsafel_frame_transmit(stse_Handler_t *pSTSE, stse_frame_t *pF
                 pCurrent_element = pCurrent_element->next;
             }
             if (ret == STSE_OK) {
-                ret = pSTSE->io.BusSendStop(
+                ret = pSTSE->io.bus_send_stop(
                     pSTSE->io.busID,
-                    pSTSE->io.Devaddr,
-                    pSTSE->io.BusSpeed,
+                    pSTSE->io.devaddr,
+                    pSTSE->io.bus_speed,
                     pCurrent_element->pData,
                     pCurrent_element->length);
             }
@@ -122,10 +122,10 @@ stse_ReturnCode_t stsafel_i2c_frame_receive(stse_Handler_t *pSTSE, stse_frame_t 
     /* ============== Get the total frame length ============= */
     while ((retry_count != 0) && (ret == STSE_PLATFORM_BUS_ACK_ERROR)) {
         /* - Receive frame length from target STSAFE */
-        ret = pSTSE->io.BusRecvStart(
+        ret = pSTSE->io.bus_recv_start(
             pSTSE->io.busID,
-            pSTSE->io.Devaddr,
-            pSTSE->io.BusSpeed,
+            pSTSE->io.devaddr,
+            pSTSE->io.bus_speed,
             STSE_FRAME_LENGTH_SIZE);
 
         if (ret != STSE_OK) {
@@ -140,10 +140,10 @@ stse_ReturnCode_t stsafel_i2c_frame_receive(stse_Handler_t *pSTSE, stse_frame_t 
     }
 
     /* - Get STSAFE Response Length */
-    ret = pSTSE->io.BusRecvStop(
+    ret = pSTSE->io.bus_recv_stop(
         pSTSE->io.busID,
-        pSTSE->io.Devaddr,
-        pSTSE->io.BusSpeed,
+        pSTSE->io.devaddr,
+        pSTSE->io.bus_speed,
         length_value,
         STSE_FRAME_LENGTH_SIZE);
     if (ret != STSE_OK) {
@@ -178,10 +178,10 @@ stse_ReturnCode_t stsafel_i2c_frame_receive(stse_Handler_t *pSTSE, stse_frame_t 
     ret = STSE_PLATFORM_BUS_ACK_ERROR;
     while ((retry_count != 0) && (ret == STSE_PLATFORM_BUS_ACK_ERROR)) {
         /* - Receive frame length from target STSAFE */
-        ret = pSTSE->io.BusRecvStart(
+        ret = pSTSE->io.bus_recv_start(
             pSTSE->io.busID,
-            pSTSE->io.Devaddr,
-            pSTSE->io.BusSpeed,
+            pSTSE->io.devaddr,
+            pSTSE->io.bus_speed,
             received_length + STSE_FRAME_CRC_SIZE);
 
         if (ret != STSE_OK) {
@@ -196,10 +196,10 @@ stse_ReturnCode_t stsafel_i2c_frame_receive(stse_Handler_t *pSTSE, stse_frame_t 
     }
 
     /* Receive response header */
-    ret = pSTSE->io.BusRecvContinue(
+    ret = pSTSE->io.bus_recv_continue(
         pSTSE->io.busID,
-        pSTSE->io.Devaddr,
-        pSTSE->io.BusSpeed,
+        pSTSE->io.devaddr,
+        pSTSE->io.bus_speed,
         pFrame->first_element->pData,
         STSE_RSP_FRAME_HEADER_SIZE);
 
@@ -220,10 +220,10 @@ stse_ReturnCode_t stsafel_i2c_frame_receive(stse_Handler_t *pSTSE, stse_frame_t 
     /* If first element is longer than just the header */
     if (pFrame->first_element->length > STSE_RSP_FRAME_HEADER_SIZE) {
         /* Receive missing bytes after discarding the 2 bytes length */
-        ret = pSTSE->io.BusRecvContinue(
+        ret = pSTSE->io.bus_recv_continue(
             pSTSE->io.busID,
-            pSTSE->io.Devaddr,
-            pSTSE->io.BusSpeed,
+            pSTSE->io.devaddr,
+            pSTSE->io.bus_speed,
             pFrame->first_element->pData + STSE_RSP_FRAME_HEADER_SIZE,
             pFrame->first_element->length - STSE_RSP_FRAME_HEADER_SIZE);
         if (ret != STSE_OK) {
@@ -237,10 +237,10 @@ stse_ReturnCode_t stsafel_i2c_frame_receive(stse_Handler_t *pSTSE, stse_frame_t 
         if (received_length < pCurrent_element->length) {
             pCurrent_element->length = received_length;
         }
-        ret = pSTSE->io.BusRecvContinue(
+        ret = pSTSE->io.bus_recv_continue(
             pSTSE->io.busID,
-            pSTSE->io.Devaddr,
-            pSTSE->io.BusSpeed,
+            pSTSE->io.devaddr,
+            pSTSE->io.bus_speed,
             pCurrent_element->pData,
             pCurrent_element->length);
         if (ret != STSE_OK) {
@@ -250,10 +250,10 @@ stse_ReturnCode_t stsafel_i2c_frame_receive(stse_Handler_t *pSTSE, stse_frame_t 
         received_length -= pCurrent_element->length;
         pCurrent_element = pCurrent_element->next;
     }
-    ret = pSTSE->io.BusRecvStop(
+    ret = pSTSE->io.bus_recv_stop(
         pSTSE->io.busID,
-        pSTSE->io.Devaddr,
-        pSTSE->io.BusSpeed,
+        pSTSE->io.devaddr,
+        pSTSE->io.bus_speed,
         pCurrent_element->pData,
         pCurrent_element->length);
     if (ret != STSE_OK) {
@@ -319,10 +319,10 @@ stse_ReturnCode_t stsafel_st1wire_frame_receive(stse_Handler_t *pSTSE, stse_fram
     received_length = pFrame->length;
 
     while ((retry_count != 0) && (ret == STSE_PLATFORM_BUS_ACK_ERROR)) {
-        ret = pSTSE->io.BusRecvStart(
+        ret = pSTSE->io.bus_recv_start(
             pSTSE->io.busID,
-            pSTSE->io.Devaddr,
-            pSTSE->io.BusSpeed,
+            pSTSE->io.devaddr,
+            pSTSE->io.bus_speed,
             pFrame->length);
 
         if (ret != STSE_OK) {
@@ -332,10 +332,10 @@ stse_ReturnCode_t stsafel_st1wire_frame_receive(stse_Handler_t *pSTSE, stse_fram
     }
 
     /* - Receive response header */
-    ret = pSTSE->io.BusRecvContinue(
+    ret = pSTSE->io.bus_recv_continue(
         pSTSE->io.busID,
-        pSTSE->io.Devaddr,
-        pSTSE->io.BusSpeed,
+        pSTSE->io.devaddr,
+        pSTSE->io.bus_speed,
         pFrame->first_element->pData,
         STSE_RSP_FRAME_HEADER_SIZE);
 
@@ -345,10 +345,10 @@ stse_ReturnCode_t stsafel_st1wire_frame_receive(stse_Handler_t *pSTSE, stse_fram
         return ret;
     }
 
-    ret = pSTSE->io.BusRecvContinue(
+    ret = pSTSE->io.bus_recv_continue(
         pSTSE->io.busID,
-        pSTSE->io.Devaddr,
-        pSTSE->io.BusSpeed,
+        pSTSE->io.devaddr,
+        pSTSE->io.bus_speed,
         pFrame->first_element->pData + STSE_RSP_FRAME_HEADER_SIZE,
         pFrame->first_element->length - STSE_RSP_FRAME_HEADER_SIZE);
     if (ret != STSE_OK) {
@@ -363,10 +363,10 @@ stse_ReturnCode_t stsafel_st1wire_frame_receive(stse_Handler_t *pSTSE, stse_fram
         if (received_length < pCurrent_element->length) {
             pCurrent_element->length = received_length;
         }
-        ret = pSTSE->io.BusRecvContinue(
+        ret = pSTSE->io.bus_recv_continue(
             pSTSE->io.busID,
-            pSTSE->io.Devaddr,
-            pSTSE->io.BusSpeed,
+            pSTSE->io.devaddr,
+            pSTSE->io.bus_speed,
             pCurrent_element->pData,
             pCurrent_element->length);
         if (ret != STSE_OK) {
@@ -376,10 +376,10 @@ stse_ReturnCode_t stsafel_st1wire_frame_receive(stse_Handler_t *pSTSE, stse_fram
         received_length -= pCurrent_element->length;
         pCurrent_element = pCurrent_element->next;
     }
-    ret = pSTSE->io.BusRecvStop(
+    ret = pSTSE->io.bus_recv_stop(
         pSTSE->io.busID,
-        pSTSE->io.Devaddr,
-        pSTSE->io.BusSpeed,
+        pSTSE->io.devaddr,
+        pSTSE->io.bus_speed,
         pCurrent_element->pData,
         pCurrent_element->length);
     if (ret != STSE_OK) {
@@ -437,7 +437,7 @@ stse_ReturnCode_t stsafel_frame_raw_transfer(stse_Handler_t *pSTSE,
 #endif /* STSE_USE_RSP_POLLING */
 
         /* - Receive non protected Frame */
-        switch (pSTSE->io.BusType) {
+        switch (pSTSE->io.bus_type) {
 #ifdef STSE_CONF_USE_I2C
         case STSE_BUS_TYPE_I2C:
             ret = stsafel_i2c_frame_receive(pSTSE, pRspFrame);

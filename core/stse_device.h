@@ -90,65 +90,65 @@ typedef enum stse_bus {
  */
 typedef struct
 {
-    stse_ReturnCode_t (*BusRecvStart)(
+    stse_ReturnCode_t (*bus_recv_start)(
         PLAT_UI8,  /* busID */
         PLAT_UI8,  /* devAddr */
         PLAT_UI16, /* speed */
         PLAT_UI16  /* pFrameLength */
-    );             /*\var stse_io_t::BusRecvStart Bus Receive start function callback */
-    stse_ReturnCode_t (*BusRecvContinue)(
+    );             /*\var stse_io_t::bus_recv_start Bus Receive start function callback */
+    stse_ReturnCode_t (*bus_recv_continue)(
         PLAT_UI8,   /*busID*/
         PLAT_UI8,   /*devAddr*/
         PLAT_UI16,  /*speed*/
         PLAT_UI8 *, /*pElement*/
         PLAT_UI16   /*element_size*/
-    );              /*<\var stse_io_t::BusRecvContinue Bus Receive continue function callback */
-    stse_ReturnCode_t (*BusRecvStop)(
+    );              /*<\var stse_io_t::bus_recv_continue Bus Receive continue function callback */
+    stse_ReturnCode_t (*bus_recv_stop)(
         PLAT_UI8,   /*busID*/
         PLAT_UI8,   /*devAddr*/
         PLAT_UI16,  /*speed*/
         PLAT_UI8 *, /*pElement*/
         PLAT_UI16   /*element_size*/
-    );              /*<\var stse_io_t::BusRecvStop Bus Receive stop function callback */
-    stse_ReturnCode_t (*BusSendStart)(
+    );              /*<\var stse_io_t::bus_recv_stop Bus Receive stop function callback */
+    stse_ReturnCode_t (*bus_send_start)(
         PLAT_UI8,  /* busID */
         PLAT_UI8,  /* devAddr */
         PLAT_UI16, /* speed */
         PLAT_UI16  /* FrameLength */
-    );             /*<\var stse_io_t::BusSendStart Bus Send start function callback */
-    stse_ReturnCode_t (*BusSendContinue)(
+    );             /*<\var stse_io_t::bus_send_start Bus Send start function callback */
+    stse_ReturnCode_t (*bus_send_continue)(
         PLAT_UI8,   /*busID*/
         PLAT_UI8,   /*devAddr*/
         PLAT_UI16,  /*speed*/
         PLAT_UI8 *, /*pElement*/
         PLAT_UI16   /*element_size*/
-    );              /*<\var stse_io_t::BusSendContinue Bus Send continue function callback */
-    stse_ReturnCode_t (*BusSendStop)(
+    );              /*<\var stse_io_t::bus_send_continue Bus Send continue function callback */
+    stse_ReturnCode_t (*bus_send_stop)(
         PLAT_UI8,   /*busID*/
         PLAT_UI8,   /*devAddr*/
         PLAT_UI16,  /*speed*/
         PLAT_UI8 *, /*pElement*/
         PLAT_UI16   /*element_size*/
-    );              /*<\var stse_io_t::BusSendStop Bus Send stop function callback */
-    stse_ReturnCode_t (*IOLineGet)(
-        PLAT_UI8); /*<\var stse_io_t::IOLineGet Get Bus I/O Line state function callback */
-    stse_ReturnCode_t (*BusWake)(
+    );              /*<\var stse_io_t::bus_send_stop Bus Send stop function callback */
+    stse_ReturnCode_t (*io_line_get)(
+        PLAT_UI8); /*<\var stse_io_t::io_line_get Get Bus I/O Line state function callback */
+    stse_ReturnCode_t (*bus_wake)(
         PLAT_UI8,
         PLAT_UI8,
-        PLAT_UI16); /*<\var stse_io_t::BusWake Bus wake function callback */
-    stse_ReturnCode_t (*BusRecovery)(
+        PLAT_UI16); /*<\var stse_io_t::bus_wake Bus wake function callback */
+    stse_ReturnCode_t (*bus_recovery)(
         PLAT_UI8,
-        PLAT_UI8); /*<\var stse_io_t::BusRecovery Bus recovery function callback */
-    stse_ReturnCode_t (*PowerLineOff)(
+        PLAT_UI8); /*<\var stse_io_t::bus_recovery Bus recovery function callback */
+    stse_ReturnCode_t (*power_line_off)(
         PLAT_UI8,
-        PLAT_UI8); /*<\var stse_io_t::PowerLineOff Bus power line off function callback */
-    stse_ReturnCode_t (*PowerLineOn)(
+        PLAT_UI8); /*<\var stse_io_t::power_line_off Bus power line off function callback */
+    stse_ReturnCode_t (*power_line_on)(
         PLAT_UI8,
-        PLAT_UI8);      /*<\var stse_io_t::PowerLineOn Bus power line on function callback */
+        PLAT_UI8);      /*<\var stse_io_t::power_line_on Bus power line on function callback */
     PLAT_UI8 busID;     /*<\var stse_io_t::busID Bus ID */
-    PLAT_UI8 Devaddr;   /*<\var stse_io_t::Devaddr Device address */
-    PLAT_UI16 BusSpeed; /*<\var stse_io_t::BusSpeed Bus speed */
-    stse_bus_t BusType; /*<\var stse_io_t::BusType Bus type */
+    PLAT_UI8 devaddr;   /*<\var stse_io_t::devaddr Device address */
+    PLAT_UI16 bus_speed; /*<\var stse_io_t::bus_speed Bus speed */
+    stse_bus_t bus_type; /*<\var stse_io_t::bus_type Bus type */
 } PLAT_PACKED_STRUCT stse_io_t;
 
 typedef struct stse_session_t stse_session_t;

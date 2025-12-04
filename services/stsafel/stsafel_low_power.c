@@ -53,15 +53,15 @@ stse_ReturnCode_t stsafel_wakeup(stse_Handler_t *pSTSE) {
     }
 
     /* When device wakeup callback is available, call it */
-    if (pSTSE->io.BusWake != NULL) {
-        ret = pSTSE->io.BusWake(
+    if (pSTSE->io.bus_wake != NULL) {
+        ret = pSTSE->io.bus_wake(
             pSTSE->io.busID,
-            pSTSE->io.Devaddr,
-            pSTSE->io.BusSpeed);
+            pSTSE->io.devaddr,
+            pSTSE->io.bus_speed);
     }
 #ifdef STSE_CONF_USE_I2C
     /* When wakeup callback isn't available but bus type is I²C, send a small echo command */
-    else if (pSTSE->io.BusType == STSE_BUS_TYPE_I2C) {
+    else if (pSTSE->io.bus_type == STSE_BUS_TYPE_I2C) {
         PLAT_UI8 echo_message[1] = {0x00};
         ret = stsafel_echo(pSTSE, echo_message, echo_message, 1);
     }
