@@ -43,68 +43,68 @@
 /**
  * \brief 			STSE start hash API
  * \details 		This API use the STSE to start a hash processing
- * \param[in]		pSTSE			Pointer to target SE handler
+ * \param[in]		p_stse			Pointer to target SE handler
  * \param[in] 		sha_algorithm	\ref stse_hash_algorithm_t SHA algorithm
- * \param[in] 		pMessage		Pointer to message buffer
+ * \param[in] 		p_message		Pointer to message buffer
  * \param[in]		message_size	Input message length in bytes
  * \return \ref stse_ReturnCode_t : STSE_OK on success ; error code otherwise
  */
 stse_ReturnCode_t stse_start_hash(
-    stse_Handler_t *pSTSE,
+    stse_Handler_t *p_stse,
     stse_hash_algorithm_t sha_algorithm,
-    PLAT_UI8 *pMessage,
+    PLAT_UI8 *p_message,
     PLAT_UI16 message_size);
 
 /**
  * \brief 			STSE process hash API
  * \details 		This API use the STSE to continue a hash processing
- * \param[in]		pSTSE			Pointer to target SE handler
- * \param[in] 		pMessage		Pointer to message buffer
+ * \param[in]		p_stse			Pointer to target SE handler
+ * \param[in] 		p_message		Pointer to message buffer
  * \param[in]		message_size	Input message length in bytes
  * \return \ref stse_ReturnCode_t : STSE_OK on success ; error code otherwise
  */
 stse_ReturnCode_t stse_process_hash(
-    stse_Handler_t *pSTSE,
-    PLAT_UI8 *pMessage,
+    stse_Handler_t *p_stse,
+    PLAT_UI8 *p_message,
     PLAT_UI16 message_size);
 
 /**
  * \brief 			STSE start hash API
  * \details 		This API use the STSE to finish a hash processing
- * \param[in]		pSTSE			Pointer to target SE handler
+ * \param[in]		p_stse			Pointer to target SE handler
  * \param[in] 		sha_algorithm	\ref stse_hash_algorithm_t SHA algorithm
- * \param[in] 		pMessage		Pointer to message buffer
+ * \param[in] 		p_message		Pointer to message buffer
  * \param[in]		message_size	Input message length in bytes
- * \param[out] 		pDigest			Pointer to digest buffer
- * \param[out]		pDigest_size	Digest buffer length in bytes
+ * \param[out] 		p_digest			Pointer to digest buffer
+ * \param[out]		p_digest_size	Digest buffer length in bytes
  * \return \ref stse_ReturnCode_t : STSE_OK on success ; error code otherwise
  */
 stse_ReturnCode_t stse_finish_hash(
-    stse_Handler_t *pSTSE,
+    stse_Handler_t *p_stse,
     stse_hash_algorithm_t sha_algorithm,
-    PLAT_UI8 *pMessage,
+    PLAT_UI8 *p_message,
     PLAT_UI16 message_size,
-    PLAT_UI8 *pDigest,
-    PLAT_UI16 *pDigest_size);
+    PLAT_UI8 *p_digest,
+    PLAT_UI16 *p_digest_size);
 
 /**
  * \brief 			STSE compute hash API
  * \details 		This API use the STSE to compute a hash in one command
- * \param[in]		pSTSE			Pointer to target SE handler
+ * \param[in]		p_stse			Pointer to target SE handler
  * \param[in] 		sha_algorithm	\ref stse_hash_algorithm_t SHA algorithm
- * \param[in] 		pMessage		Pointer to message buffer
+ * \param[in] 		p_message		Pointer to message buffer
  * \param[in]		message_size	Input message length in bytes
- * \param[out] 		pDigest			Pointer to digest buffer
- * \param[out]		pDigest_size	Digest buffer length in bytes
+ * \param[out] 		p_digest			Pointer to digest buffer
+ * \param[out]		p_digest_size	Digest buffer length in bytes
  * \return \ref stse_ReturnCode_t : STSE_OK on success ; error code otherwise
  */
 stse_ReturnCode_t stse_compute_hash(
-    stse_Handler_t *pSTSE,
+    stse_Handler_t *p_stse,
     stse_hash_algorithm_t sha_algorithm,
-    PLAT_UI8 *pMessage,
+    PLAT_UI8 *p_message,
     PLAT_UI16 message_size,
-    PLAT_UI8 *pDigest,
-    PLAT_UI16 *pDigest_size);
+    PLAT_UI8 *p_digest,
+    PLAT_UI16 *p_digest_size);
 
 /** @}*/
 

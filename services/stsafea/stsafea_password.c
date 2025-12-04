@@ -22,15 +22,15 @@
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
 stse_ReturnCode_t stsafea_verify_password(
-    stse_Handler_t *pSTSE,
-    PLAT_UI8 *pPassword_buffer,
+    stse_Handler_t *p_stse,
+    PLAT_UI8 *p_password_buffer,
     PLAT_UI8 password_length,
-    PLAT_UI8 *pVerification_status,
-    PLAT_UI8 *pRemaining_tries) {
+    PLAT_UI8 *p_verification_status,
+    PLAT_UI8 *p_remaining_tries) {
     PLAT_UI8 cmd_header = STSAFEA_CMD_VERIFY_PASSWORD;
     PLAT_UI8 rsp_header;
 
-    if (pSTSE == NULL) {
+    if (p_stse == NULL) {
         return (STSE_SERVICE_HANDLER_NOT_INITIALISED);
     }
 
@@ -41,26 +41,26 @@ stse_ReturnCode_t stsafea_verify_password(
     /*- Create CMD frame and populate elements */
     stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, ePassword, password_length, pPassword_buffer);
+    stse_frame_element_allocate_push(&CmdFrame, ePassword, password_length, p_password_buffer);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(RspFrame);
-    stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&RspFrame, eVerStat, 1, pVerification_status);
-    stse_frame_element_allocate_push(&RspFrame, eRemTri, 1, pRemaining_tries);
+    stse_frame_allocate(Rsp_frame);
+    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, 1, &rsp_header);
+    stse_frame_element_allocate_push(&Rsp_frame, eVerStat, 1, p_verification_status);
+    stse_frame_element_allocate_push(&Rsp_frame, eRemTri, 1, p_remaining_tries);
 
     /*- Perform Transfer*/
-    return stsafea_frame_transfer(pSTSE,
+    return stsafea_frame_transfer(p_stse,
                                   &CmdFrame,
-                                  &RspFrame);
+                                  &Rsp_frame);
 }
 
-stse_ReturnCode_t stsafea_delete_password(stse_Handler_t *pSTSE) {
+stse_ReturnCode_t stsafea_delete_password(stse_Handler_t *p_stse) {
     PLAT_UI8 cmd_header = STSAFEA_CMD_DELETE;
     PLAT_UI8 tag = STSAFEA_DELETE_TAG_PASSWORD;
     PLAT_UI8 rsp_header;
 
-    if (pSTSE == NULL) {
+    if (p_stse == NULL) {
         return (STSE_SERVICE_HANDLER_NOT_INITIALISED);
     }
 
@@ -70,14 +70,14 @@ stse_ReturnCode_t stsafea_delete_password(stse_Handler_t *pSTSE) {
     stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &tag);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(RspFrame);
-    stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
+    stse_frame_allocate(Rsp_frame);
+    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, 1, &rsp_header);
 
     /*- Perform Transfer*/
-    return stsafea_frame_raw_transfer(pSTSE,
+    return stsafea_frame_raw_transfer(p_stse,
                                       &CmdFrame,
-                                      &RspFrame,
-                                      stsafea_cmd_timings[pSTSE->device_type][cmd_header]);
+                                      &Rsp_frame,
+                                      stsafea_cmd_timings[p_stse->device_type][cmd_header]);
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

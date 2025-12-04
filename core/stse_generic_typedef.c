@@ -122,8 +122,8 @@ const stse_ecc_info_t stse_ecc_info_table[] =
 
 stse_ReturnCode_t stse_get_ecc_key_type_from_curve_id(
     PLAT_UI8 curve_id_length,
-    const PLAT_UI8 *pCurve_id_value,
-    stse_ecc_key_type_t *pKey_type) {
+    const PLAT_UI8 *p_curve_id_value,
+    stse_ecc_key_type_t *p_key_type) {
     stse_ReturnCode_t ret = STSE_OK;
     stse_ecc_key_type_t key_type;
 
@@ -131,7 +131,7 @@ stse_ReturnCode_t stse_get_ecc_key_type_from_curve_id(
         PLAT_UI8 info_curve_id_length = stse_ecc_info_table[key_type].curve_id_total_length - STSE_ECC_GENERIC_LENGTH_SIZE;
         if (curve_id_length == info_curve_id_length) {
             if (memcmp(stse_ecc_info_table[key_type].curve_id.value,
-                       pCurve_id_value,
+                       p_curve_id_value,
                        info_curve_id_length) == 0) {
                 break;
             }
@@ -139,7 +139,7 @@ stse_ReturnCode_t stse_get_ecc_key_type_from_curve_id(
         key_type++;
     }
 
-    *pKey_type = key_type;
+    *p_key_type = key_type;
 
     return ret;
 }

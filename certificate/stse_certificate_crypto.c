@@ -66,8 +66,8 @@ stse_ReturnCode_t stse_certificate_verify_cert_signature(const stse_certificate_
         return (ret);
     }
 
-    return (stse_certificate_verify_signature(parent, digestPtr, digestSize, child->Sign.pR,
-                                              child->Sign.rSize, child->Sign.pS,
+    return (stse_certificate_verify_signature(parent, digestPtr, digestSize, child->Sign.p_r,
+                                              child->Sign.rSize, child->Sign.p_s,
                                               child->Sign.sSize));
 }
 
@@ -102,18 +102,18 @@ stse_ReturnCode_t stse_certificate_verify_signature(const stse_certificate_t *ce
 
     /* Extract and format the public key from the certificate */
     if (cert->SignatureAlgorithm == SIG_EDDSA_ED25519) {
-        memcpy(pub_key, cert->PubKey.pX, pub_key_size);
+        memcpy(pub_key, cert->PubKey.p_x, pub_key_size);
     } else {
-        memcpy(pub_key, cert->PubKey.pX, (pub_key_size >> 1));
-        if (*cert->pPubKey_point_representation_id == 0x04) {
-            memcpy(pub_key + (pub_key_size >> 1), cert->PubKey.pY, (pub_key_size >> 1));
+        memcpy(pub_key, cert->PubKey.p_x, (pub_key_size >> 1));
+        if (*cert->p_pubkey_point_representation_id == 0x04) {
+            memcpy(pub_key + (pub_key_size >> 1), cert->PubKey.p_y, (pub_key_size >> 1));
         } else {
 #ifdef STSE_CONF_USE_COMPANION
             if (stsafe_x509_parser_companion_handler != NULL) {
                 stsafea_ecc_decompress_public_key(
                     stsafe_x509_parser_companion_handler,
                     key_type,
-                    *cert->pPubKey_point_representation_id,
+                    *cert->p_pubkey_point_representation_id,
                     pub_key,
                     pub_key + (pub_key_size >> 1));
             } else

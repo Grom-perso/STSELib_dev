@@ -83,15 +83,15 @@ void stse_certificate_parse_ECDSA_signature(const PLAT_UI8 *signature, stse_cert
         next = next + 1; /* Skip "unused bits" octet */
 
         if (stse_certificate->SignatureAlgorithm == SIG_EDDSA_ED25519) {
-            stse_certificate->Sign.pR = next;
+            stse_certificate->Sign.p_r = next;
             stse_certificate->Sign.rSize = 32;
-            stse_certificate->Sign.pS = next + 32;
+            stse_certificate->Sign.p_s = next + 32;
             stse_certificate->Sign.sSize = 32;
         } else {
             tag = stse_certificate_identify_ASN1_TLV(next, &parsed, &size, &next);
             if (tag == TAG_SEQUENCE) {
-                stse_certificate_parse_integer(next, &stse_certificate->Sign.pR, &stse_certificate->Sign.rSize, &next);
-                stse_certificate_parse_integer(next, &stse_certificate->Sign.pS, &stse_certificate->Sign.sSize, &next);
+                stse_certificate_parse_integer(next, &stse_certificate->Sign.p_r, &stse_certificate->Sign.rSize, &next);
+                stse_certificate_parse_integer(next, &stse_certificate->Sign.p_s, &stse_certificate->Sign.sSize, &next);
             }
         }
     }
@@ -208,26 +208,26 @@ void stse_certificate_parse_ECC_public_key(const PLAT_UI8 *EccPK, stse_certifica
                             switch (next[1]) {
                             case 0x04U:
                                 stse_certificate->PubKey.fsize = (size - 2) / 2;
-                                stse_certificate->PubKey.pX = &next[2];
-                                stse_certificate->PubKey.pY = &next[2 + stse_certificate->PubKey.fsize];
-                                stse_certificate->pPubKey_point_representation_id = &next[1];
+                                stse_certificate->PubKey.p_x = &next[2];
+                                stse_certificate->PubKey.p_y = &next[2 + stse_certificate->PubKey.fsize];
+                                stse_certificate->p_pubkey_point_representation_id = &next[1];
                                 break;
                             case 0x02U:
                             case 0x03U:
                                 stse_certificate->PubKey.fsize = (size - 2);
-                                stse_certificate->PubKey.pX = &next[2];
-                                stse_certificate->pPubKey_point_representation_id = &next[1];
+                                stse_certificate->PubKey.p_x = &next[2];
+                                stse_certificate->p_pubkey_point_representation_id = &next[1];
                                 break;
                             default:
                                 stse_certificate->PubKey.fsize = (size - 1);
-                                stse_certificate->PubKey.pX = &next[1];
-                                stse_certificate->pPubKey_point_representation_id = 0;
+                                stse_certificate->PubKey.p_x = &next[1];
+                                stse_certificate->p_pubkey_point_representation_id = 0;
                                 break;
                             }
                         } else {
                             stse_certificate->PubKey.fsize = (size - 1);
-                            stse_certificate->PubKey.pX = &next[1];
-                            stse_certificate->pPubKey_point_representation_id = 0;
+                            stse_certificate->PubKey.p_x = &next[1];
+                            stse_certificate->p_pubkey_point_representation_id = 0;
                         }
                     }
                 }
@@ -360,16 +360,16 @@ PLAT_I32 stse_certificate_count_attributes(const PLAT_UI8 *p) {
 void stse_certificate_parse_validity(const PLAT_UI8 *p, stse_cert_validity_t *notBefore_st, stse_cert_validity_t *notAfter_st, const PLAT_UI8 **next_thing) {
     PLAT_I32 i, total_size = 0, size = 0, parsed, tag;
     const PLAT_UI8 *next = p;
-    stse_cert_validity_t *pValidity_st;
+    stse_cert_validity_t *p_validity_st;
 
     tag = stse_certificate_identify_ASN1_TLV(next, &parsed, &total_size, &next);
     total_size += parsed;
     if (tag == TAG_SEQUENCE) {
         for (i = 0; i < 2; i++) {
             if (i == 0) {
-                pValidity_st = notBefore_st;
+                p_validity_st = notBefore_st;
             } else {
-                pValidity_st = notAfter_st;
+                p_validity_st = notAfter_st;
             }
             tag = stse_certificate_identify_ASN1_TLV(next, &parsed, &size, &next);
             if (tag == TAG_UTCTime || tag == TAG_GeneralizedTime) {
@@ -379,21 +379,21 @@ void stse_certificate_parse_validity(const PLAT_UI8 *p, stse_cert_validity_t *no
                     next += 2;
                     size -= 2;
                     if (timevalue > 50U) {
-                        pValidity_st->year = timevalue + 1900U;
+                        p_validity_st->year = timevalue + 1900U;
                     } else {
-                        pValidity_st->year = timevalue + 2000U;
+                        p_validity_st->year = timevalue + 2000U;
                     }
                 } else {
-                    pValidity_st->year = ((PLAT_UI32)next[0] - 0x30U) * 1000U + ((PLAT_UI32)next[1] - 0x30U) * 100U +
+                    p_validity_st->year = ((PLAT_UI32)next[0] - 0x30U) * 1000U + ((PLAT_UI32)next[1] - 0x30U) * 100U +
                                          ((PLAT_UI32)next[2] - 0x30U) * 10U + ((PLAT_UI32)next[3] - 0x30U);
                     next += 4;
                     size -= 4;
                 }
-                pValidity_st->month = ((PLAT_UI8)next[0] - 0x30U) * 10U + (PLAT_UI8)next[1] - 0x30U;
-                pValidity_st->days = ((PLAT_UI8)next[2] - 0x30U) * 10U + (PLAT_UI8)next[3] - 0x30U;
-                pValidity_st->hours = ((PLAT_UI8)next[4] - 0x30U) * 10U + (PLAT_UI8)next[5] - 0x30U;
-                pValidity_st->minutes = ((PLAT_UI8)next[6] - 0x30U) * 10U + (PLAT_UI8)next[7] - 0x30U;
-                pValidity_st->seconds = ((PLAT_UI8)next[8] - 0x30U) * 10U + (PLAT_UI8)next[9] - 0x30U;
+                p_validity_st->month = ((PLAT_UI8)next[0] - 0x30U) * 10U + (PLAT_UI8)next[1] - 0x30U;
+                p_validity_st->days = ((PLAT_UI8)next[2] - 0x30U) * 10U + (PLAT_UI8)next[3] - 0x30U;
+                p_validity_st->hours = ((PLAT_UI8)next[4] - 0x30U) * 10U + (PLAT_UI8)next[5] - 0x30U;
+                p_validity_st->minutes = ((PLAT_UI8)next[6] - 0x30U) * 10U + (PLAT_UI8)next[7] - 0x30U;
+                p_validity_st->seconds = ((PLAT_UI8)next[8] - 0x30U) * 10U + (PLAT_UI8)next[9] - 0x30U;
                 next += size;
             }
         }

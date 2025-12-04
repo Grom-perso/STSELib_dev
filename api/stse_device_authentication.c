@@ -34,19 +34,19 @@
 
 /* Exported functions --------------------------------------------------------*/
 
-stse_ReturnCode_t stse_get_device_id(stse_Handler_t *pSTSE, PLAT_UI8 certificate_zone, PLAT_UI8 *pDevice_id) {
+stse_ReturnCode_t stse_get_device_id(stse_Handler_t *p_stse, PLAT_UI8 certificate_zone, PLAT_UI8 *p_device_id) {
     volatile stse_ReturnCode_t ret = STSE_API_INVALID_PARAMETER;
 
     /* - Check stsafe handler initialization */
-    if (pSTSE == NULL) {
+    if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
     ret = stse_data_storage_read_data_zone(
-        pSTSE,                             /* STSE handler */
+        p_stse,                             /* STSE handler */
         certificate_zone,                  /* Certificate zone */
         STSE_CERTIFICATE_DEVICE_ID_OFFSET, /* X bytes offset */
-        pDevice_id,                        /* Returned certificate size */
+        p_device_id,                        /* Returned certificate size */
         STSE_CERTIFICATE_DEVICE_ID_SIZE,   /* Certificate size length */
         0,                                 /* No maximum chunk size (No chunk at all) */
         STSE_NO_PROT);                     /* No protection */
@@ -54,21 +54,21 @@ stse_ReturnCode_t stse_get_device_id(stse_Handler_t *pSTSE, PLAT_UI8 certificate
     return ret;
 }
 
-stse_ReturnCode_t stse_get_device_certificate_size(stse_Handler_t *pSTSE, PLAT_UI8 certificate_zone, PLAT_UI16 *pCertificate_size) {
+stse_ReturnCode_t stse_get_device_certificate_size(stse_Handler_t *p_stse, PLAT_UI8 certificate_zone, PLAT_UI16 *p_certificate_size) {
     volatile stse_ReturnCode_t ret = STSE_API_INVALID_PARAMETER;
     PLAT_UI8 certificate_size_ui8[2];
 
     /* - Check stsafe handler initialization */
-    if (pSTSE == NULL) {
+    if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    if (pCertificate_size == NULL) {
+    if (p_certificate_size == NULL) {
         return (STSE_API_INVALID_PARAMETER);
     }
 
     ret = stse_data_storage_read_data_zone(
-        pSTSE,                              /* STSE handler */
+        p_stse,                              /* STSE handler */
         certificate_zone,                   /* Certificate zone */
         STSE_CERTIFICATE_SIZE_OFFSET_BYTES, /* 2 bytes offset */
         certificate_size_ui8,               /* Returned certificate size */
@@ -80,28 +80,28 @@ stse_ReturnCode_t stse_get_device_certificate_size(stse_Handler_t *pSTSE, PLAT_U
         return ret;
     }
 
-    *pCertificate_size = (((uint16_t)certificate_size_ui8[0]) << 8) + ((uint16_t)certificate_size_ui8[1]) + 4U;
+    *p_certificate_size = (((uint16_t)certificate_size_ui8[0]) << 8) + ((uint16_t)certificate_size_ui8[1]) + 4U;
 
     return STSE_OK;
 }
 
-stse_ReturnCode_t stse_get_device_certificate(stse_Handler_t *pSTSE, PLAT_UI8 certificate_zone, PLAT_UI16 certificate_size, PLAT_UI8 *pCertificate) {
+stse_ReturnCode_t stse_get_device_certificate(stse_Handler_t *p_stse, PLAT_UI8 certificate_zone, PLAT_UI16 certificate_size, PLAT_UI8 *p_certificate) {
     volatile stse_ReturnCode_t ret = STSE_API_INVALID_PARAMETER;
 
     /* - Check stsafe handler initialization */
-    if (pSTSE == NULL) {
+    if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    if (pCertificate == NULL) {
+    if (p_certificate == NULL) {
         return (STSE_API_INVALID_PARAMETER);
     }
 
     ret = stse_data_storage_read_data_zone(
-        pSTSE,                         /* STSE handler */
+        p_stse,                         /* STSE handler */
         certificate_zone,              /* Certificate zone */
         STSE_CERTIFICATE_OFFSET_BYTES, /* 0 bytes offset */
-        pCertificate,                  /* Returned certificate size */
+        p_certificate,                  /* Returned certificate size */
         certificate_size,              /* Certificate size length */
         253,                           /* Above, it throw a STSE_CORE_FRAME_CRC_ERROR */
         STSE_NO_PROT);                 /* No protection */
@@ -114,8 +114,8 @@ stse_ReturnCode_t stse_get_device_certificate(stse_Handler_t *pSTSE, PLAT_UI8 ce
 }
 
 stse_ReturnCode_t stse_device_authenticate(
-    stse_Handler_t *pSTSE,
-    const PLAT_UI8 *pRoot_CA_certificate,
+    stse_Handler_t *p_stse,
+    const PLAT_UI8 *p_root_ca_certificate,
     PLAT_UI8 certificate_zone,
     PLAT_UI8 priv_key_slot_number) {
     stse_ReturnCode_t ret;
@@ -123,16 +123,16 @@ stse_ReturnCode_t stse_device_authenticate(
     PLAT_UI16 certificate_size;
     PLAT_UI8 certificate_size_ui8[2];
 
-    if (pSTSE == NULL) {
+    if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    if (pRoot_CA_certificate == NULL) {
+    if (p_root_ca_certificate == NULL) {
         return (STSE_API_INVALID_PARAMETER);
     }
 
     ret = stse_data_storage_read_data_zone(
-        pSTSE,
+        p_stse,
         certificate_zone,
         STSE_CERTIFICATE_SIZE_OFFSET_BYTES, /* 2 bytes offset */
         certificate_size_ui8,               /* Returned certificate size */
@@ -148,14 +148,14 @@ stse_ReturnCode_t stse_device_authenticate(
 
     PLAT_UI8 certificate[certificate_size];
 
-    ret = stse_get_device_certificate(pSTSE, certificate_zone, certificate_size, certificate);
+    ret = stse_get_device_certificate(p_stse, certificate_zone, certificate_size, certificate);
     if (ret != STSE_OK) {
         return ret;
     }
 
     /* - Parse certificate chain (including Root CA certificate) */
     ret = stse_certificate_parse_chain(
-        (uint8_t *)pRoot_CA_certificate,
+        (uint8_t *)p_root_ca_certificate,
         certificate,
         certificate_size,
         &leaf_certificate);
@@ -174,7 +174,7 @@ stse_ReturnCode_t stse_device_authenticate(
 
     PLAT_UI16 challenge_size;
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
-    if (pSTSE->device_type == STSAFE_L010) {
+    if (p_stse->device_type == STSAFE_L010) {
         challenge_size = STSAFEL_ECC_SIGNATURE_CHALLENGE_LENGTH;
     } else {
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
@@ -196,7 +196,7 @@ stse_ReturnCode_t stse_device_authenticate(
 
     /* - Get target SE challenge signature */
     ret = stse_ecc_generate_signature(
-        pSTSE,                /* STSE handler */
+        p_stse,                /* STSE handler */
         priv_key_slot_number, /* Slot number */
         key_type,             /* Key type */
         challenge,            /* Random number to sign */

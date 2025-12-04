@@ -24,32 +24,32 @@
 /* Exported functions --------------------------------------------------------*/
 
 stse_ReturnCode_t stse_get_ecc_key_slots_count(
-    stse_Handler_t *pSTSE,
-    PLAT_UI8 *pPrivate_key_slot_count) {
+    stse_Handler_t *p_stse,
+    PLAT_UI8 *p_private_key_slot_count) {
     stse_ReturnCode_t ret;
 
-    if (pSTSE == NULL) {
+    if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    if (pPrivate_key_slot_count == NULL) {
+    if (p_private_key_slot_count == NULL) {
         return (STSE_API_INVALID_PARAMETER);
     }
 
-    ret = stsafea_query_private_key_slots_count(pSTSE, pPrivate_key_slot_count);
+    ret = stsafea_query_private_key_slots_count(p_stse, p_private_key_slot_count);
 
     return ret;
 }
 
 stse_ReturnCode_t stse_get_ecc_key_table_info(
-    stse_Handler_t *pSTSE,
+    stse_Handler_t *p_stse,
     PLAT_UI8 private_key_slot_count,
-    PLAT_UI8 *pChange_right,
-    PLAT_UI16 *pGlobal_usage_limit,
+    PLAT_UI8 *p_change_right,
+    PLAT_UI16 *p_global_usage_limit,
     stsafea_private_key_slot_information_t *private_key_table_info) {
     stse_ReturnCode_t ret;
 
-    if (pSTSE == NULL) {
+    if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
@@ -57,20 +57,20 @@ stse_ReturnCode_t stse_get_ecc_key_table_info(
         return (STSE_API_INVALID_PARAMETER);
     }
 
-    ret = stsafea_query_private_key_table(pSTSE, private_key_slot_count, pChange_right, pGlobal_usage_limit, private_key_table_info);
+    ret = stsafea_query_private_key_table(p_stse, private_key_slot_count, p_change_right, p_global_usage_limit, private_key_table_info);
 
     return ret;
 }
 
 stse_ReturnCode_t stse_get_ecc_key_slot_info(
-    stse_Handler_t *pSTSE,
+    stse_Handler_t *p_stse,
     PLAT_UI8 private_key_slot_number,
-    PLAT_UI8 *pChange_right,
-    PLAT_UI16 *pGlobal_usage_limit,
+    PLAT_UI8 *p_change_right,
+    PLAT_UI16 *p_global_usage_limit,
     stsafea_private_key_slot_information_t *private_key_slot_info) {
     stse_ReturnCode_t ret;
 
-    if (pSTSE == NULL) {
+    if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
@@ -81,11 +81,11 @@ stse_ReturnCode_t stse_get_ecc_key_slot_info(
     PLAT_UI8 private_key_slot_count;
     PLAT_UI8 slot_info_index;
 
-    ret = stsafea_query_private_key_slots_count(pSTSE, &private_key_slot_count);
+    ret = stsafea_query_private_key_slots_count(p_stse, &private_key_slot_count);
 
     stsafea_private_key_slot_information_t private_key_table_info[private_key_slot_count];
 
-    ret = stsafea_query_private_key_table(pSTSE, private_key_slot_count, pChange_right, pGlobal_usage_limit, private_key_table_info);
+    ret = stsafea_query_private_key_table(p_stse, private_key_slot_count, p_change_right, p_global_usage_limit, private_key_table_info);
 
     if (ret != STSE_OK) {
         return (ret);
@@ -106,74 +106,74 @@ stse_ReturnCode_t stse_get_ecc_key_slot_info(
 }
 
 stse_ReturnCode_t stse_generate_ECDHE_key_pair(
-    stse_Handler_t *pSTSE,
+    stse_Handler_t *p_stse,
     stse_ecc_key_type_t key_type,
-    PLAT_UI8 *pPublic_key) {
+    PLAT_UI8 *p_public_key) {
     stse_ReturnCode_t ret;
 
-    if (pSTSE == NULL) {
+    if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    if (pPublic_key == NULL) {
+    if (p_public_key == NULL) {
         return (STSE_API_INVALID_PARAMETER);
     }
 
-    ret = stsafea_generate_ECDHE_key_pair(pSTSE, key_type, pPublic_key);
+    ret = stsafea_generate_ECDHE_key_pair(p_stse, key_type, p_public_key);
 
     return ret;
 }
 
 stse_ReturnCode_t stse_generate_ecc_key_pair(
-    stse_Handler_t *pSTSE,
+    stse_Handler_t *p_stse,
     PLAT_UI8 slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI16 usage_limit,
-    PLAT_UI8 *pPublic_key) {
+    PLAT_UI8 *p_public_key) {
     stse_ReturnCode_t ret;
 
-    if (pSTSE == NULL) {
+    if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    if (pPublic_key == NULL) {
+    if (p_public_key == NULL) {
         return (STSE_API_INVALID_PARAMETER);
     }
 
-    ret = stsafea_generate_ecc_key_pair(pSTSE, slot_number, key_type, usage_limit, pPublic_key);
+    ret = stsafea_generate_ecc_key_pair(p_stse, slot_number, key_type, usage_limit, p_public_key);
 
     return ret;
 }
 
 stse_ReturnCode_t stse_write_generic_ecc_public_key(
-    stse_Handler_t *pSTSE,
+    stse_Handler_t *p_stse,
     PLAT_UI8 slot_number,
     stse_ecc_key_type_t key_type,
-    PLAT_UI8 *pPublic_key) {
+    PLAT_UI8 *p_public_key) {
     stse_ReturnCode_t ret;
 
-    if (pSTSE == NULL) {
+    if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    if (pPublic_key == NULL) {
+    if (p_public_key == NULL) {
         return (STSE_API_INVALID_PARAMETER);
     }
 
-    ret = stsafea_write_generic_ecc_public_key(pSTSE, slot_number, key_type, pPublic_key);
+    ret = stsafea_write_generic_ecc_public_key(p_stse, slot_number, key_type, p_public_key);
 
     return ret;
 }
 
 stse_ReturnCode_t stse_sign_for_generic_public_key_slot(
-    stse_Handler_t *pSTSE,
+    stse_Handler_t *p_stse,
     stse_ecc_key_type_t private_key_type,
-    PLAT_UI8 *pPrivate_key,
+    PLAT_UI8 *p_private_key,
     stse_hash_algorithm_t hash_algo,
     PLAT_UI16 payload_length,
-    PLAT_UI8 *pPayload,
-    PLAT_UI8 *pSignature) {
-    (void)pSTSE;
+    PLAT_UI8 *p_payload,
+    PLAT_UI8 *p_signature) {
+    (void)p_stse;
 #if defined(STSE_CONF_USE_HOST_KEY_PROVISIONING_WRAPPED_AUTHENTICATED) || \
     defined(STSE_CONF_USE_SYMMETRIC_KEY_ESTABLISHMENT_AUTHENTICATED) ||   \
     defined(STSE_CONF_USE_SYMMETRIC_KEY_PROVISIONING_WRAPPED_AUTHENTICATED)
@@ -182,7 +182,7 @@ stse_ReturnCode_t stse_sign_for_generic_public_key_slot(
     PLAT_UI16 hash_length = stsafea_hash_info_table[hash_algo].length;
     PLAT_UI8 hash_data[hash_length];
 
-    if (pPrivate_key == NULL || pPayload == NULL || pSignature == NULL ||
+    if (p_private_key == NULL || p_payload == NULL || p_signature == NULL ||
         private_key_type >= STSE_ECC_KT_INVALID || hash_algo >= STSE_SHA_INVALID) {
         return STSE_SERVICE_INVALID_PARAMETER;
     }
@@ -193,7 +193,7 @@ stse_ReturnCode_t stse_sign_for_generic_public_key_slot(
         /* - Hash the payload */
         ret = stse_platform_hash_compute(
             hash_algo,
-            pPayload, payload_length,
+            p_payload, payload_length,
             hash_data, &hash_length);
 
         if (ret != STSE_OK) {
@@ -206,15 +206,15 @@ stse_ReturnCode_t stse_sign_for_generic_public_key_slot(
     /* - Sign the hash of concatenation of pub keys */
     ret = stse_platform_ecc_sign(
         private_key_type,
-        pPrivate_key,
+        p_private_key,
 #ifdef STSE_CONF_ECC_EDWARD_25519
-        (private_key_type == STSE_ECC_KT_ED25519) ? pPayload : hash_data,
+        (private_key_type == STSE_ECC_KT_ED25519) ? p_payload : hash_data,
         (private_key_type == STSE_ECC_KT_ED25519) ? payload_length : hash_length,
 #else
         hash_data,
         hash_length,
 #endif
-        pSignature);
+        p_signature);
 
     return (ret);
 #else

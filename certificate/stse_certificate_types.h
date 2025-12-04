@@ -151,22 +151,22 @@ typedef struct validity_st {
 
 /** \brief typedef for the structure keeping the Ellipitc Curve Public Key */
 typedef struct stse_cert_public_key_t {
-    const PLAT_UI8 *pX; /*!<  Pointer to X Coordinate */
-    const PLAT_UI8 *pY; /*!<  Pointer to Y Coordiante */
+    const PLAT_UI8 *p_x; /*!<  Pointer to X Coordinate */
+    const PLAT_UI8 *p_y; /*!<  Pointer to Y Coordiante */
     PLAT_I32 fsize;     /*!< Size of the field in bytes */
 } stse_cert_public_key_t;
 
 /** \brief typedef for the structure keeping the ECDSA Signature */
 typedef struct stse_cert_signature_t {
-    const PLAT_UI8 *pR; /*!< Pointer to r */
+    const PLAT_UI8 *p_r; /*!< Pointer to r */
     PLAT_I32 rSize;     /*!< size to r */
-    const PLAT_UI8 *pS; /*!<  Pointer to s*/
+    const PLAT_UI8 *p_s; /*!<  Pointer to s*/
     PLAT_I32 sSize;     /*!< size to s */
 } stse_cert_signature_t;
 
 /** \brief internal structure used to keep the values parsed from the x509 */
 struct stse_internal_certificate {
-    const PLAT_UI8 *pPubKey_point_representation_id; /*!< 0x04: Uncompressed key, 0x02 or 0x03: Compressed key */
+    const PLAT_UI8 *p_pubkey_point_representation_id; /*!< 0x04: Uncompressed key, 0x02 or 0x03: Compressed key */
     const PLAT_UI8 *tbs;                             /*!<  Pointer to tcs field */
     PLAT_I32 tbsSize;                                /*!<  Size of tcs */
     PLAT_I32 x509Version;                            /*!<  x509 Version */

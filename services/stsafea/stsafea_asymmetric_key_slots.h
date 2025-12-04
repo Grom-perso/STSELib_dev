@@ -73,60 +73,60 @@ typedef struct stsafea_private_key_slot_information_t {
 /*!
  * \brief 		Get private key slot count
  * \details 	This service format and send the get private key slot count command
- * \param[in] 	pSTSE 						Pointer to STSE Handler
- * \param[out] 	pPrivate_key_slot_count 	Target STSAFE-A total Private key slot count
+ * \param[in] 	p_stse 						Pointer to STSE Handler
+ * \param[out] 	p_private_key_slot_count 	Target STSAFE-A total Private key slot count
  * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
  */
 stse_ReturnCode_t stsafea_query_private_key_slots_count(
-    stse_Handler_t *pSTSE,
-    PLAT_UI8 *pPrivate_key_slot_count);
+    stse_Handler_t *p_stse,
+    PLAT_UI8 *p_private_key_slot_count);
 
 /**
  * \brief 		Query private key table information
  * \details 	This service formats and sends the query private key table command
- * \param[in] 	pSTSE 					Pointer to STSE Handler
+ * \param[in] 	p_stse 					Pointer to STSE Handler
  * \param[in] 	private_key_slot_count	Number of private key slots
- * \param[out] 	pChange_right			Pointer to change right value
- * \param[out] 	pGlobal_usage_limit		Pointer to global usage limit value
+ * \param[out] 	p_change_right			Pointer to change right value
+ * \param[out] 	p_global_usage_limit		Pointer to global usage limit value
  * \param[out] 	private_key_table_info	Pointer to private key table information structure
  * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
  */
 stse_ReturnCode_t stsafea_query_private_key_table(
-    stse_Handler_t *pSTSE,
+    stse_Handler_t *p_stse,
     PLAT_UI8 private_key_slot_count,
-    PLAT_UI8 *pChange_right,
-    PLAT_UI16 *pGlobal_usage_limit,
+    PLAT_UI8 *p_change_right,
+    PLAT_UI16 *p_global_usage_limit,
     stsafea_private_key_slot_information_t *private_key_table_info);
 
 /**
  * \brief 		Generate ECC key pair in specified slot
  * \details 	This service formats and sends the generate ECC key pair command
- * \param[in] 	pSTSE 			Pointer to STSE Handler
+ * \param[in] 	p_stse 			Pointer to STSE Handler
  * \param[in] 	slot_number		Slot number where to generate the key pair
  * \param[in] 	key_type		ECC key type to generate
  * \param[in] 	usage_limit		Usage limit for the generated key
- * \param[out] 	pPublic_key		Pointer to buffer for the public key
+ * \param[out] 	p_public_key		Pointer to buffer for the public key
  * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
  */
 stse_ReturnCode_t stsafea_generate_ecc_key_pair(
-    stse_Handler_t *pSTSE,
+    stse_Handler_t *p_stse,
     PLAT_UI8 slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI16 usage_limit,
-    PLAT_UI8 *pPublic_key);
+    PLAT_UI8 *p_public_key);
 
 /*!
  * \brief 		Generate ECDHE key pair
  * \details 	This service format and send the generate ECDHE key pair command
- * \param[in] 	pSTSE 						Pointer to STSE Handler
+ * \param[in] 	p_stse 						Pointer to STSE Handler
  * \param[in] 	key_type 					Curve type for the ECDHE key pair
- * \param[out] 	pPublic_key 				generated ECDHE public key
+ * \param[out] 	p_public_key 				generated ECDHE public key
  * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
  */
 stse_ReturnCode_t stsafea_generate_ECDHE_key_pair(
-    stse_Handler_t *pSTSE,
+    stse_Handler_t *p_stse,
     stse_ecc_key_type_t key_type,
-    PLAT_UI8 *pPublic_key);
+    PLAT_UI8 *p_public_key);
 
 /** \}*/
 
