@@ -83,15 +83,15 @@ void stse_certificate_parse_ECDSA_signature(const PLAT_UI8 *signature, stse_cert
         next = next + 1; /* Skip "unused bits" octet */
 
         if (stse_certificate->SignatureAlgorithm == SIG_EDDSA_ED25519) {
-            stse_certificate->Sign.pR = next;
+            stse_certificate->Sign.p_r = next;
             stse_certificate->Sign.rSize = 32;
-            stse_certificate->Sign.pS = next + 32;
+            stse_certificate->Sign.p_s = next + 32;
             stse_certificate->Sign.sSize = 32;
         } else {
             tag = stse_certificate_identify_ASN1_TLV(next, &parsed, &size, &next);
             if (tag == TAG_SEQUENCE) {
-                stse_certificate_parse_integer(next, &stse_certificate->Sign.pR, &stse_certificate->Sign.rSize, &next);
-                stse_certificate_parse_integer(next, &stse_certificate->Sign.pS, &stse_certificate->Sign.sSize, &next);
+                stse_certificate_parse_integer(next, &stse_certificate->Sign.p_r, &stse_certificate->Sign.rSize, &next);
+                stse_certificate_parse_integer(next, &stse_certificate->Sign.p_s, &stse_certificate->Sign.sSize, &next);
             }
         }
     }
@@ -122,7 +122,7 @@ PLAT_I32 stse_certificate_get_small_integer(const PLAT_UI8 *value, PLAT_I32 size
 
 void stse_certificate_parse_signature_algorithm(const PLAT_UI8 *SA, PLAT_I32 *singatureAlgorithm, const PLAT_UI8 **next_thing) {
 #define N_OF_IDENTIFIABLE_SIGNATURE_ALGORITHMS 6
-    const struct SignatureAlgorithmOID_st signatureAlgorithms_oids[N_OF_IDENTIFIABLE_SIGNATURE_ALGORITHMS] = {
+    const struct signaturealgorithmoid_st signaturealgorithms_oids[N_OF_IDENTIFIABLE_SIGNATURE_ALGORITHMS] = {
         {.len = 8, .type = SIG_ECDSA_SHA256, .oid = {0x2A, 0x86, 0x48, 0xCE, 0x3D, 0x04, 0x03, 0x02}},
         {.len = 8, .type = SIG_ECDSA_SHA384, .oid = {0x2A, 0x86, 0x48, 0xCE, 0x3D, 0x04, 0x03, 0x03}},
         {.len = 8, .type = SIG_ECDSA_SHA512, .oid = {0x2A, 0x86, 0x48, 0xCE, 0x3D, 0x04, 0x03, 0x04}},
@@ -139,9 +139,9 @@ void stse_certificate_parse_signature_algorithm(const PLAT_UI8 *SA, PLAT_I32 *si
         tag = stse_certificate_identify_ASN1_TLV(next, &parsed, &size, &next);
         if (tag == TAG_OBJECT_IDENTIFIER) {
             for (i = 0; i < N_OF_IDENTIFIABLE_SIGNATURE_ALGORITHMS; i++) {
-                if (size == signatureAlgorithms_oids[i].len) {
-                    if (memcmp(signatureAlgorithms_oids[i].oid, next, (PLAT_UI32)size) == 0) {
-                        *singatureAlgorithm = signatureAlgorithms_oids[i].type;
+                if (size == signaturealgorithms_oids[i].len) {
+                    if (memcmp(signaturealgorithms_oids[i].oid, next, (PLAT_UI32)size) == 0) {
+                        *singatureAlgorithm = signaturealgorithms_oids[i].type;
                         break;
                     }
                 }
@@ -167,16 +167,16 @@ void stse_certificate_parse_ECC_public_key(const PLAT_UI8 *EccPK, stse_certifica
     PLAT_I32 i, total_size = 0, size = 0, parsed, tag;
     const PLAT_UI8 *next;
 #define N_OF_IDENTIFIABLE_ECS 10
-    const struct EllipticCurveOID_st ellipticCurves_oids[N_OF_IDENTIFIABLE_ECS] = {
+    const struct ellipticcurveoid_st ellipticcurves_oids[N_OF_IDENTIFIABLE_ECS] = {
         {.len = 8, .type = EC_P256, .oid = {0x2A, 0x86, 0x48, 0xCE, 0x3D, 0x03, 0x01, 0x07, 0}},
         {.len = 5, .type = EC_P384, .oid = {0x2B, 0x81, 0x04, 0x00, 34, 0, 0, 0, 0}},
         {.len = 5, .type = EC_P521, .oid = {0x2B, 0x81, 0x04, 0x00, 35, 0, 0, 0, 0}},
-        {.len = 9, .type = EC_bp256r1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 0x07}},
-        {.len = 9, .type = EC_bp256t1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 0x08}},
-        {.len = 9, .type = EC_bp384r1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 11}},
-        {.len = 9, .type = EC_bp384t1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 12}},
-        {.len = 9, .type = EC_bp512r1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 13}},
-        {.len = 9, .type = EC_bp512t1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 14}},
+        {.len = 9, .type = ec_bp256r1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 0x07}},
+        {.len = 9, .type = ec_bp256t1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 0x08}},
+        {.len = 9, .type = ec_bp384r1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 11}},
+        {.len = 9, .type = ec_bp384t1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 12}},
+        {.len = 9, .type = ec_bp512r1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 13}},
+        {.len = 9, .type = ec_bp512t1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 14}},
         {.len = 3, .type = EC_Ed25519, .oid = {0x2B, 0x65, 0x70, 0, 0, 0, 0, 0, 0}},
     };
 
@@ -193,9 +193,9 @@ void stse_certificate_parse_ECC_public_key(const PLAT_UI8 *EccPK, stse_certifica
                 }
                 if (tag == TAG_OBJECT_IDENTIFIER) {
                     for (i = 0; i < N_OF_IDENTIFIABLE_ECS; i++) {
-                        if (size == ellipticCurves_oids[i].len) {
-                            if (memcmp(ellipticCurves_oids[i].oid, next, (PLAT_UI32)size) == 0) {
-                                stse_certificate->EllipticCurve = ellipticCurves_oids[i].type;
+                        if (size == ellipticcurves_oids[i].len) {
+                            if (memcmp(ellipticcurves_oids[i].oid, next, (PLAT_UI32)size) == 0) {
+                                stse_certificate->EllipticCurve = ellipticcurves_oids[i].type;
                                 break;
                             }
                         }
@@ -208,26 +208,26 @@ void stse_certificate_parse_ECC_public_key(const PLAT_UI8 *EccPK, stse_certifica
                             switch (next[1]) {
                             case 0x04U:
                                 stse_certificate->PubKey.fsize = (size - 2) / 2;
-                                stse_certificate->PubKey.pX = &next[2];
-                                stse_certificate->PubKey.pY = &next[2 + stse_certificate->PubKey.fsize];
-                                stse_certificate->pPubKey_point_representation_id = &next[1];
+                                stse_certificate->PubKey.p_x = &next[2];
+                                stse_certificate->PubKey.p_y = &next[2 + stse_certificate->PubKey.fsize];
+                                stse_certificate->p_pubkey_point_representation_id = &next[1];
                                 break;
                             case 0x02U:
                             case 0x03U:
                                 stse_certificate->PubKey.fsize = (size - 2);
-                                stse_certificate->PubKey.pX = &next[2];
-                                stse_certificate->pPubKey_point_representation_id = &next[1];
+                                stse_certificate->PubKey.p_x = &next[2];
+                                stse_certificate->p_pubkey_point_representation_id = &next[1];
                                 break;
                             default:
                                 stse_certificate->PubKey.fsize = (size - 1);
-                                stse_certificate->PubKey.pX = &next[1];
-                                stse_certificate->pPubKey_point_representation_id = 0;
+                                stse_certificate->PubKey.p_x = &next[1];
+                                stse_certificate->p_pubkey_point_representation_id = 0;
                                 break;
                             }
                         } else {
                             stse_certificate->PubKey.fsize = (size - 1);
-                            stse_certificate->PubKey.pX = &next[1];
-                            stse_certificate->pPubKey_point_representation_id = 0;
+                            stse_certificate->PubKey.p_x = &next[1];
+                            stse_certificate->p_pubkey_point_representation_id = 0;
                         }
                     }
                 }
@@ -240,7 +240,7 @@ void stse_certificate_parse_ECC_public_key(const PLAT_UI8 *EccPK, stse_certifica
 
 PLAT_I32 stse_certificate_identify_attribute(const PLAT_UI8 *oid, PLAT_I32 size) {
 #define N_OF_IDENTIFIABLE_ATTRIBUTES 9
-    const struct AttributeOID_st attributes_oids[N_OF_IDENTIFIABLE_ATTRIBUTES] = {
+    const struct attributeoid_st attributes_oids[N_OF_IDENTIFIABLE_ATTRIBUTES] = {
         {.len = 3, .type = ATTR_CN, .oid = {0x55, 0x04, ATTR_CN}},
         {.len = 3, .type = ATTR_C, .oid = {0x55, 0x04, ATTR_C}},
         {.len = 3, .type = ATTR_SN, .oid = {0x55, 0x04, ATTR_SN}},
@@ -271,7 +271,7 @@ void stse_certificate_parse_relative_distinguished_name(const PLAT_UI8 *p, const
 
 PLAT_I32 stse_certificate_case_identify_extension(const PLAT_UI8 *oid, PLAT_I32 size) {
 #define N_OF_IDENTIFIABLE_EXTENSIONS 3
-    const struct ExtensionOID_st extensions_oids[N_OF_IDENTIFIABLE_EXTENSIONS] = {
+    const struct extensionoid_st extensions_oids[N_OF_IDENTIFIABLE_EXTENSIONS] = {
         {.len = 3, .type = EXTENSION_BC, .oid = {0x55, 0x1D, 0x13, 0, 0}},
         {.len = 3, .type = EXTENSION_KU, .oid = {0x55, 0x1D, 0x0F, 0, 0}},
         {.len = 3, .type = EXTENSION_EKU, .oid = {0x55, 0x1D, 0x25, 0, 0}},
@@ -357,19 +357,19 @@ PLAT_I32 stse_certificate_count_attributes(const PLAT_UI8 *p) {
     return (count);
 }
 
-void stse_certificate_parse_validity(const PLAT_UI8 *p, stse_cert_validity_t *notBefore_st, stse_cert_validity_t *notAfter_st, const PLAT_UI8 **next_thing) {
+void stse_certificate_parse_validity(const PLAT_UI8 *p, stse_cert_validity_t *notbefore_st, stse_cert_validity_t *notafter_st, const PLAT_UI8 **next_thing) {
     PLAT_I32 i, total_size = 0, size = 0, parsed, tag;
     const PLAT_UI8 *next = p;
-    stse_cert_validity_t *pValidity_st;
+    stse_cert_validity_t *p_validity_st;
 
     tag = stse_certificate_identify_ASN1_TLV(next, &parsed, &total_size, &next);
     total_size += parsed;
     if (tag == TAG_SEQUENCE) {
         for (i = 0; i < 2; i++) {
             if (i == 0) {
-                pValidity_st = notBefore_st;
+                p_validity_st = notbefore_st;
             } else {
-                pValidity_st = notAfter_st;
+                p_validity_st = notafter_st;
             }
             tag = stse_certificate_identify_ASN1_TLV(next, &parsed, &size, &next);
             if (tag == TAG_UTCTime || tag == TAG_GeneralizedTime) {
@@ -379,21 +379,21 @@ void stse_certificate_parse_validity(const PLAT_UI8 *p, stse_cert_validity_t *no
                     next += 2;
                     size -= 2;
                     if (timevalue > 50U) {
-                        pValidity_st->year = timevalue + 1900U;
+                        p_validity_st->year = timevalue + 1900U;
                     } else {
-                        pValidity_st->year = timevalue + 2000U;
+                        p_validity_st->year = timevalue + 2000U;
                     }
                 } else {
-                    pValidity_st->year = ((PLAT_UI32)next[0] - 0x30U) * 1000U + ((PLAT_UI32)next[1] - 0x30U) * 100U +
+                    p_validity_st->year = ((PLAT_UI32)next[0] - 0x30U) * 1000U + ((PLAT_UI32)next[1] - 0x30U) * 100U +
                                          ((PLAT_UI32)next[2] - 0x30U) * 10U + ((PLAT_UI32)next[3] - 0x30U);
                     next += 4;
                     size -= 4;
                 }
-                pValidity_st->month = ((PLAT_UI8)next[0] - 0x30U) * 10U + (PLAT_UI8)next[1] - 0x30U;
-                pValidity_st->days = ((PLAT_UI8)next[2] - 0x30U) * 10U + (PLAT_UI8)next[3] - 0x30U;
-                pValidity_st->hours = ((PLAT_UI8)next[4] - 0x30U) * 10U + (PLAT_UI8)next[5] - 0x30U;
-                pValidity_st->minutes = ((PLAT_UI8)next[6] - 0x30U) * 10U + (PLAT_UI8)next[7] - 0x30U;
-                pValidity_st->seconds = ((PLAT_UI8)next[8] - 0x30U) * 10U + (PLAT_UI8)next[9] - 0x30U;
+                p_validity_st->month = ((PLAT_UI8)next[0] - 0x30U) * 10U + (PLAT_UI8)next[1] - 0x30U;
+                p_validity_st->days = ((PLAT_UI8)next[2] - 0x30U) * 10U + (PLAT_UI8)next[3] - 0x30U;
+                p_validity_st->hours = ((PLAT_UI8)next[4] - 0x30U) * 10U + (PLAT_UI8)next[5] - 0x30U;
+                p_validity_st->minutes = ((PLAT_UI8)next[6] - 0x30U) * 10U + (PLAT_UI8)next[7] - 0x30U;
+                p_validity_st->seconds = ((PLAT_UI8)next[8] - 0x30U) * 10U + (PLAT_UI8)next[9] - 0x30U;
                 next += size;
             }
         }

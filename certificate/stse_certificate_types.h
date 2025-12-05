@@ -48,7 +48,7 @@ typedef enum {
     TAG_x509VERSION = 0xA0,     /*!< x509 tag for x509VERSION */
     TAG_issuerUniqueID,         /*!< x509 tag for issuerUniqueID */
     TAG_subjectUniqueID,        /*!< x509 tag for subjectUniqueID */
-    TAG_extensions,             /*!< x509 tag for extensions */
+    tag_extensions,             /*!< x509 tag for extensions */
 } stse_certificate_tag_t;
 
 /** \brief Definitions of available signature algorithms */
@@ -79,12 +79,12 @@ typedef enum {
     EC_P256 = 0, /*!< NIST P-256 */
     EC_P384,     /*!< NIST P-384 */
     EC_P521,     /*!< NIST P-521 */
-    EC_bp256r1,  /*!< brainpoolP256r1 */
-    EC_bp256t1,  /*!< brainpoolP256t1 */
-    EC_bp384r1,  /*!< brainpoolP384r1 */
-    EC_bp384t1,  /*!< brainpoolP384t1 */
-    EC_bp512r1,  /*!< brainpoolP512r1 */
-    EC_bp512t1,  /*!< brainpoolP512t1 */
+    ec_bp256r1,  /*!< brainpoolP256r1 */
+    ec_bp256t1,  /*!< brainpoolP256t1 */
+    ec_bp384r1,  /*!< brainpoolP384r1 */
+    ec_bp384t1,  /*!< brainpoolP384t1 */
+    ec_bp512r1,  /*!< brainpoolP512r1 */
+    ec_bp512t1,  /*!< brainpoolP512t1 */
     EC_Ed25519,  /*!< Ed25519 */
 } stse_certificate_elliptic_curves_t;
 
@@ -96,21 +96,21 @@ typedef enum {
 } stse_certificate_extensions_type_t;
 
 /** \brief Structure used to keep SignatureAlgorithm OIDs */
-struct SignatureAlgorithmOID_st {
+struct signaturealgorithmoid_st {
     PLAT_I32 len;    /*!< size of the encoded OID */
     PLAT_I32 type;   /*!< type of OID */
     PLAT_UI8 oid[8]; /*!< encoded OID */
 };
 
 /** \brief Structure used to keep Name Attribute OIDs */
-struct AttributeOID_st {
+struct attributeoid_st {
     PLAT_I32 len;    /*!< size of the encoded OID */
     PLAT_I32 type;   /*!< type of OID */
     PLAT_UI8 oid[3]; /*!< encoded OID */
 };
 
 /** \brief Structure used to keep named Elliptic Curve OIDs */
-struct EllipticCurveOID_st {
+struct ellipticcurveoid_st {
     PLAT_I32 len;    /*!< size of the encoded OID */
     PLAT_I32 type;   /*!< type of OID */
     PLAT_UI8 oid[9]; /*!< encoded OID */
@@ -125,7 +125,7 @@ typedef struct attribute_st {
 } stse_cert_attribute_t;
 
 /** \brief Structure used to keep Name Attribute OIDs */
-struct ExtensionOID_st {
+struct extensionoid_st {
     PLAT_I32 len;    /*!< size of the encoded OID */
     PLAT_I32 type;   /*!< type of OID */
     PLAT_UI8 oid[5]; /*!< encoded OID */
@@ -151,22 +151,22 @@ typedef struct validity_st {
 
 /** \brief typedef for the structure keeping the Ellipitc Curve Public Key */
 typedef struct stse_cert_public_key_t {
-    const PLAT_UI8 *pX; /*!<  Pointer to X Coordinate */
-    const PLAT_UI8 *pY; /*!<  Pointer to Y Coordiante */
+    const PLAT_UI8 *p_x; /*!<  Pointer to X Coordinate */
+    const PLAT_UI8 *p_y; /*!<  Pointer to Y Coordiante */
     PLAT_I32 fsize;     /*!< Size of the field in bytes */
 } stse_cert_public_key_t;
 
 /** \brief typedef for the structure keeping the ECDSA Signature */
 typedef struct stse_cert_signature_t {
-    const PLAT_UI8 *pR; /*!< Pointer to r */
+    const PLAT_UI8 *p_r; /*!< Pointer to r */
     PLAT_I32 rSize;     /*!< size to r */
-    const PLAT_UI8 *pS; /*!<  Pointer to s*/
+    const PLAT_UI8 *p_s; /*!<  Pointer to s*/
     PLAT_I32 sSize;     /*!< size to s */
 } stse_cert_signature_t;
 
 /** \brief internal structure used to keep the values parsed from the x509 */
 struct stse_internal_certificate {
-    const PLAT_UI8 *pPubKey_point_representation_id; /*!< 0x04: Uncompressed key, 0x02 or 0x03: Compressed key */
+    const PLAT_UI8 *p_pubkey_point_representation_id; /*!< 0x04: Uncompressed key, 0x02 or 0x03: Compressed key */
     const PLAT_UI8 *tbs;                             /*!<  Pointer to tcs field */
     PLAT_I32 tbsSize;                                /*!<  Size of tcs */
     PLAT_I32 x509Version;                            /*!<  x509 Version */
@@ -222,13 +222,13 @@ typedef struct stse_internal_certificate stse_certificate_t;
                                (TAG_IA5String <= (tag) && (tag) <= TAG_GeneralizedTime) || \
                                (tag) == TAG_SEQUENCE ||                                    \
                                (tag) == TAG_SET ||                                         \
-                               (TAG_x509VERSION <= (tag) && (tag) <= TAG_extensions))      \
+                               (TAG_x509VERSION <= (tag) && (tag) <= tag_extensions))      \
                                ? 1                                                         \
                                : 0)
 
 /* Exported Variables */
 
-extern stse_Handler_t *stsafe_x509_parser_companion_handler;
+extern stse_handler_t *stsafe_x509_parser_companion_handler;
 
 /** @}*/
 

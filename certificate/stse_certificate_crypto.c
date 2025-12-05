@@ -19,8 +19,8 @@
 #include "api/stse_ecc.h"
 #include "api/stse_hash.h"
 
-stse_ReturnCode_t stse_certificate_verify_cert_signature(const stse_certificate_t *parent, const stse_certificate_t *child) {
-    stse_ReturnCode_t ret;
+stse_return_code_t stse_certificate_verify_cert_signature(const stse_certificate_t *parent, const stse_certificate_t *child) {
+    stse_return_code_t ret;
     stse_hash_algorithm_t hash_algo;
 
     if ((parent == NULL) || (child == NULL)) {
@@ -66,12 +66,12 @@ stse_ReturnCode_t stse_certificate_verify_cert_signature(const stse_certificate_
         return (ret);
     }
 
-    return (stse_certificate_verify_signature(parent, digestPtr, digestSize, child->Sign.pR,
-                                              child->Sign.rSize, child->Sign.pS,
+    return (stse_certificate_verify_signature(parent, digestPtr, digestSize, child->Sign.p_r,
+                                              child->Sign.rSize, child->Sign.p_s,
                                               child->Sign.sSize));
 }
 
-stse_ReturnCode_t stse_certificate_verify_signature(const stse_certificate_t *cert,
+stse_return_code_t stse_certificate_verify_signature(const stse_certificate_t *cert,
                                                     const PLAT_UI8 *digest,
                                                     PLAT_I32 digestSize,
                                                     const PLAT_UI8 *signatureR,
@@ -80,7 +80,7 @@ stse_ReturnCode_t stse_certificate_verify_signature(const stse_certificate_t *ce
                                                     PLAT_I32 signatureSsize) {
     (void)signatureRsize;
     (void)signatureSsize;
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     stse_ecc_key_type_t key_type;
 
     if ((cert == NULL) || (digest == NULL) || (signatureR == NULL) || (signatureS == NULL)) {
@@ -102,18 +102,18 @@ stse_ReturnCode_t stse_certificate_verify_signature(const stse_certificate_t *ce
 
     /* Extract and format the public key from the certificate */
     if (cert->SignatureAlgorithm == SIG_EDDSA_ED25519) {
-        memcpy(pub_key, cert->PubKey.pX, pub_key_size);
+        memcpy(pub_key, cert->PubKey.p_x, pub_key_size);
     } else {
-        memcpy(pub_key, cert->PubKey.pX, (pub_key_size >> 1));
-        if (*cert->pPubKey_point_representation_id == 0x04) {
-            memcpy(pub_key + (pub_key_size >> 1), cert->PubKey.pY, (pub_key_size >> 1));
+        memcpy(pub_key, cert->PubKey.p_x, (pub_key_size >> 1));
+        if (*cert->p_pubkey_point_representation_id == 0x04) {
+            memcpy(pub_key + (pub_key_size >> 1), cert->PubKey.p_y, (pub_key_size >> 1));
         } else {
 #ifdef STSE_CONF_USE_COMPANION
             if (stsafe_x509_parser_companion_handler != NULL) {
                 stsafea_ecc_decompress_public_key(
                     stsafe_x509_parser_companion_handler,
                     key_type,
-                    *cert->pPubKey_point_representation_id,
+                    *cert->p_pubkey_point_representation_id,
                     pub_key,
                     pub_key + (pub_key_size >> 1));
             } else
@@ -177,15 +177,15 @@ stse_ecc_key_type_t stse_certificate_get_key_type(const stse_certificate_t *cert
         return STSE_ECC_KT_NIST_P_521;
 #endif
 #ifdef STSE_CONF_ECC_BRAINPOOL_P_256
-    case EC_bp256r1:
+    case ec_bp256r1:
         return STSE_ECC_KT_BP_P_256;
 #endif
 #ifdef STSE_CONF_ECC_BRAINPOOL_P_384
-    case EC_bp384r1:
+    case ec_bp384r1:
         return STSE_ECC_KT_BP_P_384;
 #endif
 #ifdef STSE_CONF_ECC_BRAINPOOL_P_512
-    case EC_bp512r1:
+    case ec_bp512r1:
         return STSE_ECC_KT_BP_P_512;
 #endif
 #ifdef STSE_CONF_ECC_EDWARD_25519

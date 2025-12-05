@@ -22,7 +22,7 @@
 #include <stdint.h>
 #include <string.h>
 
-stse_Handler_t *stsafe_x509_parser_companion_handler = NULL;
+stse_handler_t *stsafe_x509_parser_companion_handler = NULL;
 
 /**
  * \brief  Parse the extensions part of a certificate
@@ -104,7 +104,7 @@ static void parsetbsCertificate(const PLAT_UI8 *tbs, PLAT_I32 tbsSize, stse_cert
             /* Now we face Optional Extensions, but those are optional */
             if (next_value < tbs + tbsSize) {
                 tag = stse_certificate_identify_ASN1_TLV(next_value, &parsed, &size, &next_value);
-                if (tag == TAG_extensions) {
+                if (tag == tag_extensions) {
                     stse_certificate->extensions = next_value;
                     stse_certificate->extensionsSize = size;
                     stse_certificate_parse_extensions(stse_certificate->extensions, stse_certificate->extensionsSize, stse_certificate);
@@ -130,13 +130,13 @@ void stse_certificate_init(stse_certificate_t *cert) {
         cert->subjectSize = -1;
         cert->EllipticCurve = -1;
         cert->PubKey.fsize = 0;
-        cert->PubKey.pX = NULL;
-        cert->PubKey.pY = NULL;
+        cert->PubKey.p_x = NULL;
+        cert->PubKey.p_y = NULL;
         cert->extensions = NULL;
         cert->extensionsSize = -1;
         cert->SignatureAlgorithm = -1;
-        cert->Sign.pR = NULL;
-        cert->Sign.pS = NULL;
+        cert->Sign.p_r = NULL;
+        cert->Sign.p_s = NULL;
         cert->Sign.rSize = 0;
         cert->Sign.sSize = 0;
         cert->extensionsFlags = 0;
@@ -149,7 +149,7 @@ void stse_certificate_copy(stse_certificate_t *copiedCert, const stse_certificat
     }
 }
 
-stse_ReturnCode_t stse_certificate_parse(const PLAT_UI8 *cert, stse_certificate_t *stse_certificate, const PLAT_UI8 **next) {
+stse_return_code_t stse_certificate_parse(const PLAT_UI8 *cert, stse_certificate_t *stse_certificate, const PLAT_UI8 **next) {
     PLAT_I32 total_size, tag, size, parsed;
     const PLAT_UI8 *next_thing;
 
@@ -189,7 +189,7 @@ stse_ReturnCode_t stse_certificate_parse(const PLAT_UI8 *cert, stse_certificate_
     return (STSE_OK);
 }
 
-stse_ReturnCode_t stse_certificate_is_valid(const stse_certificate_t *stse_certificate, const stse_cert_validity_t *currentTime) {
+stse_return_code_t stse_certificate_is_valid(const stse_certificate_t *stse_certificate, const stse_cert_validity_t *currentTime) {
     if (
         (stse_certificate->issuer == NULL || stse_certificate->issuerSize == -1) ||
         (stse_certificate->subject == NULL || stse_certificate->subjectSize == -1) ||
@@ -197,23 +197,23 @@ stse_ReturnCode_t stse_certificate_is_valid(const stse_certificate_t *stse_certi
         (stse_certificate->signature == -1 || stse_certificate->SignatureAlgorithm != stse_certificate->signature) ||
         (stse_certificate->validity == NULL || stse_certificate->validitySize == -1) ||
         (stse_certificate->EllipticCurve == -1 || stse_certificate->x509Version == -1) ||
-        (stse_certificate->PubKey.fsize <= 0 || stse_certificate->PubKey.pX == NULL) ||
-        (*stse_certificate->pPubKey_point_representation_id == 0x04 && stse_certificate->PubKey.pY == NULL) ||
-        (*stse_certificate->pPubKey_point_representation_id != 0x04 && stse_certificate->PubKey.pY != NULL) ||
-        (stse_certificate->Sign.pR == NULL || stse_certificate->Sign.rSize == -1) ||
-        (stse_certificate->Sign.pS == NULL || stse_certificate->Sign.sSize == -1)) {
+        (stse_certificate->PubKey.fsize <= 0 || stse_certificate->PubKey.p_x == NULL) ||
+        (*stse_certificate->p_pubkey_point_representation_id == 0x04 && stse_certificate->PubKey.p_y == NULL) ||
+        (*stse_certificate->p_pubkey_point_representation_id != 0x04 && stse_certificate->PubKey.p_y != NULL) ||
+        (stse_certificate->Sign.p_r == NULL || stse_certificate->Sign.rSize == -1) ||
+        (stse_certificate->Sign.p_s == NULL || stse_certificate->Sign.sSize == -1)) {
         return (STSE_CERT_INVALID_CERTIFICATE);
     }
 
     if (currentTime != NULL) {
-        stse_cert_validity_t notBefore_st, notAfter_st;
-        stse_certificate_parse_validity(stse_certificate->validity, &notBefore_st, &notAfter_st, NULL);
+        stse_cert_validity_t notbefore_st, notafter_st;
+        stse_certificate_parse_validity(stse_certificate->validity, &notbefore_st, &notafter_st, NULL);
 
-        if (stse_certificate_date_compare(currentTime, &notBefore_st) < 0) {
+        if (stse_certificate_date_compare(currentTime, &notbefore_st) < 0) {
             return (STSE_CERT_INVALID_CERTIFICATE);
         }
 
-        if (stse_certificate_date_compare(currentTime, &notAfter_st) > 0) {
+        if (stse_certificate_date_compare(currentTime, &notafter_st) > 0) {
             return (STSE_CERT_INVALID_CERTIFICATE);
         }
     }
@@ -221,7 +221,7 @@ stse_ReturnCode_t stse_certificate_is_valid(const stse_certificate_t *stse_certi
     return (STSE_OK);
 }
 
-stse_ReturnCode_t stse_certificate_is_CA(const stse_certificate_t *cert) {
+stse_return_code_t stse_certificate_is_CA(const stse_certificate_t *cert) {
     if (((cert->extensionsFlags >> 0) & 1U) == 1U) {
         /* BasicContrain is present */
         if (((cert->extensionsFlags >> 2) & 1U) == 1U) {
@@ -232,7 +232,7 @@ stse_ReturnCode_t stse_certificate_is_CA(const stse_certificate_t *cert) {
     return (STSE_CERT_INVALID_CERTIFICATE);
 }
 
-stse_ReturnCode_t stse_certificate_is_parent(const stse_certificate_t *parent, const stse_certificate_t *child, const stse_cert_validity_t *currentTime) {
+stse_return_code_t stse_certificate_is_parent(const stse_certificate_t *parent, const stse_certificate_t *child, const stse_cert_validity_t *currentTime) {
     /* Get the two name structure to be compared */
     const PLAT_UI8 *name1 = child->issuer;
     PLAT_I32 name1Size = child->issuerSize;
@@ -341,12 +341,12 @@ stse_ReturnCode_t stse_certificate_is_parent(const stse_certificate_t *parent, c
     return (stse_certificate_verify_cert_signature(parent, child));
 }
 
-stse_ReturnCode_t stse_certificate_parse_chain(
+stse_return_code_t stse_certificate_parse_chain(
     PLAT_UI8 *rootCA,
     PLAT_UI8 *certChain,
     PLAT_UI16 certChainSize,
     stse_certificate_t *leafCert) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     PLAT_UI8 *next;
     PLAT_UI8 *eofCertChain = certChain + certChainSize;
     stse_certificate_t parsed_parent_cert;
@@ -392,9 +392,9 @@ stse_ReturnCode_t stse_certificate_parse_chain(
     return ret;
 }
 
-void stse_certificate_set_stse_companion(stse_Handler_t *pSTSE) {
-    if (pSTSE != NULL) {
-        stsafe_x509_parser_companion_handler = pSTSE;
+void stse_certificate_set_stse_companion(stse_handler_t *p_stse) {
+    if (p_stse != NULL) {
+        stsafe_x509_parser_companion_handler = p_stse;
     }
 }
 

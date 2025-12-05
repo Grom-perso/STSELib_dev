@@ -35,9 +35,9 @@
  * \param[in]  signatureRsize 	the size in bytes of signatureR
  * \param[in]  signatureS 		the S value of the signature to be verified
  * \param[in]  signatureSsize 	the size in bytes of signatureS
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_certificate_verify_signature(
+stse_return_code_t stse_certificate_verify_signature(
     const stse_certificate_t *cert,
     const PLAT_UI8 *digest,
     PLAT_I32 digestSize,
@@ -50,9 +50,9 @@ stse_ReturnCode_t stse_certificate_verify_signature(
  * \brief  Check whether "parent" signed "child"
  * \param[in]  parent 			pointer to the parsed x509 certificate of the supposed issuer of child
  * \param[in]  child  			pointer to the parsed x509 certificate of the certificated supposedly issued by parent
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_certificate_verify_cert_signature(
+stse_return_code_t stse_certificate_verify_cert_signature(
     const stse_certificate_t *parent,
     const stse_certificate_t *child);
 

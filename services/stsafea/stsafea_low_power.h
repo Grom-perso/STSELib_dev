@@ -35,12 +35,12 @@
 /**
  * \brief 		Put target device in hibernate mode
  * \details 	This function format and send hibernate command to target device
- * \param[in] 	pSTSAFE 			Pointer to STSE Handler
+ * \param[in] 	p_stsafe 			Pointer to STSE Handler
  * \param[in]	wake_up_mode 		Event to wake up from (STSAFE-A110 only)
  * 									listed in enum \ref stse_hibernate_wake_up_mode_t
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_hibernate(stse_Handler_t *pSTSAFE,
+stse_return_code_t stsafea_hibernate(stse_handler_t *p_stsafe,
                                     stse_hibernate_wake_up_mode_t wake_up_mode);
 
 /** \}*/

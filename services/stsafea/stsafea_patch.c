@@ -20,29 +20,29 @@
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
-stse_ReturnCode_t stsafe_get_patch_update_command_counter(
-    stse_Handler_t *pSTSAFE,
-    PLAT_UI8 pPatch_update_command_counter) {
-    (void)pSTSAFE;
-    (void)pPatch_update_command_counter;
+stse_return_code_t stsafe_get_patch_update_command_counter(
+    stse_handler_t *p_stsafe,
+    PLAT_UI8 p_patch_update_command_counter) {
+    (void)p_stsafe;
+    (void)p_patch_update_command_counter;
     return STSE_SERVICE_INVALID_PARAMETER; /* TODO */
 }
 
-stse_ReturnCode_t stsafe_patch_start(
-    stse_Handler_t *pSTSAFE) {
-    (void)pSTSAFE;
+stse_return_code_t stsafe_patch_start(
+    stse_handler_t *p_stsafe) {
+    (void)p_stsafe;
     return STSE_SERVICE_INVALID_PARAMETER; /* TODO */
 }
 
-stse_ReturnCode_t stsafe_patch_update(
-    stse_Handler_t *pSTSAFE) {
-    (void)pSTSAFE;
+stse_return_code_t stsafe_patch_update(
+    stse_handler_t *p_stsafe) {
+    (void)p_stsafe;
     return STSE_SERVICE_INVALID_PARAMETER; /* TODO */
 }
 
-stse_ReturnCode_t stsafe_patch_finalize(
-    stse_Handler_t *pSTSAFE) {
-    (void)pSTSAFE;
+stse_return_code_t stsafe_patch_finalize(
+    stse_handler_t *p_stsafe) {
+    (void)p_stsafe;
     return STSE_SERVICE_INVALID_PARAMETER; /* TODO */
 }
 

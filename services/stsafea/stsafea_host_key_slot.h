@@ -102,121 +102,121 @@ typedef struct
 /**
  * \brief 		Query host key provisioning control fields
  * \details 	This service format and send query host key provisioning control fields command
- * \param[in] 	pSTSE 				Pointer to STSE Handler
- * \param[out] 	pCtrl_fields		Pointer to the provisioning control fields
- * \return \ref stse_ReturnCode_t : STSAFEA_OK on success ; error code otherwise
+ * \param[in] 	p_stse 				Pointer to STSE Handler
+ * \param[out] 	p_ctrl_fields		Pointer to the provisioning control fields
+ * \return \ref stse_return_code_t : STSAFEA_OK on success ; error code otherwise
  */
-stse_ReturnCode_t stsafea_query_host_key_provisioning_ctrl_fields(
-    stse_Handler_t *pSTSE,
-    stsafea_host_key_provisioning_ctrl_fields_t *pCtrl_fields);
+stse_return_code_t stsafea_query_host_key_provisioning_ctrl_fields(
+    stse_handler_t *p_stse,
+    stsafea_host_key_provisioning_ctrl_fields_t *p_ctrl_fields);
 
 /**
  * \brief 		Put host key provisioning control fields
  * \details 	This service format and send put host key provisioning control fields command
- * \param[in] 	pSTSE 				Pointer to STSE Handler
- * \param[out] 	pCtrl_fields		Pointer to the provisioning control fields
- * \return \ref stse_ReturnCode_t : STSAFEA_OK on success ; error code otherwise
+ * \param[in] 	p_stse 				Pointer to STSE Handler
+ * \param[out] 	p_ctrl_fields		Pointer to the provisioning control fields
+ * \return \ref stse_return_code_t : STSAFEA_OK on success ; error code otherwise
  */
-stse_ReturnCode_t stsafea_put_host_key_provisioning_ctrl_fields(
-    stse_Handler_t *pSTSE,
-    stsafea_host_key_provisioning_ctrl_fields_t *pCtrl_fields);
+stse_return_code_t stsafea_put_host_key_provisioning_ctrl_fields(
+    stse_handler_t *p_stse,
+    stsafea_host_key_provisioning_ctrl_fields_t *p_ctrl_fields);
 
 /**
  * \brief 		Query host key informations (host key V1)
  * \details 	This service format and send query host key informations command
- * \param[in] 	pSTSE 			Pointer to STSE Handler
- * \param[out] 	pHostKeySlot		Pointer to the structure to output key informations
- * \return \ref stse_ReturnCode_t : STSAFEA_OK on success ; error code otherwise
+ * \param[in] 	p_stse 			Pointer to STSE Handler
+ * \param[out] 	p_host_key_slot		Pointer to the structure to output key informations
+ * \return \ref stse_return_code_t : STSAFEA_OK on success ; error code otherwise
  */
-stse_ReturnCode_t stsafea_query_host_key(
-    stse_Handler_t *pSTSE,
-    stsafea_host_key_slot_t *pHostKeySlot);
+stse_return_code_t stsafea_query_host_key(
+    stse_handler_t *p_stse,
+    stsafea_host_key_slot_t *p_host_key_slot);
 
 /**
  * \brief 		Query host key informations (host key V2)
  * \details 	This service format and send query host key informations command
- * \param[in] 	pSTSE 			Pointer to STSE Handler
- * \param[out] 	pHostKeySlotV2		Pointer to the structure to output key informations
- * \return \ref stse_ReturnCode_t : STSAFEA_OK on success ; error code otherwise
+ * \param[in] 	p_stse 			Pointer to STSE Handler
+ * \param[out] 	p_host_key_slotV2		Pointer to the structure to output key informations
+ * \return \ref stse_return_code_t : STSAFEA_OK on success ; error code otherwise
  */
-stse_ReturnCode_t stsafea_query_host_key_v2(
-    stse_Handler_t *pSTSE,
-    stsafea_host_key_slot_v2_t *pHostKeySlotV2);
+stse_return_code_t stsafea_query_host_key_v2(
+    stse_handler_t *p_stse,
+    stsafea_host_key_slot_v2_t *p_host_key_slotV2);
 
 /**
  * \brief 		Provision host key V1
  * \details 	Provision host key using the put attributes command
- * \param[in] 	pSTSE 	Pointer to STSE Handler
+ * \param[in] 	p_stse 	Pointer to STSE Handler
  * \param[in] 	host_keys	Host key structure to be provisioned
- * \return \ref stse_ReturnCode_t : STSAFEA_OK on success ; error code otherwise
+ * \return \ref stse_return_code_t : STSAFEA_OK on success ; error code otherwise
  */
-stse_ReturnCode_t stsafea_put_attribute_host_key(
-    stse_Handler_t *pSTSE,
+stse_return_code_t stsafea_put_attribute_host_key(
+    stse_handler_t *p_stse,
     stsafea_aes_128_host_keys_t *host_keys);
 
 /**
  * \brief 		Provision host key V2
  * \details 	Provision host key using the write host key command
- * \param[in] 	pSTSE 			Pointer to STSE Handler
+ * \param[in] 	p_stse 			Pointer to STSE Handler
  * \param[in] 	key_type			Host key type
  * \param[in] 	host_keys			Host key structure to be provisioned
- * \return \ref stse_ReturnCode_t : STSAFEA_OK on success ; error code otherwise
+ * \return \ref stse_return_code_t : STSAFEA_OK on success ; error code otherwise
  */
-stse_ReturnCode_t stsafea_host_key_provisioning(
-    stse_Handler_t *pSTSE,
+stse_return_code_t stsafea_host_key_provisioning(
+    stse_handler_t *p_stse,
     stsafea_host_key_type_t key_type,
     stsafea_host_keys_t *host_keys);
 
 /**
  * \brief 		Provision host key V2 wrapped
  * \details 	Provision host key using the write host key command
- * \param[in] 	pSTSE 			Pointer to STSE Handler
+ * \param[in] 	p_stse 			Pointer to STSE Handler
  * \param[in] 	key_type			Host key type
- * \param[in] 	pHost_key_envelope	Envelope containing host key to be provisioned
- * \return \ref stse_ReturnCode_t : STSAFEA_OK on success ; error code otherwise
+ * \param[in] 	p_host_key_envelope	Envelope containing host key to be provisioned
+ * \return \ref stse_return_code_t : STSAFEA_OK on success ; error code otherwise
  */
-stse_ReturnCode_t stsafea_host_key_provisioning_wrapped(
-    stse_Handler_t *pSTSE,
+stse_return_code_t stsafea_host_key_provisioning_wrapped(
+    stse_handler_t *p_stse,
     stsafea_host_key_type_t key_type,
-    PLAT_UI8 *pHost_key_envelope);
+    PLAT_UI8 *p_host_key_envelope);
 
 /**
  * \brief 		Establish host key using ECDH & HKDF processes
  * \details 	Provision host key using the establish host key command
- * \param[in] 	pSTSE 						Pointer to STSE Handler
+ * \param[in] 	p_stse 						Pointer to STSE Handler
  * \param[in]   host_ecdh_public_key_type	ECDHE host public key type
- * \param[in]   pPublic_key 				ECDHE host public key
+ * \param[in]   p_public_key 				ECDHE host public key
  * \param[in] 	host_keys_type				Host key type
- * \return \ref stse_ReturnCode_t : STSAFEA_OK on success ; error code otherwise
+ * \return \ref stse_return_code_t : STSAFEA_OK on success ; error code otherwise
  */
-stse_ReturnCode_t stsafea_establish_host_key(
-    stse_Handler_t *pSTSE,
+stse_return_code_t stsafea_establish_host_key(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t host_ecdh_public_key_type,
-    PLAT_UI8 *pPublic_key,
+    PLAT_UI8 *p_public_key,
     stsafea_host_key_type_t host_keys_type);
 
 /**
  * \brief 		Authenticated establish host key using ECDH & HKDF processes
  * \details 	Provision host key using the authenticated establish host key command
- * \param[in] 	pSTSE 						Pointer to STSE Handler
+ * \param[in] 	p_stse 						Pointer to STSE Handler
  * \param[in]   host_ecdh_public_key_type	ECDHE host public key type
- * \param[in]   pPublic_key 				ECDHE host public key
+ * \param[in]   p_public_key 				ECDHE host public key
  * \param[in] 	host_keys_type				Host key type
  * \param[in] 	signature_public_key_slot	Generic public key slot holding key used to verify signature
  * \param[in] 	signature_public_key_type	Public key's type stored through generic public key slot
  * \param[in] 	signature_hash_algo			Hashing algorithm used for the signature
- * \param[in] 	pSignature					Pointer to buffer containing signature
- * \return \ref stse_ReturnCode_t : STSAFEA_OK on success ; error code otherwise
+ * \param[in] 	p_signature					Pointer to buffer containing signature
+ * \return \ref stse_return_code_t : STSAFEA_OK on success ; error code otherwise
  */
-stse_ReturnCode_t stsafea_establish_host_key_authenticated(
-    stse_Handler_t *pSTSE,
+stse_return_code_t stsafea_establish_host_key_authenticated(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t host_ecdh_public_key_type,
-    PLAT_UI8 *pPublic_key,
+    PLAT_UI8 *p_public_key,
     stsafea_host_key_type_t host_keys_type,
     PLAT_UI8 signature_public_key_slot,
     stse_ecc_key_type_t signature_public_key_type,
     stse_hash_algorithm_t signature_hash_algo,
-    PLAT_UI8 *pSignature);
+    PLAT_UI8 *p_signature);
 
 /** \}*/
 

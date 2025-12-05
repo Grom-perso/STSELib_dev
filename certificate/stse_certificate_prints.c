@@ -77,7 +77,7 @@ void stse_certificate_print_tag(PLAT_I32 tag) {
     case TAG_subjectUniqueID:
         printf("subjectUniqueID");
         break;
-    case TAG_extensions:
+    case tag_extensions:
         printf("extensions");
         break;
     case TAG_issuerUniqueID:
@@ -158,22 +158,22 @@ void stse_certificate_print_elliptic_curve(PLAT_I32 type) {
     case EC_P521:
         printf("P-521");
         break;
-    case EC_bp256r1:
+    case ec_bp256r1:
         printf("brainpoolP256r1");
         break;
-    case EC_bp256t1:
+    case ec_bp256t1:
         printf("brainpoolP256t1");
         break;
-    case EC_bp384r1:
+    case ec_bp384r1:
         printf("brainpoolP384r1");
         break;
-    case EC_bp384t1:
+    case ec_bp384t1:
         printf("brainpoolP384t1");
         break;
-    case EC_bp512r1:
+    case ec_bp512r1:
         printf("brainpoolP512r1");
         break;
-    case EC_bp512t1:
+    case ec_bp512t1:
         printf("brainpoolP512t1");
         break;
     case EC_Ed25519:
@@ -256,14 +256,14 @@ void stse_certificate_print_parsed_cert(stse_certificate_t *stse_certificate) {
     stse_certificate_print_signature_algorithm(stse_certificate->signature);
     printf("\n\r\t EllipticCurve: ");
     stse_certificate_print_elliptic_curve(stse_certificate->EllipticCurve);
-    printf("\n\r\t Cert PubKey (%s): ", *stse_certificate->pPubKey_point_representation_id == 0x04 ? "Uncompressed" : "Compressed");
-    print_buffer("\n\r\t\t X: ", stse_certificate->PubKey.pX, stse_certificate->PubKey.fsize);
-    if (*stse_certificate->pPubKey_point_representation_id == 0x04) {
-        print_buffer("\n\r\t\t Y: ", stse_certificate->PubKey.pY, stse_certificate->PubKey.fsize);
+    printf("\n\r\t Cert PubKey (%s): ", *stse_certificate->p_pubkey_point_representation_id == 0x04 ? "Uncompressed" : "Compressed");
+    print_buffer("\n\r\t\t X: ", stse_certificate->PubKey.p_x, stse_certificate->PubKey.fsize);
+    if (*stse_certificate->p_pubkey_point_representation_id == 0x04) {
+        print_buffer("\n\r\t\t Y: ", stse_certificate->PubKey.p_y, stse_certificate->PubKey.fsize);
     }
     printf("\n\r\t Cert Signature: ");
-    print_buffer("\n\r\t\t r: ", stse_certificate->Sign.pR, stse_certificate->Sign.rSize);
-    print_buffer("\n\r\t\t s :", stse_certificate->Sign.pS, stse_certificate->Sign.sSize);
+    print_buffer("\n\r\t\t r: ", stse_certificate->Sign.p_r, stse_certificate->Sign.rSize);
+    print_buffer("\n\r\t\t s :", stse_certificate->Sign.p_s, stse_certificate->Sign.sSize);
     printExtensions(stse_certificate->extensionsFlags);
 }
 
@@ -319,12 +319,12 @@ void stse_certificate_print_name(const PLAT_UI8 *name, PLAT_I32 nameSize) {
 }
 
 void stse_certificate_print_validity(const PLAT_UI8 *validity) {
-    stse_cert_validity_t notBefore_st, notAfter_st;
+    stse_cert_validity_t notbefore_st, notafter_st;
     const PLAT_UI8 *next;
-    stse_certificate_parse_validity(validity, &notBefore_st, &notAfter_st, &next);
+    stse_certificate_parse_validity(validity, &notbefore_st, &notafter_st, &next);
     printf("\n\r\t Validity:");
-    printf("\n\r\t\t Not Before: %04" PRId32 "-%02d-%02d %02d:%02d:%02d", notBefore_st.year, notBefore_st.month, notBefore_st.days, notBefore_st.hours, notBefore_st.minutes, notBefore_st.seconds);
-    printf("\n\r\t\t Not After:  %04" PRId32 "-%02d-%02d %02d:%02d:%02d", notAfter_st.year, notAfter_st.month, notAfter_st.days, notAfter_st.hours, notAfter_st.minutes, notAfter_st.seconds);
+    printf("\n\r\t\t Not Before: %04" PRId32 "-%02d-%02d %02d:%02d:%02d", notbefore_st.year, notbefore_st.month, notbefore_st.days, notbefore_st.hours, notbefore_st.minutes, notbefore_st.seconds);
+    printf("\n\r\t\t Not After:  %04" PRId32 "-%02d-%02d %02d:%02d:%02d", notafter_st.year, notafter_st.month, notafter_st.days, notafter_st.hours, notafter_st.minutes, notafter_st.seconds);
 }
 
 static void printExtensions(PLAT_UI32 extensionsFlags) {
