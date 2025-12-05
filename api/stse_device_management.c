@@ -332,7 +332,7 @@ stse_return_code_t stse_device_get_command_AC_records(stse_handler_t *p_stse,
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    return stsafea_get_command_Ac_table(p_stse, record_count, p_change_rights, p_record_table);
+    return stsafea_get_command_ac_table(p_stse, record_count, p_change_rights, p_record_table);
 }
 
 stse_return_code_t stse_device_get_life_cycle_state(stse_handler_t *p_stse,

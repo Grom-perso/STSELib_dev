@@ -46,7 +46,7 @@ stse_return_code_t stsafea_cmac_hmac_compute(
     stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&cmd_frame, esub_command_distinguisher, 1, &sub_command_distinguisher);
     stse_frame_element_allocate_push(&cmd_frame, eslot_number, 1, &slot_number);
-    stse_frame_element_allocate_push(&cmd_frame, eMac_length, 1, &mac_length);
+    stse_frame_element_allocate_push(&cmd_frame, emac_length, 1, &mac_length);
     stse_frame_element_allocate_push(&cmd_frame, eMessage, message_length, p_message);
 
     /* - Prepare RSP Frame : [HEADER] [MAC] */
@@ -87,7 +87,7 @@ stse_return_code_t stsafea_cmac_hmac_verify(
     stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&cmd_frame, esub_command_distinguisher, 1, &sub_command_distinguisher);
     stse_frame_element_allocate_push(&cmd_frame, eslot_number, 1, &slot_number);
-    stse_frame_element_allocate_push(&cmd_frame, eMac_length, 1, &mac_length);
+    stse_frame_element_allocate_push(&cmd_frame, emac_length, 1, &mac_length);
     stse_frame_element_allocate_push(&cmd_frame, eMac, mac_length, p_mac);
     stse_frame_element_allocate_push(&cmd_frame, eMessage, message_length, p_message);
 

@@ -177,15 +177,15 @@ stse_ecc_key_type_t stse_certificate_get_key_type(const stse_certificate_t *cert
         return STSE_ECC_KT_NIST_P_521;
 #endif
 #ifdef STSE_CONF_ECC_BRAINPOOL_P_256
-    case Ec_bp256r1:
+    case ec_bp256r1:
         return STSE_ECC_KT_BP_P_256;
 #endif
 #ifdef STSE_CONF_ECC_BRAINPOOL_P_384
-    case Ec_bp384r1:
+    case ec_bp384r1:
         return STSE_ECC_KT_BP_P_384;
 #endif
 #ifdef STSE_CONF_ECC_BRAINPOOL_P_512
-    case Ec_bp512r1:
+    case ec_bp512r1:
         return STSE_ECC_KT_BP_P_512;
 #endif
 #ifdef STSE_CONF_ECC_EDWARD_25519

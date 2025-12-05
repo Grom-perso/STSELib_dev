@@ -43,7 +43,7 @@ stse_return_code_t stsafel_read_data_zone(stse_handler_t *p_stse,
     /*- Create CMD frame and populate elements */
     stse_frame_allocate(cmd_frame);
     stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&cmd_frame, eRead_option, sizeof(stsafel_read_option_t), (PLAT_UI8 *)&option);
+    stse_frame_element_allocate_push(&cmd_frame, eread_option, sizeof(stsafel_read_option_t), (PLAT_UI8 *)&option);
     stse_frame_element_allocate_push(&cmd_frame, ezone_index, 1, &zone_index);
     stse_frame_element_allocate_push(&cmd_frame, eOffset, 2, (PLAT_UI8 *)&offset);
     stse_frame_element_allocate_push(&cmd_frame, edata_length, 2, (PLAT_UI8 *)&data_length);
@@ -83,7 +83,7 @@ stse_return_code_t stsafel_update_data_zone(stse_handler_t *p_stse,
     /*- Create CMD frame and populate elements */
     stse_frame_allocate(cmd_frame);
     stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&cmd_frame, eUpdate_option, sizeof(stsafel_update_option_t), (PLAT_UI8 *)&option);
+    stse_frame_element_allocate_push(&cmd_frame, eupdate_option, sizeof(stsafel_update_option_t), (PLAT_UI8 *)&option);
     stse_frame_element_allocate_push(&cmd_frame, ezone_index, 1, &zone_index);
     stse_frame_element_allocate_push(&cmd_frame, eOffset, 2, (PLAT_UI8 *)&offset);
     stse_frame_element_allocate_push(&cmd_frame, eData, data_length, p_data);
@@ -125,7 +125,7 @@ stse_return_code_t stsafel_read_counter_zone(stse_handler_t *p_stse,
     /*- Create CMD frame and populate elements */
     stse_frame_allocate(cmd_frame);
     stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&cmd_frame, eRead_option, sizeof(stsafel_read_option_t), (PLAT_UI8 *)&option);
+    stse_frame_element_allocate_push(&cmd_frame, eread_option, sizeof(stsafel_read_option_t), (PLAT_UI8 *)&option);
     stse_frame_element_allocate_push(&cmd_frame, ezone_index, 1, &zone_index);
     stse_frame_element_allocate_push(&cmd_frame, eOffset, 2, (PLAT_UI8 *)&offset);
     stse_frame_element_allocate_push(&cmd_frame, edata_length, 2, (PLAT_UI8 *)&data_length);
@@ -180,7 +180,7 @@ stse_return_code_t stsafel_decrement_counter_zone(stse_handler_t *p_stse,
     /*- Create CMD frame and populate elements */
     stse_frame_allocate(cmd_frame);
     stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&cmd_frame, eDecrement_option, sizeof(stsafel_decrement_option_t), (PLAT_UI8 *)&option);
+    stse_frame_element_allocate_push(&cmd_frame, edecrement_option, sizeof(stsafel_decrement_option_t), (PLAT_UI8 *)&option);
     stse_frame_element_allocate_push(&cmd_frame, ezone_index, 1, &zone_index);
     stse_frame_element_allocate_push(&cmd_frame, eOffset, 2, (PLAT_UI8 *)&offset);
     stse_frame_element_allocate_push(&cmd_frame, eAmount, STSAFEL_COUNTER_VALUE_SIZE, decrement_amount);

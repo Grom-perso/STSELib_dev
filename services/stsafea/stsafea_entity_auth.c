@@ -83,10 +83,10 @@ stse_return_code_t stsafea_verify_entity_signature(
         UI16_B0(stse_ecc_info_table[key_type].signature_size >> 1),
     };
 
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_r_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_R, (stse_ecc_info_table[key_type].signature_size >> 1), p_signature);
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_s_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_S, (stse_ecc_info_table[key_type].signature_size >> 1), p_signature + (stse_ecc_info_table[key_type].signature_size >> 1));
+    stse_frame_element_allocate_push(&cmd_frame, esignature_r_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
+    stse_frame_element_allocate_push(&cmd_frame, esignature_r, (stse_ecc_info_table[key_type].signature_size >> 1), p_signature);
+    stse_frame_element_allocate_push(&cmd_frame, esignature_s_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
+    stse_frame_element_allocate_push(&cmd_frame, esignature_s, (stse_ecc_info_table[key_type].signature_size >> 1), p_signature + (stse_ecc_info_table[key_type].signature_size >> 1));
 
     PLAT_UI8 rsp_header;
     stse_frame_allocate(rsp_frame);

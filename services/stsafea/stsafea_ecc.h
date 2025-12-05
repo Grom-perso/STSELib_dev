@@ -49,7 +49,7 @@ typedef enum {
  * \param[in] 	host_ecdhe_public_key	Pointer to host ECDHE public key
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_return_code_t stsafea_start_volatile_KEk_session(
+stse_return_code_t stsafea_start_volatile_kek_session(
     stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *host_ecdhe_public_key);
@@ -66,7 +66,7 @@ stse_return_code_t stsafea_start_volatile_KEk_session(
  * \param[in] 	p_signature						Pointer to signature buffer
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_return_code_t stsafea_start_volatile_KEk_session_authenticated(
+stse_return_code_t stsafea_start_volatile_kek_session_authenticated(
     stse_handler_t *p_stse,
     stse_ecc_key_type_t ecdhe_key_type,
     PLAT_UI8 *host_ecdhe_public_key,
@@ -81,7 +81,7 @@ stse_return_code_t stsafea_start_volatile_KEk_session_authenticated(
  * \param[in] 	p_stse 		Pointer to STSE Handler
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_return_code_t stsafea_stop_volatile_KEk_session(
+stse_return_code_t stsafea_stop_volatile_kek_session(
     stse_handler_t *p_stse);
 
 /**

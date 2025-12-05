@@ -69,7 +69,7 @@ stse_return_code_t stsafea_query_life_cycle_state(
     /*- Create Rsp frame and populate elements*/
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eLife_cycle_state, 1, (PLAT_UI8 *)p_life_cycle_state);
+    stse_frame_element_allocate_push(&rsp_frame, elife_cycle_state, 1, (PLAT_UI8 *)p_life_cycle_state);
 
     /*- Perform Transfer*/
     return stsafea_frame_raw_transfer(p_stse,
@@ -137,7 +137,7 @@ stse_return_code_t stsafea_query_i2c_parameters(
     /*- Create Rsp frame and populate elements*/
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eLife_cycle_state, sizeof(stsafea_i2c_parameters_t), (PLAT_UI8 *)p_i2c_parameters);
+    stse_frame_element_allocate_push(&rsp_frame, elife_cycle_state, sizeof(stsafea_i2c_parameters_t), (PLAT_UI8 *)p_i2c_parameters);
 
     /*- Perform Transfer*/
     return stsafea_frame_raw_transfer(p_stse,

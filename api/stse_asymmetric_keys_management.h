@@ -88,9 +88,9 @@ stse_return_code_t stse_get_ecc_key_slot_info(
  * \param[in] 	key_type 		Key type to generate
  * \param[out] 	p_public_key 	Public key of the generated key pair
  * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
- * \details 	\include{doc} stse_generate_ECDHe_key_pair.dox
+ * \details 	\include{doc} stse_generate_ecdhe_key_pair.dox
  */
-stse_return_code_t stse_generate_ECDHe_key_pair(
+stse_return_code_t stse_generate_ecdhe_key_pair(
     stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key);

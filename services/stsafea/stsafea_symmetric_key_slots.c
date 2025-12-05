@@ -112,7 +112,7 @@ stse_return_code_t stsafea_query_symmetric_key_slots_count(stse_handler_t *p_sts
 
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eSymmetric_key_slot_count, 1, p_symmetric_key_slot_count);
+    stse_frame_element_allocate_push(&rsp_frame, esymmetric_key_slot_count, 1, p_symmetric_key_slot_count);
 
     /*- Perform Transfer*/
     return stsafea_frame_raw_transfer(p_stse,
@@ -181,7 +181,7 @@ stse_return_code_t stsafea_query_symmetric_key_table(
                    STSAFEA_SYMMETRIC_KEY_TABLE_INFO_COMMON_VALUES_LENGTH);
             /* Parse AES CMAC key information record parameters */
             if (symmetric_key_table_info[i].mode_of_operation == STSAFEA_KEY_OPERATION_MODE_CMAC) {
-                symmetric_key_table_info[i].parameters.cmac.minimum_MAc_length = current_record[STSAFEA_SYMMETRIC_KEY_TABLE_INFO_COMMON_VALUES_LENGTH];
+                symmetric_key_table_info[i].parameters.cmac.minimum_mac_length = current_record[STSAFEA_SYMMETRIC_KEY_TABLE_INFO_COMMON_VALUES_LENGTH];
                 current_record += 1;
             } else
                 /* Parse AES CCM* key information record parameters */
@@ -360,7 +360,7 @@ stse_return_code_t stsafea_establish_symmetric_key_authenticated(
 
     stse_frame_element_allocate_push(&cmd_frame, ealgorithm_id, 1, &algorithm_id);
     stse_frame_element_allocate_push(&cmd_frame, eFiller, 1, &filler_1_byte);
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_public_key_slot_number, 1, &signature_public_key_slot_number);
+    stse_frame_element_allocate_push(&cmd_frame, esignature_public_key_slot_number, 1, &signature_public_key_slot_number);
 
 #ifdef STSE_CONF_ECC_EDWARD_25519
     if (signature_key_type != STSE_ECC_KT_ED25519)
@@ -371,10 +371,10 @@ stse_return_code_t stsafea_establish_symmetric_key_authenticated(
     }
     stse_frame_push_element(&cmd_frame, &ehash_algo_id);
 
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_r_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_R, signature_R_s_length, p_signature);
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_s_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_S, signature_R_s_length, p_signature + signature_R_s_length);
+    stse_frame_element_allocate_push(&cmd_frame, esignature_r_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
+    stse_frame_element_allocate_push(&cmd_frame, esignature_r, signature_R_s_length, p_signature);
+    stse_frame_element_allocate_push(&cmd_frame, esignature_s_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
+    stse_frame_element_allocate_push(&cmd_frame, esignature_s, signature_R_s_length, p_signature + signature_R_s_length);
 
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
@@ -411,7 +411,7 @@ stse_return_code_t stsafea_confirm_symmetric_key(
 
     stse_frame_allocate(cmd_frame);
     stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
-    stse_frame_element_allocate_push(&cmd_frame, eConfirmation_mac, STSE_KEY_CONFIRMATION_MAC_SIZE, p_confirmation_mac);
+    stse_frame_element_allocate_push(&cmd_frame, econfirmation_mac, STSE_KEY_CONFIRMATION_MAC_SIZE, p_confirmation_mac);
 
     ret = stse_platform_aes_cmac_init(
         p_mac_confirmation_key,
@@ -488,7 +488,7 @@ stse_return_code_t stsafea_write_symmetric_key_wrapped(
 
     stse_frame_allocate(cmd_frame);
     stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
-    stse_frame_element_allocate_push(&cmd_frame, eSymmetric_key_envelope, symmetric_key_envelope_length, p_symmetric_key_envelope);
+    stse_frame_element_allocate_push(&cmd_frame, esymmetric_key_envelope, symmetric_key_envelope_length, p_symmetric_key_envelope);
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
@@ -535,8 +535,8 @@ stse_return_code_t stsafea_write_symmetric_key_plaintext(
 
     stse_frame_allocate(cmd_frame);
     stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
-    stse_frame_element_allocate_push(&cmd_frame, eSymmetric_key_info, p_symmetric_key_info->info_length, (PLAT_UI8 *)&p_symmetric_key_info->lock_indicator);
-    stse_frame_element_allocate_push(&cmd_frame, eSymmetric_key_value, key_value_length, p_symmetric_key_value);
+    stse_frame_element_allocate_push(&cmd_frame, esymmetric_key_info, p_symmetric_key_info->info_length, (PLAT_UI8 *)&p_symmetric_key_info->lock_indicator);
+    stse_frame_element_allocate_push(&cmd_frame, esymmetric_key_value, key_value_length, p_symmetric_key_value);
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 

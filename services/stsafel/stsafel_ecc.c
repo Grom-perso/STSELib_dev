@@ -47,7 +47,7 @@ stse_return_code_t stsafel_ecc_generate_signature(
     stse_frame_allocate(cmd_frame);
     stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&cmd_frame, eChallenge, challenge_length, p_challenge);
-    stse_frame_element_allocate_push(&cmd_frame, eInternal_data_subject, 1, &internal_data_subject);
+    stse_frame_element_allocate_push(&cmd_frame, einternal_data_subject, 1, &internal_data_subject);
 
     /*- Create Rsp frame and populate elements*/
     stse_frame_allocate(rsp_frame);

@@ -104,7 +104,7 @@ static void parsetbsCertificate(const PLAT_UI8 *tbs, PLAT_I32 tbsSize, stse_cert
             /* Now we face Optional Extensions, but those are optional */
             if (next_value < tbs + tbsSize) {
                 tag = stse_certificate_identify_ASN1_TLV(next_value, &parsed, &size, &next_value);
-                if (tag == TAg_extensions) {
+                if (tag == tag_extensions) {
                     stse_certificate->extensions = next_value;
                     stse_certificate->extensionsSize = size;
                     stse_certificate_parse_extensions(stse_certificate->extensions, stse_certificate->extensionsSize, stse_certificate);

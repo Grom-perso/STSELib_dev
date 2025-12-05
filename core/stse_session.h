@@ -27,7 +27,7 @@
 /*!
  * \brief 		This Core function Erase the session context from STSAFE handler
  * \param[in] 	*p_stse 	Pointer to target STSAFE handler
- * \return \ref stsafe_ReturnCode_t : STSE_OK on success ; error code otherwise
+ * \return \ref stsafe_returncode_t : STSE_OK on success ; error code otherwise
  * \details 	\include{doc} stsafe_erase_context.dox
  */
 void stse_session_erase_context(stse_session_t *p_session);

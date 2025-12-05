@@ -122,7 +122,7 @@ PLAT_I32 stse_certificate_get_small_integer(const PLAT_UI8 *value, PLAT_I32 size
 
 void stse_certificate_parse_signature_algorithm(const PLAT_UI8 *SA, PLAT_I32 *singatureAlgorithm, const PLAT_UI8 **next_thing) {
 #define N_OF_IDENTIFIABLE_SIGNATURE_ALGORITHMS 6
-    const struct SignatureAlgorithmOId_st signatureAlgorithms_oids[N_OF_IDENTIFIABLE_SIGNATURE_ALGORITHMS] = {
+    const struct signaturealgorithmoid_st signaturealgorithms_oids[N_OF_IDENTIFIABLE_SIGNATURE_ALGORITHMS] = {
         {.len = 8, .type = SIG_ECDSA_SHA256, .oid = {0x2A, 0x86, 0x48, 0xCE, 0x3D, 0x04, 0x03, 0x02}},
         {.len = 8, .type = SIG_ECDSA_SHA384, .oid = {0x2A, 0x86, 0x48, 0xCE, 0x3D, 0x04, 0x03, 0x03}},
         {.len = 8, .type = SIG_ECDSA_SHA512, .oid = {0x2A, 0x86, 0x48, 0xCE, 0x3D, 0x04, 0x03, 0x04}},
@@ -139,9 +139,9 @@ void stse_certificate_parse_signature_algorithm(const PLAT_UI8 *SA, PLAT_I32 *si
         tag = stse_certificate_identify_ASN1_TLV(next, &parsed, &size, &next);
         if (tag == TAG_OBJECT_IDENTIFIER) {
             for (i = 0; i < N_OF_IDENTIFIABLE_SIGNATURE_ALGORITHMS; i++) {
-                if (size == signatureAlgorithms_oids[i].len) {
-                    if (memcmp(signatureAlgorithms_oids[i].oid, next, (PLAT_UI32)size) == 0) {
-                        *singatureAlgorithm = signatureAlgorithms_oids[i].type;
+                if (size == signaturealgorithms_oids[i].len) {
+                    if (memcmp(signaturealgorithms_oids[i].oid, next, (PLAT_UI32)size) == 0) {
+                        *singatureAlgorithm = signaturealgorithms_oids[i].type;
                         break;
                     }
                 }
@@ -167,16 +167,16 @@ void stse_certificate_parse_ECC_public_key(const PLAT_UI8 *EccPK, stse_certifica
     PLAT_I32 i, total_size = 0, size = 0, parsed, tag;
     const PLAT_UI8 *next;
 #define N_OF_IDENTIFIABLE_ECS 10
-    const struct EllipticCurveOId_st ellipticCurves_oids[N_OF_IDENTIFIABLE_ECS] = {
+    const struct ellipticcurveoid_st ellipticcurves_oids[N_OF_IDENTIFIABLE_ECS] = {
         {.len = 8, .type = EC_P256, .oid = {0x2A, 0x86, 0x48, 0xCE, 0x3D, 0x03, 0x01, 0x07, 0}},
         {.len = 5, .type = EC_P384, .oid = {0x2B, 0x81, 0x04, 0x00, 34, 0, 0, 0, 0}},
         {.len = 5, .type = EC_P521, .oid = {0x2B, 0x81, 0x04, 0x00, 35, 0, 0, 0, 0}},
-        {.len = 9, .type = Ec_bp256r1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 0x07}},
-        {.len = 9, .type = Ec_bp256t1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 0x08}},
-        {.len = 9, .type = Ec_bp384r1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 11}},
-        {.len = 9, .type = Ec_bp384t1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 12}},
-        {.len = 9, .type = Ec_bp512r1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 13}},
-        {.len = 9, .type = Ec_bp512t1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 14}},
+        {.len = 9, .type = ec_bp256r1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 0x07}},
+        {.len = 9, .type = ec_bp256t1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 0x08}},
+        {.len = 9, .type = ec_bp384r1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 11}},
+        {.len = 9, .type = ec_bp384t1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 12}},
+        {.len = 9, .type = ec_bp512r1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 13}},
+        {.len = 9, .type = ec_bp512t1, .oid = {0x2B, 0x24, 0x03, 0x03, 0x02, 0x08, 0x01, 0x01, 14}},
         {.len = 3, .type = EC_Ed25519, .oid = {0x2B, 0x65, 0x70, 0, 0, 0, 0, 0, 0}},
     };
 
@@ -193,9 +193,9 @@ void stse_certificate_parse_ECC_public_key(const PLAT_UI8 *EccPK, stse_certifica
                 }
                 if (tag == TAG_OBJECT_IDENTIFIER) {
                     for (i = 0; i < N_OF_IDENTIFIABLE_ECS; i++) {
-                        if (size == ellipticCurves_oids[i].len) {
-                            if (memcmp(ellipticCurves_oids[i].oid, next, (PLAT_UI32)size) == 0) {
-                                stse_certificate->EllipticCurve = ellipticCurves_oids[i].type;
+                        if (size == ellipticcurves_oids[i].len) {
+                            if (memcmp(ellipticcurves_oids[i].oid, next, (PLAT_UI32)size) == 0) {
+                                stse_certificate->EllipticCurve = ellipticcurves_oids[i].type;
                                 break;
                             }
                         }
@@ -240,7 +240,7 @@ void stse_certificate_parse_ECC_public_key(const PLAT_UI8 *EccPK, stse_certifica
 
 PLAT_I32 stse_certificate_identify_attribute(const PLAT_UI8 *oid, PLAT_I32 size) {
 #define N_OF_IDENTIFIABLE_ATTRIBUTES 9
-    const struct AttributeOId_st attributes_oids[N_OF_IDENTIFIABLE_ATTRIBUTES] = {
+    const struct attributeoid_st attributes_oids[N_OF_IDENTIFIABLE_ATTRIBUTES] = {
         {.len = 3, .type = ATTR_CN, .oid = {0x55, 0x04, ATTR_CN}},
         {.len = 3, .type = ATTR_C, .oid = {0x55, 0x04, ATTR_C}},
         {.len = 3, .type = ATTR_SN, .oid = {0x55, 0x04, ATTR_SN}},
@@ -271,7 +271,7 @@ void stse_certificate_parse_relative_distinguished_name(const PLAT_UI8 *p, const
 
 PLAT_I32 stse_certificate_case_identify_extension(const PLAT_UI8 *oid, PLAT_I32 size) {
 #define N_OF_IDENTIFIABLE_EXTENSIONS 3
-    const struct ExtensionOId_st extensions_oids[N_OF_IDENTIFIABLE_EXTENSIONS] = {
+    const struct extensionoid_st extensions_oids[N_OF_IDENTIFIABLE_EXTENSIONS] = {
         {.len = 3, .type = EXTENSION_BC, .oid = {0x55, 0x1D, 0x13, 0, 0}},
         {.len = 3, .type = EXTENSION_KU, .oid = {0x55, 0x1D, 0x0F, 0, 0}},
         {.len = 3, .type = EXTENSION_EKU, .oid = {0x55, 0x1D, 0x25, 0, 0}},

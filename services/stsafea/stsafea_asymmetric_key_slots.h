@@ -56,7 +56,7 @@ typedef struct stsafea_private_key_operation_mode_t {
     PLAT_UI8 sig_gen_over_external_data : STSE_1BIT_LEN;          /*!< sig_gen_over_external_data*/
     PLAT_UI8 sig_gen_over_internal_external_data : STSE_1BIT_LEN; /*!< sig_gen_over_internal_external_data*/
     PLAT_UI8 generate_key_AC : STSE_2BIT_LEN;                     /*!< generate_key_AC*/
-    PLAT_UI8 EdDSa_variant : STSE_2BIT_LEN;                       /*!< EdDSa_variant*/
+    PLAT_UI8 eddsa_variant : STSE_2BIT_LEN;                       /*!< eddsa_variant*/
 } stsafea_private_key_operation_mode_t;
 
 /*!
@@ -123,7 +123,7 @@ stse_return_code_t stsafea_generate_ecc_key_pair(
  * \param[out] 	p_public_key 				generated ECDHE public key
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_return_code_t stsafea_generate_ECDHe_key_pair(
+stse_return_code_t stsafea_generate_ecdhe_key_pair(
     stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key);

@@ -63,7 +63,7 @@ stse_return_code_t stsafea_get_total_partition_count(stse_handler_t *p_stse,
     /*- Create Rsp frame and populate elements*/
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eTotal_partition_count, 1, p_total_partition_count);
+    stse_frame_element_allocate_push(&rsp_frame, etotal_partition_count, 1, p_total_partition_count);
 
     /*- Perform Transfer*/
     return stsafea_frame_raw_transfer(p_stse,

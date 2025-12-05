@@ -77,7 +77,7 @@ void stse_certificate_print_tag(PLAT_I32 tag) {
     case TAG_subjectUniqueID:
         printf("subjectUniqueID");
         break;
-    case TAg_extensions:
+    case tag_extensions:
         printf("extensions");
         break;
     case TAG_issuerUniqueID:
@@ -158,22 +158,22 @@ void stse_certificate_print_elliptic_curve(PLAT_I32 type) {
     case EC_P521:
         printf("P-521");
         break;
-    case Ec_bp256r1:
+    case ec_bp256r1:
         printf("brainpoolP256r1");
         break;
-    case Ec_bp256t1:
+    case ec_bp256t1:
         printf("brainpoolP256t1");
         break;
-    case Ec_bp384r1:
+    case ec_bp384r1:
         printf("brainpoolP384r1");
         break;
-    case Ec_bp384t1:
+    case ec_bp384t1:
         printf("brainpoolP384t1");
         break;
-    case Ec_bp512r1:
+    case ec_bp512r1:
         printf("brainpoolP512r1");
         break;
-    case Ec_bp512t1:
+    case ec_bp512t1:
         printf("brainpoolP512t1");
         break;
     case EC_Ed25519:

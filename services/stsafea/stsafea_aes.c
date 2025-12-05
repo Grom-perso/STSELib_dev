@@ -176,7 +176,7 @@ stse_return_code_t stsafea_aes_ccm_encrypt(
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&rsp_frame, eencrypted_message, message_length, p_encrypted_message);
     stse_frame_element_allocate_push(&rsp_frame, eauthentication_tag, authentication_tag_length, p_encrypted_authentication_tag);
-    stse_frame_element_allocate_push(&rsp_frame, eCounter_presence, 1, &received_counter_presence);
+    stse_frame_element_allocate_push(&rsp_frame, ecounter_presence, 1, &received_counter_presence);
     stse_frame_element_allocate(eCounter, STSAFEA_COUNTER_VALUE_SIZE, (PLAT_UI8 *)p_counter);
     if (counter_presence != 0) {
         stse_frame_push_element(&rsp_frame, &eCounter);
@@ -234,7 +234,7 @@ stse_return_code_t stsafea_aes_ccm_encrypt_start(
     stse_frame_element_allocate_push(&cmd_frame, enonce_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&nonce_length);
     stse_frame_element_allocate_push(&cmd_frame, eNonce, nonce_length, p_nonce);
     stse_frame_element_allocate_push(&cmd_frame, etotal_associated_data_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&total_associated_data_length);
-    stse_frame_element_allocate_push(&cmd_frame, eTotal_message_length, 4, (PLAT_UI8 *)&total_message_length);
+    stse_frame_element_allocate_push(&cmd_frame, etotal_message_length, 4, (PLAT_UI8 *)&total_message_length);
     stse_frame_element_allocate_push(&cmd_frame, eassociated_data_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&associated_data_chunk_length);
     stse_frame_element_allocate_push(&cmd_frame, eassociated_data, associated_data_chunk_length, p_associated_data_chunk);
     stse_frame_element_allocate_push(&cmd_frame, emessage_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&message_chunk_length);
@@ -244,11 +244,11 @@ stse_return_code_t stsafea_aes_ccm_encrypt_start(
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&rsp_frame, eencrypted_message, message_chunk_length, p_encrypted_message_chunk);
-    stse_frame_element_allocate_push(&rsp_frame, eCounter_presence, 1, p_counter_presence);
+    stse_frame_element_allocate_push(&rsp_frame, ecounter_presence, 1, p_counter_presence);
     stse_frame_element_allocate_push(&rsp_frame, eCounter, STSAFEA_COUNTER_VALUE_SIZE, (PLAT_UI8 *)p_counter);
 
     if (p_counter_presence == NULL) {
-        eCounter_presence.p_data = &alt_counter_presence;
+        ecounter_presence.p_data = &alt_counter_presence;
     }
 
     if (p_counter == NULL) {
@@ -258,7 +258,7 @@ stse_return_code_t stsafea_aes_ccm_encrypt_start(
     /* - Swap byte order */
     stse_frame_element_swap_byte_order(&enonce_length);
     stse_frame_element_swap_byte_order(&etotal_associated_data_length);
-    stse_frame_element_swap_byte_order(&eTotal_message_length);
+    stse_frame_element_swap_byte_order(&etotal_message_length);
     stse_frame_element_swap_byte_order(&eassociated_data_length);
     stse_frame_element_swap_byte_order(&emessage_length);
 
@@ -392,7 +392,7 @@ stse_return_code_t stsafea_aes_ccm_decrypt_start(
     stse_frame_element_allocate_push(&cmd_frame, enonce_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&nonce_length);
     stse_frame_element_allocate_push(&cmd_frame, eIV, nonce_length, p_nonce);
     stse_frame_element_allocate_push(&cmd_frame, etotal_associated_data_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&total_associated_data_length);
-    stse_frame_element_allocate_push(&cmd_frame, eTotal_ciphertext_length, 4, (PLAT_UI8 *)&total_ciphertext_length);
+    stse_frame_element_allocate_push(&cmd_frame, etotal_ciphertext_length, 4, (PLAT_UI8 *)&total_ciphertext_length);
     stse_frame_element_allocate_push(&cmd_frame, eassociated_data_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&associated_data_chunk_length);
     stse_frame_element_allocate_push(&cmd_frame, eassociated_data, associated_data_chunk_length, p_associated_data_chunk);
     stse_frame_element_allocate_push(&cmd_frame, emessage_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&message_chunk_length);
@@ -406,7 +406,7 @@ stse_return_code_t stsafea_aes_ccm_decrypt_start(
     /* - Swap byte order */
     stse_frame_element_swap_byte_order(&enonce_length);
     stse_frame_element_swap_byte_order(&etotal_associated_data_length);
-    stse_frame_element_swap_byte_order(&eTotal_ciphertext_length);
+    stse_frame_element_swap_byte_order(&etotal_ciphertext_length);
     stse_frame_element_swap_byte_order(&eassociated_data_length);
     stse_frame_element_swap_byte_order(&emessage_length);
 

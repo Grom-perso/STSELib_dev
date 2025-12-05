@@ -143,7 +143,7 @@ stse_return_code_t stsafea_get_command_count(stse_handler_t *p_stse, PLAT_UI8 *p
  * \param[out] 	p_record_table			Pointer to record table array
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_return_code_t stsafea_get_command_Ac_table(stse_handler_t *p_stse,
+stse_return_code_t stsafea_get_command_ac_table(stse_handler_t *p_stse,
                                                PLAT_UI8 total_command_count,
                                                stse_cmd_authorization_CR_t *p_change_rights,
                                                stse_cmd_authorization_record_t *p_record_table);

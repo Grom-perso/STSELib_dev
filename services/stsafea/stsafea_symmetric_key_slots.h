@@ -154,10 +154,10 @@ typedef struct stsafea_symmetric_key_slot_information_t {
             PLAT_UI8 counter_value[4];
         } ccm;
         struct {
-            PLAT_UI8 minimum_MAc_length;
+            PLAT_UI8 minimum_mac_length;
         } cmac;
         struct {
-            PLAT_UI8 minimum_MAc_length;
+            PLAT_UI8 minimum_mac_length;
         } hmac;
         struct {
             PLAT_UI8 auth_tag_length;
@@ -194,7 +194,7 @@ typedef struct stsafe_generic_key_information_t {
             PLAT_UI8 counter_presence : 1;        /*!< Counter presence indicator */
         } CCM;
         struct {
-            PLAT_UI8 min_MAc_length; /*!< Byte length of the MAC to verify (optional) */
+            PLAT_UI8 min_mac_length; /*!< Byte length of the MAC to verify (optional) */
         } CMAC;
         struct {
             PLAT_UI8 auth_tag_length; /*!< Length of the authentication tag (4, 8, 12, 13, 14, 15 or 16 bytes) */
@@ -205,7 +205,7 @@ typedef struct stsafe_generic_key_information_t {
             PLAT_UI8 generic_secret_key_length;     /*!< Byte length of the key (only present if key type == STSAFEA_SYMMETRIC_KEY_TYPE_GENERIC_SECRET */
         } HKDF;
         struct {
-            PLAT_UI8 min_MAc_length;            /*!< Byte length of the MAC to verify (optional) */
+            PLAT_UI8 min_mac_length;            /*!< Byte length of the MAC to verify (optional) */
             PLAT_UI8 generic_secret_key_length; /*!< Byte length of the key (only present if key type == STSAFEA_SYMMETRIC_KEY_TYPE_GENERIC_SECRET */
         } HMAC;
     };

@@ -37,7 +37,7 @@ extern "C" {
 typedef struct stse_handler_t stse_handler_t;
 
 /*
- * \brief STSE Session_type type
+ * \brief STSE session_type type
  */
 typedef enum {
     STSE_HOST_SESSION,        /*!< Host session */
@@ -67,8 +67,8 @@ typedef struct stse_perso_info_t {
     PLAT_UI32 rsp_encryption_status;
     PLAT_UI32 ext_cmd_encryption_status;
     PLAT_UI32 ext_rsp_encryption_status;
-    PLAT_UI64 cmd_Ac_status;
-    PLAT_UI64 ext_cmd_Ac_status;
+    PLAT_UI64 cmd_ac_status;
+    PLAT_UI64 ext_cmd_ac_status;
 } PLAT_PACKED_STRUCT stse_perso_info_t;
 
 /*
@@ -164,7 +164,7 @@ struct stse_session_t {
             PLAT_UI8 *p_host_mac_key;
             PLAT_UI8 *p_host_cypher_key;
             stse_aes_key_type_t key_type;
-            PLAT_UI32 MAc_counter;
+            PLAT_UI32 mac_counter;
         } host;
 
         struct {

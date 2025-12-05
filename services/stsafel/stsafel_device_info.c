@@ -69,12 +69,12 @@ stse_return_code_t stsafel_get_data(
     stse_frame_allocate(cmd_frame);
     stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&cmd_frame, eTag, 1, (PLAT_UI8 *)&tag);
-    stse_frame_element_allocate_push(&cmd_frame, eAdditional_data, additional_data_length, p_additional_data);
+    stse_frame_element_allocate_push(&cmd_frame, eadditional_data, additional_data_length, p_additional_data);
 
     /*- Create Rsp frame and populate elements*/
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEL_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eDevice_info, device_info_expected_length, p_device_info);
+    stse_frame_element_allocate_push(&rsp_frame, edevice_info, device_info_expected_length, p_device_info);
 
     /*- Perform Transfer*/
     return stsafel_frame_transfer(p_stse,
@@ -102,7 +102,7 @@ stse_return_code_t stsafel_put_data(
     stse_frame_allocate(cmd_frame);
     stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&cmd_frame, eTag, 1, (PLAT_UI8 *)&tag);
-    stse_frame_element_allocate_push(&cmd_frame, eDevice_info, device_info_length, p_device_info);
+    stse_frame_element_allocate_push(&cmd_frame, edevice_info, device_info_length, p_device_info);
 
     /*- Create Rsp frame and populate elements*/
     stse_frame_allocate(rsp_frame);

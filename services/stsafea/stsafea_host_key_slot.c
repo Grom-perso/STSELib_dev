@@ -112,7 +112,7 @@ stse_return_code_t stsafea_query_host_key(
 
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eHost_key_slot, sizeof(stsafea_host_key_slot_t), (PLAT_UI8 *)p_host_key_slot);
+    stse_frame_element_allocate_push(&rsp_frame, ehost_key_slot, sizeof(stsafea_host_key_slot_t), (PLAT_UI8 *)p_host_key_slot);
 
     /*- Perform Transfer*/
     return stsafea_frame_raw_transfer(p_stse,
@@ -144,7 +144,7 @@ stse_return_code_t stsafea_query_host_key_v2(
 
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eHost_key_slot, sizeof(stsafea_host_key_slot_v2_t), (PLAT_UI8 *)p_host_key_slot_v2);
+    stse_frame_element_allocate_push(&rsp_frame, ehost_key_slot, sizeof(stsafea_host_key_slot_v2_t), (PLAT_UI8 *)p_host_key_slot_v2);
 
     /*- Perform Transfer*/
     /*- Perform Transfer*/
@@ -209,7 +209,7 @@ stse_return_code_t stsafea_host_key_provisioning(
     stse_frame_allocate(cmd_frame);
     stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&cmd_frame, ePadding, 3, p_padding);
-    stse_frame_element_allocate_push(&cmd_frame, eKey_type, 1, (PLAT_UI8 *)&key_type);
+    stse_frame_element_allocate_push(&cmd_frame, ekey_type, 1, (PLAT_UI8 *)&key_type);
     stse_frame_element_allocate_push(&cmd_frame, ehost_keys, host_keys_length, (PLAT_UI8 *)host_keys);
 
     stse_frame_allocate(rsp_frame);
@@ -308,7 +308,7 @@ stse_return_code_t stsafea_establish_host_key(
     PLAT_UI8 algorithm_id = 0x03;
     stse_frame_element_allocate_push(&cmd_frame, ealgorithm_id, 1, &algorithm_id);
 
-    stse_frame_element_allocate_push(&cmd_frame, eHost_keys_type, 1, (PLAT_UI8 *)&host_keys_type);
+    stse_frame_element_allocate_push(&cmd_frame, ehost_keys_type, 1, (PLAT_UI8 *)&host_keys_type);
 
     /* response frame */
     PLAT_UI8 rsp_header;
@@ -386,14 +386,14 @@ stse_return_code_t stsafea_establish_host_key_authenticated(
     stse_frame_element_allocate_push(&cmd_frame, ealgorithm_id, 1, &algorithm_id);
 
     /* Host key type */
-    stse_frame_element_allocate_push(&cmd_frame, eHost_keys_type, 1, (PLAT_UI8 *)&host_keys_type);
+    stse_frame_element_allocate_push(&cmd_frame, ehost_keys_type, 1, (PLAT_UI8 *)&host_keys_type);
 
     /* Filler */
     PLAT_UI8 filler = 0x00;
     stse_frame_element_allocate_push(&cmd_frame, eFiller, 1, &filler);
 
     /* Public key slot number */
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_public_key_slot, 1, &signature_public_key_slot);
+    stse_frame_element_allocate_push(&cmd_frame, esignature_public_key_slot, 1, &signature_public_key_slot);
 
     /* Hash algo ID */
     stse_frame_element_allocate(ehash_algo_id, STSAFEA_GENERIC_LENGTH_SIZE, NULL);
@@ -416,10 +416,10 @@ stse_return_code_t stsafea_establish_host_key_authenticated(
         UI16_B0(stse_ecc_info_table[signature_public_key_type].signature_size >> 1),
     };
 
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_r_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_R, (stse_ecc_info_table[signature_public_key_type].signature_size >> 1), p_signature);
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_s_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_S, (stse_ecc_info_table[signature_public_key_type].signature_size >> 1), p_signature + (stse_ecc_info_table[signature_public_key_type].signature_size >> 1));
+    stse_frame_element_allocate_push(&cmd_frame, esignature_r_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
+    stse_frame_element_allocate_push(&cmd_frame, esignature_r, (stse_ecc_info_table[signature_public_key_type].signature_size >> 1), p_signature);
+    stse_frame_element_allocate_push(&cmd_frame, esignature_s_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
+    stse_frame_element_allocate_push(&cmd_frame, esignature_s, (stse_ecc_info_table[signature_public_key_type].signature_size >> 1), p_signature + (stse_ecc_info_table[signature_public_key_type].signature_size >> 1));
 
     /* response frame */
     PLAT_UI8 rsp_header;

@@ -105,7 +105,7 @@ stse_return_code_t stse_get_ecc_key_slot_info(
     return ret;
 }
 
-stse_return_code_t stse_generate_ECDHe_key_pair(
+stse_return_code_t stse_generate_ecdhe_key_pair(
     stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key) {
@@ -119,7 +119,7 @@ stse_return_code_t stse_generate_ECDHe_key_pair(
         return (STSE_API_INVALID_PARAMETER);
     }
 
-    ret = stsafea_generate_ECDHe_key_pair(p_stse, key_type, p_public_key);
+    ret = stsafea_generate_ecdhe_key_pair(p_stse, key_type, p_public_key);
 
     return ret;
 }

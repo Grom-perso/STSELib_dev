@@ -44,7 +44,7 @@ stse_return_code_t stsafea_echo(stse_handler_t *p_stse,
     /*- Create Rsp frame and populate elements*/
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eEchoed_message, message_length, p_echoed_message);
+    stse_frame_element_allocate_push(&rsp_frame, eechoed_message, message_length, p_echoed_message);
 
     /*- Perform Transfer*/
     return stsafea_frame_transfer(p_stse,

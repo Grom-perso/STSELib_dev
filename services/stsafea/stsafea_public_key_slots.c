@@ -43,7 +43,7 @@ stse_return_code_t stsafea_query_generic_public_key_slots_count(
 
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eSymmetric_key_slot_count, 1, p_generic_public_key_slot_count);
+    stse_frame_element_allocate_push(&rsp_frame, esymmetric_key_slot_count, 1, p_generic_public_key_slot_count);
 
     /*- Perform Transfer*/
     return stsafea_frame_raw_transfer(p_stse,
@@ -81,8 +81,8 @@ stse_return_code_t stsafea_query_generic_public_key_slot_info(
 
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, ePresence_flag, 1, p_presence_flag);
-    stse_frame_element_allocate_push(&rsp_frame, eConfiguration_flags, sizeof(stsafea_generic_public_key_configuration_flags_t), (PLAT_UI8 *)p_configuration_flags);
+    stse_frame_element_allocate_push(&rsp_frame, epresence_flag, 1, p_presence_flag);
+    stse_frame_element_allocate_push(&rsp_frame, econfiguration_flags, sizeof(stsafea_generic_public_key_configuration_flags_t), (PLAT_UI8 *)p_configuration_flags);
     stse_frame_element_allocate_push(&rsp_frame, ecurve_id, sizeof(stsafea_ecc_curve_id_t), (PLAT_UI8 *)&curve_id);
 
     /*- Perform Transfer*/
@@ -168,8 +168,8 @@ stse_return_code_t stsafea_query_generic_public_key_slot_value(
 
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, ePresence_flag, 1, &presence_flag);
-    stse_frame_element_allocate_push(&rsp_frame, eConfiguration_flags, sizeof(stsafea_generic_public_key_configuration_flags_t), (PLAT_UI8 *)&configuration_flags);
+    stse_frame_element_allocate_push(&rsp_frame, epresence_flag, 1, &presence_flag);
+    stse_frame_element_allocate_push(&rsp_frame, econfiguration_flags, sizeof(stsafea_generic_public_key_configuration_flags_t), (PLAT_UI8 *)&configuration_flags);
     stse_frame_element_allocate_push(&rsp_frame, ecurve_id, stse_ecc_info_table[key_type].curve_id_total_length, p_curve_id);
 
 #ifdef STSE_CONF_ECC_EDWARD_25519
@@ -293,9 +293,9 @@ stse_return_code_t stsafea_set_generic_public_slot_configuration_flag(
 
     stse_frame_allocate(cmd_frame);
     stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&cmd_frame, eAttribute_tag, 1, &attribute_tag);
+    stse_frame_element_allocate_push(&cmd_frame, eattribute_tag, 1, &attribute_tag);
     stse_frame_element_allocate_push(&cmd_frame, eslot_number, STSAFEA_SLOT_NUMBER_ID_SIZE, &slot_number);
-    stse_frame_element_allocate_push(&cmd_frame, eConfiguration_flags, sizeof(stsafea_generic_public_key_configuration_flags_t), (PLAT_UI8 *)&configuration_flags);
+    stse_frame_element_allocate_push(&cmd_frame, econfiguration_flags, sizeof(stsafea_generic_public_key_configuration_flags_t), (PLAT_UI8 *)&configuration_flags);
 
     PLAT_UI8 rsp_header;
     stse_frame_allocate(rsp_frame);
