@@ -574,9 +574,9 @@ extern const stse_ecc_info_t stse_ecc_info_table[];
  * \param[in]	curve_id_length		Length of the curve identifier
  * \param[in]	p_curve_id_value		Pointer to the curve identifier value
  * \param[out]	p_key_type			Pointer to store the resolved ECC key type
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_get_ecc_key_type_from_curve_id(
+stse_return_code_t stse_get_ecc_key_type_from_curve_id(
     PLAT_UI8 curve_id_length,
     const PLAT_UI8 *p_curve_id_value,
     stse_ecc_key_type_t *p_key_type);

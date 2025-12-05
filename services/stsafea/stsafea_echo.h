@@ -39,10 +39,10 @@
  * \param[in]	message				Message buffer to send the echo command
  * \param[in]	echoed_message		Message buffer to receive the echo response
  * \param[in]	message_size		Size of the echo message
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_echo(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_echo(
+    stse_handler_t *p_stse,
     PLAT_UI8 *message,
     PLAT_UI8 *echoed_message,
     PLAT_UI16 message_size);

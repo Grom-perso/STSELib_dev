@@ -94,12 +94,12 @@ void stse_certificate_parse_integer(const PLAT_UI8 *integer, const PLAT_UI8 **ou
 /**
 * \brief  Parse the validity of a certificate
 * \param[in]  *p pointer to the Name Attribute SET to be parsed
-* \param[out] *notBefore_st pointer to stse_cert_validity_t structure that will be filled with the "not before" date
-* \param[out] *notAfter_st  pointer to stse_cert_validity_t structure that will be filled with the "not after" date
+* \param[out] *notbefore_st pointer to stse_cert_validity_t structure that will be filled with the "not before" date
+* \param[out] *notafter_st  pointer to stse_cert_validity_t structure that will be filled with the "not after" date
 * \param[out] **next_thing output pointer to next TLV
 * \note In this function next_thing can be NULL
 */
-void stse_certificate_parse_validity(const PLAT_UI8 *p, stse_cert_validity_t *notBefore_st, stse_cert_validity_t *notAfter_st, const PLAT_UI8 **next_thing);
+void stse_certificate_parse_validity(const PLAT_UI8 *p, stse_cert_validity_t *notbefore_st, stse_cert_validity_t *notafter_st, const PLAT_UI8 **next_thing);
 
 /**
 * \brief  Parse an RelativeDistinguishedName

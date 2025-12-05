@@ -21,7 +21,7 @@
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
-stse_ReturnCode_t stsafea_hibernate(stse_Handler_t *p_stse,
+stse_return_code_t stsafea_hibernate(stse_handler_t *p_stse,
                                     stse_hibernate_wake_up_mode_t wake_up_mode)
 
 {
@@ -34,17 +34,17 @@ stse_ReturnCode_t stsafea_hibernate(stse_Handler_t *p_stse,
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, 1, &cmd_header);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, 1, &rsp_header);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, 1, &rsp_header);
 
     /*- Perform Transfer*/
     return stsafea_frame_raw_transfer(p_stse,
-                                      &CmdFrame,
-                                      &Rsp_frame,
+                                      &cmd_frame,
+                                      &rsp_frame,
                                       stsafea_cmd_timings[p_stse->device_type][cmd_header]);
 }
 

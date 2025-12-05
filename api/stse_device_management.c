@@ -23,8 +23,8 @@
 #define IDLE_BUS_DELAY_MAX 0x1F
 
 /* Exported functions --------------------------------------------------------*/
-stse_ReturnCode_t stse_init(stse_Handler_t *p_stse) {
-    stse_ReturnCode_t ret = STSE_API_INVALID_PARAMETER;
+stse_return_code_t stse_init(stse_handler_t *p_stse) {
+    stse_return_code_t ret = STSE_API_INVALID_PARAMETER;
 
     /* - Check STSAFE handler initialization */
     if (p_stse == NULL) {
@@ -91,7 +91,7 @@ stse_ReturnCode_t stse_init(stse_Handler_t *p_stse) {
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
     if (p_stse->device_type != STSAFE_L010) {
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
-        stse_platform_Delay_ms(stsafea_boot_time[p_stse->device_type]);
+        stse_platform_delay_ms(stsafea_boot_time[p_stse->device_type]);
 
 #ifndef STSE_CONF_USE_STATIC_PERSONALIZATION_INFORMATIONS
         ret = stsafea_perso_info_update(p_stse);
@@ -104,9 +104,9 @@ stse_ReturnCode_t stse_init(stse_Handler_t *p_stse) {
     return ret;
 }
 
-stse_ReturnCode_t stse_device_enter_hibernate(stse_Handler_t *p_stse,
+stse_return_code_t stse_device_enter_hibernate(stse_handler_t *p_stse,
                                               stse_hibernate_wake_up_mode_t wake_up_mode) {
-    stse_ReturnCode_t ret = STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+    stse_return_code_t ret = STSE_API_INCOMPATIBLE_DEVICE_TYPE;
 
     /* - Check STSAFE handler initialization */
     if (p_stse == NULL) {
@@ -134,7 +134,7 @@ stse_ReturnCode_t stse_device_enter_hibernate(stse_Handler_t *p_stse,
     return ret;
 }
 
-stse_ReturnCode_t stse_device_power_on(stse_Handler_t *p_stse) {
+stse_return_code_t stse_device_power_on(stse_handler_t *p_stse) {
     /* - Check STSE handler initialization */
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
@@ -149,11 +149,11 @@ stse_ReturnCode_t stse_device_power_on(stse_Handler_t *p_stse) {
     p_stse->io.power_line_on(p_stse->io.bus_id, p_stse->io.devaddr);
 
     /* - Wait for device to boot (tboot) */
-    stse_platform_Delay_ms(stsafea_boot_time[p_stse->device_type]);
+    stse_platform_delay_ms(stsafea_boot_time[p_stse->device_type]);
     return (STSE_OK);
 }
 
-stse_ReturnCode_t stse_device_power_off(stse_Handler_t *p_stse) {
+stse_return_code_t stse_device_power_off(stse_handler_t *p_stse) {
     /* - Check STSE handler initialization */
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
@@ -169,7 +169,7 @@ stse_ReturnCode_t stse_device_power_off(stse_Handler_t *p_stse) {
     return (STSE_OK);
 }
 
-stse_ReturnCode_t stse_device_echo(stse_Handler_t *p_stse, PLAT_UI8 *p_in, PLAT_UI8 *p_out, PLAT_UI16 size) {
+stse_return_code_t stse_device_echo(stse_handler_t *p_stse, PLAT_UI8 *p_in, PLAT_UI8 *p_out, PLAT_UI16 size) {
     /* - Check STSAFE handler initialization */
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
@@ -192,8 +192,8 @@ stse_ReturnCode_t stse_device_echo(stse_Handler_t *p_stse, PLAT_UI8 *p_in, PLAT_
     }
 }
 
-stse_ReturnCode_t stse_device_lock(stse_Handler_t *p_stse, PLAT_UI8 *p_password, PLAT_UI8 password_length) {
-    stse_ReturnCode_t ret;
+stse_return_code_t stse_device_lock(stse_handler_t *p_stse, PLAT_UI8 *p_password, PLAT_UI8 password_length) {
+    stse_return_code_t ret;
     PLAT_UI8 password_verification_status = 0;
 
     /* - Check STSAFE handler initialization */
@@ -232,8 +232,8 @@ stse_ReturnCode_t stse_device_lock(stse_Handler_t *p_stse, PLAT_UI8 *p_password,
     return ret;
 }
 
-stse_ReturnCode_t stse_device_unlock(stse_Handler_t *p_stse, PLAT_UI8 *p_password, PLAT_UI8 password_length) {
-    stse_ReturnCode_t ret;
+stse_return_code_t stse_device_unlock(stse_handler_t *p_stse, PLAT_UI8 *p_password, PLAT_UI8 password_length) {
+    stse_return_code_t ret;
     PLAT_UI8 password_verification_status = 0;
     PLAT_UI8 remaining_tries;
 
@@ -273,8 +273,8 @@ stse_ReturnCode_t stse_device_unlock(stse_Handler_t *p_stse, PLAT_UI8 *p_passwor
     return ret;
 }
 
-stse_ReturnCode_t stse_device_reset(stse_Handler_t *p_stse) {
-    stse_ReturnCode_t ret = STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+stse_return_code_t stse_device_reset(stse_handler_t *p_stse) {
+    stse_return_code_t ret = STSE_API_INCOMPATIBLE_DEVICE_TYPE;
 
     /* - Check STSAFE handler initialization */
     if (p_stse == NULL) {
@@ -302,7 +302,7 @@ stse_ReturnCode_t stse_device_reset(stse_Handler_t *p_stse) {
     return ret;
 }
 
-stse_ReturnCode_t stse_device_get_command_count(stse_Handler_t *p_stse, PLAT_UI8 *p_record_count) {
+stse_return_code_t stse_device_get_command_count(stse_handler_t *p_stse, PLAT_UI8 *p_record_count) {
     /* - Check STSAFE handler initialization */
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
@@ -317,7 +317,7 @@ stse_ReturnCode_t stse_device_get_command_count(stse_Handler_t *p_stse, PLAT_UI8
     return stsafea_get_command_count(p_stse, p_record_count);
 }
 
-stse_ReturnCode_t stse_device_get_command_AC_records(stse_Handler_t *p_stse,
+stse_return_code_t stse_device_get_command_AC_records(stse_handler_t *p_stse,
                                                      PLAT_UI8 record_count,
                                                      stse_cmd_authorization_CR_t *p_change_rights,
                                                      stse_cmd_authorization_record_t *p_record_table) {
@@ -332,10 +332,10 @@ stse_ReturnCode_t stse_device_get_command_AC_records(stse_Handler_t *p_stse,
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    return stsafea_get_command_AC_table(p_stse, record_count, p_change_rights, p_record_table);
+    return stsafea_get_command_Ac_table(p_stse, record_count, p_change_rights, p_record_table);
 }
 
-stse_ReturnCode_t stse_device_get_life_cycle_state(stse_Handler_t *p_stse,
+stse_return_code_t stse_device_get_life_cycle_state(stse_handler_t *p_stse,
                                                    stsafea_life_cycle_state_t *p_life_cycle_state) {
     /* - Check STSAFE handler initialization */
     if (p_stse == NULL) {
@@ -351,8 +351,8 @@ stse_ReturnCode_t stse_device_get_life_cycle_state(stse_Handler_t *p_stse,
     return stsafea_query_life_cycle_state(p_stse, p_life_cycle_state);
 }
 
-stse_ReturnCode_t stse_put_i2c_parameters(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_put_i2c_parameters(
+    stse_handler_t *p_stse,
     PLAT_UI8 i2c_address,
     stse_low_power_mode_t low_power_mode,
     PLAT_UI8 idle_bus_time_to_standby,

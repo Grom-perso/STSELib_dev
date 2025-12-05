@@ -21,7 +21,7 @@
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
-stse_ReturnCode_t stsafea_echo(stse_Handler_t *p_stse,
+stse_return_code_t stsafea_echo(stse_handler_t *p_stse,
                                PLAT_UI8 *p_message,
                                PLAT_UI8 *p_echoed_message,
                                PLAT_UI16 message_length) {
@@ -37,19 +37,19 @@ stse_ReturnCode_t stsafea_echo(stse_Handler_t *p_stse,
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eMessage, message_length, p_message);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, 1, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eMessage, message_length, p_message);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&Rsp_frame, eEchoed_message, message_length, p_echoed_message);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, 1, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eEchoed_message, message_length, p_echoed_message);
 
     /*- Perform Transfer*/
     return stsafea_frame_transfer(p_stse,
-                                  &CmdFrame,
-                                  &Rsp_frame);
+                                  &cmd_frame,
+                                  &rsp_frame);
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

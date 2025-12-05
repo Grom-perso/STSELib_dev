@@ -50,11 +50,11 @@
  * \param[in] 	message_length 			Message length
  * \param[in] 	eddsa_variant 			Flag indicating a pre-hashed EdDSA (1) message or a pure EdDSA (0) plaintext message. Used only in case of Edwards25519 public key
  * \param[out] 	p_signature_validity		Signature validity flag (1 = valid signature, invalid otherwise)
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_ecc_verify_signature.dox
  */
-stse_ReturnCode_t stse_ecc_verify_signature(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_ecc_verify_signature(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key,
     PLAT_UI8 *p_signature,
@@ -72,11 +72,11 @@ stse_ReturnCode_t stse_ecc_verify_signature(
  * \param[in] 	p_message 				Message to sign
  * \param[in] 	message_length 			Message length
  * \param[out] 	p_signature 				Signature buffer
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_ecc_generate_signature.dox
  */
-stse_ReturnCode_t stse_ecc_generate_signature(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_ecc_generate_signature(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_message,
@@ -91,11 +91,11 @@ stse_ReturnCode_t stse_ecc_generate_signature(
  * \param[in] 	key_type 					Private key type
  * \param[in] 	p_public_key 				Remote public key
  * \param[out] 	p_shared_secret				Shared secret returned by the STSE
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_ecc_establish_shared_secret.dox
  */
-stse_ReturnCode_t stse_ecc_establish_shared_secret(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_ecc_establish_shared_secret(
+    stse_handler_t *p_stse,
     PLAT_UI8 private_key_slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key,
@@ -109,10 +109,10 @@ stse_ReturnCode_t stse_ecc_establish_shared_secret(
  * \param[in] 	point_representation_id 	Parity of the Y (0x02=even & 0x03=odd Y coordinate)
  * \param[in] 	p_public_key_X 				X coordinate given by the compressed public key
  * \param[out] 	p_public_key_Y 				Computed Y coordinate output
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_ecc_decompress_public_key(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_ecc_decompress_public_key(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 point_representation_id,
     PLAT_UI8 *p_public_key_X,

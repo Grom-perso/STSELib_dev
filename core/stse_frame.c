@@ -18,7 +18,7 @@
 
 #include "core/stse_frame.h"
 
-stse_ReturnCode_t stse_frame_crc16_compute(stse_frame_t *p_frame, PLAT_UI16 *p_crc) {
+stse_return_code_t stse_frame_crc16_compute(stse_frame_t *p_frame, PLAT_UI16 *p_crc) {
     stse_frame_element_t *p_current_element;
 
     if (p_frame == NULL || p_crc == NULL) {

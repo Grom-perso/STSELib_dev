@@ -21,8 +21,8 @@
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
-stse_ReturnCode_t stsafea_generate_challenge(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_generate_challenge(
+    stse_handler_t *p_stse,
     PLAT_UI8 challenge_size,
     PLAT_UI8 *p_challenge) {
     PLAT_UI8 cmd_header[STSAFEA_EXT_HEADER_SIZE] = {STSAFEA_EXTENDED_COMMAND_PREFIX, STSAFEA_EXTENDED_CMD_GENERATE_CHALLENGE};
@@ -37,27 +37,27 @@ stse_ReturnCode_t stsafea_generate_challenge(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&Rsp_frame, eChallenge, STSE_EDDSA_CHALLENGE_SIZE, p_challenge);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, 1, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eChallenge, STSE_EDDSA_CHALLENGE_SIZE, p_challenge);
 
     /*- Perform Transfer*/
     return stsafea_frame_transfer(p_stse,
-                                  &CmdFrame,
-                                  &Rsp_frame);
+                                  &cmd_frame,
+                                  &rsp_frame);
 }
 
-stse_ReturnCode_t stsafea_verify_entity_signature(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_verify_entity_signature(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_signature,
     PLAT_UI8 *p_signature_validity) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     PLAT_UI8 cmd_header[STSAFEA_EXT_HEADER_SIZE] = {STSAFEA_EXTENDED_COMMAND_PREFIX, STSAFEA_EXTENDED_CMD_VERIFY_ENTITY_SIGNATURE};
 
     /* - Check stsafe handler initialization */
@@ -72,10 +72,10 @@ stse_ReturnCode_t stsafea_verify_entity_signature(
     PLAT_UI8 filler = 0x00;
     stse_frame_element_allocate(eFiller, 1, &filler);
 
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
-    stse_frame_push_element(&CmdFrame, &eFiller);
-    stse_frame_element_allocate_push(&CmdFrame, eSlot_number, STSAFEA_SLOT_NUMBER_ID_SIZE, &slot_number);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
+    stse_frame_push_element(&cmd_frame, &eFiller);
+    stse_frame_element_allocate_push(&cmd_frame, eslot_number, STSAFEA_SLOT_NUMBER_ID_SIZE, &slot_number);
 
     /* Signature elements */
     PLAT_UI8 p_signature_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
@@ -83,20 +83,20 @@ stse_ReturnCode_t stsafea_verify_entity_signature(
         UI16_B0(stse_ecc_info_table[key_type].signature_size >> 1),
     };
 
-    stse_frame_element_allocate_push(&CmdFrame, eSignature_R_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
-    stse_frame_element_allocate_push(&CmdFrame, eSignature_R, (stse_ecc_info_table[key_type].signature_size >> 1), p_signature);
-    stse_frame_element_allocate_push(&CmdFrame, eSignature_S_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
-    stse_frame_element_allocate_push(&CmdFrame, eSignature_S, (stse_ecc_info_table[key_type].signature_size >> 1), p_signature + (stse_ecc_info_table[key_type].signature_size >> 1));
+    stse_frame_element_allocate_push(&cmd_frame, eSignature_r_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
+    stse_frame_element_allocate_push(&cmd_frame, eSignature_R, (stse_ecc_info_table[key_type].signature_size >> 1), p_signature);
+    stse_frame_element_allocate_push(&cmd_frame, eSignature_s_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
+    stse_frame_element_allocate_push(&cmd_frame, eSignature_S, (stse_ecc_info_table[key_type].signature_size >> 1), p_signature + (stse_ecc_info_table[key_type].signature_size >> 1));
 
     PLAT_UI8 rsp_header;
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&Rsp_frame, eSignature_validity, 1, p_signature_validity);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, esignature_validity, 1, p_signature_validity);
 
     /*- Perform Transfer*/
     ret = stsafea_frame_transfer(p_stse,
-                                 &CmdFrame,
-                                 &Rsp_frame);
+                                 &cmd_frame,
+                                 &rsp_frame);
 
     if (ret != STSE_OK) {
         *p_signature_validity = STSAFEA_FALSE;

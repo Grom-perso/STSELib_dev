@@ -39,11 +39,11 @@
  * \param[in] 	message_length 		Length of the message
  * \param[in]	p_plaintext_message	Plaintext message to encrypt
  * \param[out]	p_encrypted_message	Encrypted message
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_aes_ecb_encrypt.dox
  */
-stse_ReturnCode_t stse_aes_ecb_encrypt(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ecb_encrypt(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI16 message_length,
     PLAT_UI8 *p_plaintext_message,
@@ -57,11 +57,11 @@ stse_ReturnCode_t stse_aes_ecb_encrypt(
  * \param[in] 	message_length 		Length of the message
  * \param[in]	p_encrypted_message	Encrypted message to decrypt
  * \param[out]	p_plaintext_message	Plaintext message
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_aes_ecb_decrypt.dox
  */
-stse_ReturnCode_t stse_aes_ecb_decrypt(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ecb_decrypt(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI16 message_length,
     PLAT_UI8 *p_encrypted_message,
@@ -82,11 +82,11 @@ stse_ReturnCode_t stse_aes_ecb_decrypt(
  * \param[out]	p_encrypted_authentication_tag	Buffer to store the authentication tag
  * \param[out]	p_counter_presence				Counter presence flag
  * \param[out]	p_counter						Buffer containing counter value if present
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_aes_ccm_encrypt.dox
  */
-stse_ReturnCode_t stse_aes_ccm_encrypt(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_encrypt(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI8 authentication_tag_length,
     PLAT_UI8 *p_nonce,
@@ -104,7 +104,7 @@ stse_ReturnCode_t stse_aes_ccm_encrypt(
  * \details 	This service start chunk encryption in AES CCM* mode using the specified key from STSE symmetric key table
  * \param[in] 	p_stse 							Pointer to STSE Handler
  * \param[in] 	slot_number 					Key slot in symmetric key table to be used
- * \param[in]	Nonce_length					Nonce buffer length in bytes
+ * \param[in]	nonce_length					Nonce buffer length in bytes
  * \param[in]	p_nonce							Nonce buffer
  * \param[in]	total_associated_data_length	Length of the total amount of associated data
  * \param[in]	total_message_length			Length of the complete message to be encrypted by chunks
@@ -115,12 +115,12 @@ stse_ReturnCode_t stse_aes_ccm_encrypt(
  * \param[out]	p_encrypted_message_chunk		Buffer to store the encrypted message chunk
  * \param[out]	p_counter_presence				Counter presence flag
  * \param[out]	p_counter						Buffer containing counter value if present
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_aes_ccm_encrypt_start(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_encrypt_start(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
-    PLAT_UI16 Nonce_length,
+    PLAT_UI16 nonce_length,
     PLAT_UI8 *p_nonce,
     PLAT_UI16 total_associated_data_length,
     PLAT_UI32 total_message_length,
@@ -141,10 +141,10 @@ stse_ReturnCode_t stse_aes_ccm_encrypt_start(
  * \param[in]	message_chunk_length			Length of the message chunk to encrypt
  * \param[in]	p_plaintext_message_chunk		Buffer containing the message chunk to encrypt
  * \param[out]	p_encrypted_message_chunk		Buffer to store the encrypted message chunk
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_aes_ccm_encrypt_process(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_encrypt_process(
+    stse_handler_t *p_stse,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
     PLAT_UI16 message_chunk_length,
@@ -162,10 +162,10 @@ stse_ReturnCode_t stse_aes_ccm_encrypt_process(
  * \param[in]	p_plaintext_message_chunk		Buffer containing the message chunk to encrypt
  * \param[out]	p_encrypted_message_chunk		Buffer to store the encrypted message chunk
  * \param[out] 	p_encrypted_authentication_tag	Encrypted authentication tag
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_aes_ccm_encrypt_finish(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_encrypt_finish(
+    stse_handler_t *p_stse,
     PLAT_UI8 authentication_tag_length,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
@@ -188,11 +188,11 @@ stse_ReturnCode_t stse_aes_ccm_encrypt_finish(
  * \param[in]	p_encrypted_authentication_tag	Buffer containing the encrypted authentication tag
  * \param[out]	p_verification_result			Verification result flag
  * \param[out]	p_plaintext_message				Buffer to store the decrypted message
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_aes_ccm_decrypt.dox
  */
-stse_ReturnCode_t stse_aes_ccm_decrypt(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_decrypt(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI8 authentication_tag_length,
     PLAT_UI8 *p_nonce,
@@ -209,7 +209,7 @@ stse_ReturnCode_t stse_aes_ccm_decrypt(
  * \details 	This service start chunk decryption in AES CCM* mode using the specified key from STSE symmetric key table
  * \param[in] 	p_stse 							Pointer to STSE Handler
  * \param[in] 	slot_number 					Key slot in symmetric key table to be used
- * \param[in]	Nonce_length					Nonce buffer length in bytes
+ * \param[in]	nonce_length					Nonce buffer length in bytes
  * \param[in]	p_nonce							Nonce buffer
  * \param[in]	total_associated_data_length	Length of the associated data
  * \param[in]	total_ciphertext_length			Length of the complete ciphertext
@@ -218,12 +218,12 @@ stse_ReturnCode_t stse_aes_ccm_decrypt(
  * \param[in]	message_chunk_length			Length of the message chunk to decrypt
  * \param[in]	p_encrypted_message_chunk		Buffer containing the message chunk to decrypt
  * \param[out]	p_plaintext_message_chunk		Buffer to store the decrypted message chunk
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_aes_ccm_decrypt_start(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_decrypt_start(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
-    PLAT_UI16 Nonce_length,
+    PLAT_UI16 nonce_length,
     PLAT_UI8 *p_nonce,
     PLAT_UI16 total_associated_data_length,
     PLAT_UI16 total_ciphertext_length,
@@ -242,10 +242,10 @@ stse_ReturnCode_t stse_aes_ccm_decrypt_start(
  * \param[in]	message_chunk_length			Length of the message chunk to decrypt
  * \param[in]	p_encrypted_message_chunk		Buffer containing the message chunk to decrypt
  * \param[out]	p_plaintext_message_chunk		Buffer to store the decrypted message chunk
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_aes_ccm_decrypt_process(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_decrypt_process(
+    stse_handler_t *p_stse,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
     PLAT_UI16 message_chunk_length,
@@ -264,10 +264,10 @@ stse_ReturnCode_t stse_aes_ccm_decrypt_process(
  * \param[in] 	p_authentication_tag 			Authentication tag
  * \param[out] 	p_verification_result 			Verification result flag
  * \param[out]	p_plaintext_message_chunk		Buffer to store the decrypted message chunk
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_aes_ccm_decrypt_finish(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_decrypt_finish(
+    stse_handler_t *p_stse,
     PLAT_UI8 authentication_tag_length,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
@@ -283,7 +283,7 @@ stse_ReturnCode_t stse_aes_ccm_decrypt_finish(
  * \param[in] 	p_stse 						Pointer to STSE Handler
  * \param[in] 	slot_number 				Key slot in symmetric key table to be used
  * \param[in] 	authentication_tag_length 	Expected length for the authentication tag
- * \param[in]	IV_length					IV buffer length in bytes
+ * \param[in]	iv_length					IV buffer length in bytes
  * \param[in]	p_iv							IV buffer
  * \param[in]	associated_data_length		Length of the associated data
  * \param[in]	p_associated_data			Buffer containing associated data
@@ -291,13 +291,13 @@ stse_ReturnCode_t stse_aes_ccm_decrypt_finish(
  * \param[in]	p_plaintext_message			Buffer containing the message to encrypt
  * \param[out]	p_encrypted_message			Buffer to store the encrypted message
  * \param[out]	p_authentication_tag			Buffer to store the authentication tag
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_aes_gcm_encrypt(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_encrypt(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI8 authentication_tag_length,
-    PLAT_UI16 IV_length,
+    PLAT_UI16 iv_length,
     PLAT_UI8 *p_iv,
     PLAT_UI16 associated_data_length,
     PLAT_UI8 *p_associated_data,
@@ -311,19 +311,19 @@ stse_ReturnCode_t stse_aes_gcm_encrypt(
  * \details 	This service start chunk encryption in AES GCM mode using the specified key from STSE symmetric key table
  * \param[in] 	p_stse 							Pointer to STSE Handler
  * \param[in] 	slot_number 					Key slot in symmetric key table to be used
- * \param[in]	IV_length						IV buffer length in bytes
+ * \param[in]	iv_length						IV buffer length in bytes
  * \param[in]	p_iv								IV buffer
  * \param[in]	associated_data_chunk_length	Length of the associated data chunk
  * \param[in]	p_associated_data_chunk			Buffer containing associated data chunk
  * \param[in]	message_chunk_length			Length of the message chunk to encrypt
  * \param[in]	p_plaintext_message_chunk		Buffer containing the message chunk to encrypt
  * \param[out]	p_encrypted_message_chunk		Buffer to store the encrypted message
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_aes_gcm_encrypt_start(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_encrypt_start(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
-    PLAT_UI16 IV_length,
+    PLAT_UI16 iv_length,
     PLAT_UI8 *p_iv,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
@@ -340,10 +340,10 @@ stse_ReturnCode_t stse_aes_gcm_encrypt_start(
  * \param[in]	message_chunk_length			Length of the message chunk to encrypt
  * \param[in]	p_plaintext_message_chunk		Buffer containing the message chunk to encrypt
  * \param[out]	p_encrypted_message_chunk		Buffer to store the encrypted message chunk
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_aes_gcm_encrypt_process(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_encrypt_process(
+    stse_handler_t *p_stse,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
     PLAT_UI16 message_chunk_length,
@@ -361,10 +361,10 @@ stse_ReturnCode_t stse_aes_gcm_encrypt_process(
  * \param[in] 	p_plaintext_message_chunk		Buffer containing the message chunk to encrypt
  * \param[out] 	p_encrypted_message_chunk		Buffer to store the encrypted message chunk
  * \param[out] 	p_authentication_tag 			Authentication tag
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_aes_gcm_encrypt_finish(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_encrypt_finish(
+    stse_handler_t *p_stse,
     PLAT_UI8 authentication_tag_length,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
@@ -379,7 +379,7 @@ stse_ReturnCode_t stse_aes_gcm_encrypt_finish(
  * \param[in] 	p_stse 						Pointer to STSE Handler
  * \param[in] 	slot_number 				Key slot in symmetric key table to be used
  * \param[in] 	authentication_tag_length 	Expected length for the authentication tag
- * \param[in]	IV_length					IV buffer length in bytes
+ * \param[in]	iv_length					IV buffer length in bytes
  * \param[in]	p_iv							IV buffer
  * \param[in]	associated_data_length		Length of the associated data
  * \param[in]	p_associated_data			Buffer containing associated data
@@ -388,13 +388,13 @@ stse_ReturnCode_t stse_aes_gcm_encrypt_finish(
  * \param[in]	p_authentication_tag			Buffer containing the authentication tag
  * \param[out]	p_verification_result		Verification result flag (0 : fail ; 1: pass)
  * \param[out]	p_plaintext_message			Buffer to store the decrypted message
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_aes_gcm_decrypt(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_decrypt(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI8 authentication_tag_length,
-    PLAT_UI16 IV_length,
+    PLAT_UI16 iv_length,
     PLAT_UI8 *p_iv,
     PLAT_UI16 associated_data_length,
     PLAT_UI8 *p_associated_data,
@@ -409,19 +409,19 @@ stse_ReturnCode_t stse_aes_gcm_decrypt(
  * \details 	This service start chunk decryption in AES GCM mode using the specified key from STSE symmetric key table
  * \param[in] 	p_stse 							Pointer to STSE Handler
  * \param[in] 	slot_number 					Key slot in symmetric key table to be used
- * \param[in]	IV_length						IV buffer length in bytes
+ * \param[in]	iv_length						IV buffer length in bytes
  * \param[in]	p_iv								IV buffer
  * \param[in]	associated_data_chunk_length	Length of the associated data chunk
  * \param[in]	p_associated_data_chunk			Buffer containing associated data chunk
  * \param[in]	message_chunk_length			Length of the message chunk to decrypt
  * \param[in]	p_encrypted_message_chunk		Buffer containing the message chunk to decrypt
  * \param[out]	p_plaintext_message_chunk		Buffer to store the decrypted message chunk
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_aes_gcm_decrypt_start(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_decrypt_start(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
-    PLAT_UI16 IV_length,
+    PLAT_UI16 iv_length,
     PLAT_UI8 *p_iv,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
@@ -438,10 +438,10 @@ stse_ReturnCode_t stse_aes_gcm_decrypt_start(
  * \param[in]	message_chunk_length			Length of the message chunk to decrypt
  * \param[in]	p_encrypted_message_chunk		Buffer containing the message chunk to decrypt
  * \param[out]	p_plaintext_message_chunk		Buffer to store the decrypted message chunk
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_aes_gcm_decrypt_process(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_decrypt_process(
+    stse_handler_t *p_stse,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
     PLAT_UI16 message_chunk_length,
@@ -460,10 +460,10 @@ stse_ReturnCode_t stse_aes_gcm_decrypt_process(
  * \param[in] 	p_authentication_tag 			Authentication tag
  * \param[out] 	p_verification_result 			Verification result flag
  * \param[out]	p_plaintext_message_chunk		Buffer to store the decrypted message chunk
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_aes_gcm_decrypt_finish(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_decrypt_finish(
+    stse_handler_t *p_stse,
     PLAT_UI8 authentication_tag_length,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,

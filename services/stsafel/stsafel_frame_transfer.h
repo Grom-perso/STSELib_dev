@@ -34,9 +34,9 @@
  * \details 		This core function prepare frame CRC and send frame to target STSAFE-Axxx device
  * \param[in] 		p_stse 			Pointer to STSE Handler
  * \param[in,out] 	p_frame 				Pointer to the frame to be transmitted
- * \return 			\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 			\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafel_frame_transmit(stse_Handler_t *p_stse,
+stse_return_code_t stsafel_frame_transmit(stse_handler_t *p_stse,
                                          stse_frame_t *p_frame);
 
 /**
@@ -44,9 +44,9 @@ stse_ReturnCode_t stsafel_frame_transmit(stse_Handler_t *p_stse,
  * \details 		This core function receive frame from target STSAFE-Axxx device and verify its CRC
  * \param[in] 		p_stse 			Pointer to STSE Handler
  * \param[in,out] 	p_frame 				Pointer to the frame to be received
- * \return 			\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 			\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafel_frame_receive(stse_Handler_t *p_stse,
+stse_return_code_t stsafel_frame_receive(stse_handler_t *p_stse,
                                         stse_frame_t *p_frame);
 
 /**
@@ -56,9 +56,9 @@ stse_ReturnCode_t stsafel_frame_receive(stse_Handler_t *p_stse,
  * \param[in] 		p_cmd_frame 			Pointer to the command frame
  * \param[in,out] 	p_rsp_frame 			Pointer to the response frame
  * \param[in] 		inter_frame_delay 	Delay between command and response frame (in ms)
- * \return 			\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 			\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafel_frame_raw_transfer(stse_Handler_t *p_stse,
+stse_return_code_t stsafel_frame_raw_transfer(stse_handler_t *p_stse,
                                              stse_frame_t *p_cmd_frame,
                                              stse_frame_t *p_rsp_frame,
                                              PLAT_UI16 inter_frame_delay);
@@ -70,9 +70,9 @@ stse_ReturnCode_t stsafel_frame_raw_transfer(stse_Handler_t *p_stse,
  * \param[in] 		p_cmd_frame 			Pointer to the command frame
  * \param[in,out] 	p_rsp_frame 			Pointer to the response frame
  * \param[in] 		inter_frame_delay 	Delay between command and response frame (in ms)
- * \return 			\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 			\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafel_frame_transfer(stse_Handler_t *p_stse,
+stse_return_code_t stsafel_frame_transfer(stse_handler_t *p_stse,
                                          stse_frame_t *p_cmd_frame,
                                          stse_frame_t *p_rsp_frame);
 

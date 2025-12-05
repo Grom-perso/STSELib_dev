@@ -36,8 +36,8 @@
 
 #ifdef STSE_CONF_USE_HOST_SESSION
 
-stse_ReturnCode_t stsafea_open_host_session(stse_Handler_t *p_stse, stse_session_t *p_session, PLAT_UI8 *p_host_mac_key, PLAT_UI8 *p_host_cypher_key) {
-    stse_ReturnCode_t ret;
+stse_return_code_t stsafea_open_host_session(stse_handler_t *p_stse, stse_session_t *p_session, PLAT_UI8 *p_host_mac_key, PLAT_UI8 *p_host_cypher_key) {
+    stse_return_code_t ret;
 
     if (p_stse == NULL) {
         return STSE_CORE_HANDLER_NOT_INITIALISED;
@@ -59,7 +59,7 @@ stse_ReturnCode_t stsafea_open_host_session(stse_Handler_t *p_stse, stse_session
             return STSE_SERVICE_SESSION_ERROR;
         }
         p_session->context.host.key_type = (stse_aes_key_type_t)host_key_slot.key_type;
-        p_session->context.host.MAC_counter = ARRAY_4B_SWAP_TO_UI32(host_key_slot.cmac_sequence_counter);
+        p_session->context.host.MAc_counter = ARRAY_4B_SWAP_TO_UI32(host_key_slot.cmac_sequence_counter);
     } else {
         stsafea_host_key_slot_t host_key_slot;
 
@@ -72,7 +72,7 @@ stse_ReturnCode_t stsafea_open_host_session(stse_Handler_t *p_stse, stse_session
             return STSE_SERVICE_SESSION_ERROR;
         }
         p_session->context.host.key_type = STSE_AES_128_KT;
-        p_session->context.host.MAC_counter = ARRAY_3B_SWAP_TO_UI32(host_key_slot.cmac_sequence_counter);
+        p_session->context.host.MAc_counter = ARRAY_3B_SWAP_TO_UI32(host_key_slot.cmac_sequence_counter);
     }
 
     p_session->type = STSE_HOST_SESSION;
@@ -111,7 +111,7 @@ void stsafea_session_clear_context(stse_session_t *p_session) {
     memset(p_session, 0x00, sizeof(stse_session_t));
 }
 
-stse_ReturnCode_t stsafea_set_active_host_session(stse_Handler_t *p_stse, stse_session_t *p_session) {
+stse_return_code_t stsafea_set_active_host_session(stse_handler_t *p_stse, stse_session_t *p_session) {
     if (p_stse == NULL) {
         return STSE_CORE_HANDLER_NOT_INITIALISED;
     }
@@ -125,10 +125,10 @@ stse_ReturnCode_t stsafea_set_active_host_session(stse_Handler_t *p_stse, stse_s
     return (STSE_OK);
 }
 
-stse_ReturnCode_t stsafea_session_frame_encrypt(stse_session_t *p_session,
+stse_return_code_t stsafea_session_frame_encrypt(stse_session_t *p_session,
                                                 stse_frame_t *p_frame,
                                                 stse_frame_element_t *p_enc_payload_element) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     PLAT_UI8 initial_value[STSAFEA_HOST_AES_BLOCK_SIZE];
     stse_frame_element_t *p_element;
     PLAT_UI16 i = 0;
@@ -143,17 +143,17 @@ stse_ReturnCode_t stsafea_session_frame_encrypt(stse_session_t *p_session,
 
     /* - Prepare specific STSAFE AES IV */
     if (p_session->context.host.p_stse->device_type == STSAFE_A120) {
-        initial_value[0] = UI32_B3(p_session->context.host.MAC_counter + 1);
-        initial_value[1] = UI32_B2(p_session->context.host.MAC_counter + 1);
-        initial_value[2] = UI32_B1(p_session->context.host.MAC_counter + 1);
-        initial_value[3] = UI32_B0(p_session->context.host.MAC_counter + 1);
+        initial_value[0] = UI32_B3(p_session->context.host.MAc_counter + 1);
+        initial_value[1] = UI32_B2(p_session->context.host.MAc_counter + 1);
+        initial_value[2] = UI32_B1(p_session->context.host.MAc_counter + 1);
+        initial_value[3] = UI32_B0(p_session->context.host.MAc_counter + 1);
         initial_value[4] = STSAFEA_AES_SUBJECT_HOST_ENCRYPT;
         initial_value[5] = STSAFEA_AES_FIRST_PADDING_BYTE;
         (void)memset(&initial_value[6], 0x00, (STSAFEA_HOST_AES_BLOCK_SIZE)-6U);
     } else {
-        initial_value[0] = UI32_B2(p_session->context.host.MAC_counter + 1);
-        initial_value[1] = UI32_B1(p_session->context.host.MAC_counter + 1);
-        initial_value[2] = UI32_B0(p_session->context.host.MAC_counter + 1);
+        initial_value[0] = UI32_B2(p_session->context.host.MAc_counter + 1);
+        initial_value[1] = UI32_B1(p_session->context.host.MAc_counter + 1);
+        initial_value[2] = UI32_B0(p_session->context.host.MAc_counter + 1);
         initial_value[3] = STSAFEA_AES_SUBJECT_HOST_ENCRYPT;
         initial_value[4] = STSAFEA_AES_FIRST_PADDING_BYTE;
         (void)memset(&initial_value[5], 0x00, (STSAFEA_HOST_AES_BLOCK_SIZE)-5U);
@@ -203,8 +203,8 @@ stse_ReturnCode_t stsafea_session_frame_encrypt(stse_session_t *p_session,
     }
 }
 
-static stse_ReturnCode_t stsafea_session_frame_decrypt(stse_session_t *p_session, stse_frame_t *p_frame) {
-    stse_ReturnCode_t ret;
+static stse_return_code_t stsafea_session_frame_decrypt(stse_session_t *p_session, stse_frame_t *p_frame) {
+    stse_return_code_t ret;
     PLAT_UI8 initial_value[STSAFEA_HOST_AES_BLOCK_SIZE];
     stse_frame_element_t *p_element;
     PLAT_UI16 i = 0;
@@ -225,17 +225,17 @@ static stse_ReturnCode_t stsafea_session_frame_decrypt(stse_session_t *p_session
 
     /* - Prepare Plain text info for AES IV  */
     if (p_session->context.host.p_stse->device_type == STSAFE_A120) {
-        initial_value[0] = UI32_B3(p_session->context.host.MAC_counter);
-        initial_value[1] = UI32_B2(p_session->context.host.MAC_counter);
-        initial_value[2] = UI32_B1(p_session->context.host.MAC_counter);
-        initial_value[3] = UI32_B0(p_session->context.host.MAC_counter);
+        initial_value[0] = UI32_B3(p_session->context.host.MAc_counter);
+        initial_value[1] = UI32_B2(p_session->context.host.MAc_counter);
+        initial_value[2] = UI32_B1(p_session->context.host.MAc_counter);
+        initial_value[3] = UI32_B0(p_session->context.host.MAc_counter);
         initial_value[4] = STSAFEA_AES_SUBJECT_HOST_DECRYPT;
         initial_value[5] = STSAFEA_AES_FIRST_PADDING_BYTE;
         (void)memset(&initial_value[6], 0x00, (STSAFEA_HOST_AES_BLOCK_SIZE)-6U);
     } else {
-        initial_value[0] = UI32_B2(p_session->context.host.MAC_counter);
-        initial_value[1] = UI32_B1(p_session->context.host.MAC_counter);
-        initial_value[2] = UI32_B0(p_session->context.host.MAC_counter);
+        initial_value[0] = UI32_B2(p_session->context.host.MAc_counter);
+        initial_value[1] = UI32_B1(p_session->context.host.MAc_counter);
+        initial_value[2] = UI32_B0(p_session->context.host.MAc_counter);
         initial_value[3] = STSAFEA_AES_SUBJECT_HOST_DECRYPT;
         initial_value[4] = STSAFEA_AES_FIRST_PADDING_BYTE;
         (void)memset(&initial_value[5], 0x00, (STSAFEA_HOST_AES_BLOCK_SIZE)-5U);
@@ -280,7 +280,7 @@ static stse_ReturnCode_t stsafea_session_frame_decrypt(stse_session_t *p_session
     return ret;
 }
 
-static stse_ReturnCode_t stsafea_session_frame_c_mac_compute(stse_session_t *p_session,
+static stse_return_code_t stsafea_session_frame_c_mac_compute(stse_session_t *p_session,
                                                              stse_frame_t *p_cmd_frame,
                                                              PLAT_UI8 *p_mac) {
     PLAT_UI8 aes_cmac_block[STSAFEA_HOST_AES_BLOCK_SIZE];
@@ -290,7 +290,7 @@ static stse_ReturnCode_t stsafea_session_frame_c_mac_compute(stse_session_t *p_s
     PLAT_UI8 aes_block_idx = 0;
     PLAT_UI16 i;
     PLAT_UI16 cmd_payload_length = p_cmd_frame->length - p_cmd_frame->first_element->length;
-    stse_ReturnCode_t ret = STSE_CORE_INVALID_PARAMETER;
+    stse_return_code_t ret = STSE_CORE_INVALID_PARAMETER;
 
     if ((p_session == NULL) || (p_cmd_frame == NULL) || (p_mac == NULL)) {
         return STSE_SERVICE_SESSION_ERROR;
@@ -322,19 +322,19 @@ static stse_ReturnCode_t stsafea_session_frame_c_mac_compute(stse_session_t *p_s
 
     /*- Perform First AES-CMAC round with MAC subject info */
     if (p_session->context.host.p_stse->device_type == STSAFE_A120) {
-        aes_cmac_block[0] = UI32_B3(p_session->context.host.MAC_counter);
-        aes_cmac_block[1] = UI32_B2(p_session->context.host.MAC_counter);
-        aes_cmac_block[2] = UI32_B1(p_session->context.host.MAC_counter);
-        aes_cmac_block[3] = UI32_B0(p_session->context.host.MAC_counter);
+        aes_cmac_block[0] = UI32_B3(p_session->context.host.MAc_counter);
+        aes_cmac_block[1] = UI32_B2(p_session->context.host.MAc_counter);
+        aes_cmac_block[2] = UI32_B1(p_session->context.host.MAc_counter);
+        aes_cmac_block[3] = UI32_B0(p_session->context.host.MAc_counter);
         aes_cmac_block[4] = STSAFEA_AES_SUBJECT_HOST_CMAC;  /* Subject : Host C-MAC */
         aes_cmac_block[5] = STSAFEA_AES_FIRST_PADDING_BYTE; /* First byte of padding */
         for (i = 6; i < STSAFEA_HOST_AES_BLOCK_SIZE; i++) {
             aes_cmac_block[i] = 0x00U; /* 0x00 padding */
         }
     } else {
-        aes_cmac_block[0] = UI32_B2(p_session->context.host.MAC_counter);
-        aes_cmac_block[1] = UI32_B1(p_session->context.host.MAC_counter);
-        aes_cmac_block[2] = UI32_B0(p_session->context.host.MAC_counter);
+        aes_cmac_block[0] = UI32_B2(p_session->context.host.MAc_counter);
+        aes_cmac_block[1] = UI32_B1(p_session->context.host.MAc_counter);
+        aes_cmac_block[2] = UI32_B0(p_session->context.host.MAc_counter);
         aes_cmac_block[3] = STSAFEA_AES_SUBJECT_HOST_CMAC;  /* Subject : Host C-MAC */
         aes_cmac_block[4] = STSAFEA_AES_FIRST_PADDING_BYTE; /* First byte of padding */
         for (i = 5; i < STSAFEA_HOST_AES_BLOCK_SIZE; i++) {
@@ -380,11 +380,11 @@ static stse_ReturnCode_t stsafea_session_frame_c_mac_compute(stse_session_t *p_s
     return ret;
 }
 
-static stse_ReturnCode_t stsafea_session_frame_r_mac_verify(stse_session_t *p_session,
+static stse_return_code_t stsafea_session_frame_r_mac_verify(stse_session_t *p_session,
                                                             stse_frame_t *p_cmd_frame,
                                                             stse_frame_t *p_rsp_frame,
                                                             PLAT_UI8 *p_mac) {
-    stse_ReturnCode_t ret = STSE_SERVICE_INVALID_PARAMETER;
+    stse_return_code_t ret = STSE_SERVICE_INVALID_PARAMETER;
     PLAT_UI8 aes_cmac_block[STSAFEA_HOST_AES_BLOCK_SIZE];
     PLAT_UI16 cmd_payload_length = p_cmd_frame->length - p_cmd_frame->first_element->length;
     PLAT_UI8 aes_block_idx = 0;
@@ -411,19 +411,19 @@ static stse_ReturnCode_t stsafea_session_frame_r_mac_verify(stse_session_t *p_se
 
         /*- Perform First AES-CMAC round */
         if (p_session->context.host.p_stse->device_type == STSAFE_A120) {
-            aes_cmac_block[0] = UI32_B3(p_session->context.host.MAC_counter);
-            aes_cmac_block[1] = UI32_B2(p_session->context.host.MAC_counter);
-            aes_cmac_block[2] = UI32_B1(p_session->context.host.MAC_counter);
-            aes_cmac_block[3] = UI32_B0(p_session->context.host.MAC_counter);
+            aes_cmac_block[0] = UI32_B3(p_session->context.host.MAc_counter);
+            aes_cmac_block[1] = UI32_B2(p_session->context.host.MAc_counter);
+            aes_cmac_block[2] = UI32_B1(p_session->context.host.MAc_counter);
+            aes_cmac_block[3] = UI32_B0(p_session->context.host.MAc_counter);
             aes_cmac_block[4] = STSAFEA_AES_SUBJECT_HOST_RMAC;
             aes_cmac_block[5] = STSAFEA_AES_FIRST_PADDING_BYTE;
             for (i = 6; i < STSAFEA_HOST_AES_BLOCK_SIZE; i++) {
                 aes_cmac_block[i] = 0x00U; /* 0x00 padding */
             }
         } else {
-            aes_cmac_block[0] = UI32_B2(p_session->context.host.MAC_counter);
-            aes_cmac_block[1] = UI32_B1(p_session->context.host.MAC_counter);
-            aes_cmac_block[2] = UI32_B0(p_session->context.host.MAC_counter);
+            aes_cmac_block[0] = UI32_B2(p_session->context.host.MAc_counter);
+            aes_cmac_block[1] = UI32_B1(p_session->context.host.MAc_counter);
+            aes_cmac_block[2] = UI32_B0(p_session->context.host.MAc_counter);
             aes_cmac_block[3] = STSAFEA_AES_SUBJECT_HOST_RMAC;
             aes_cmac_block[4] = STSAFEA_AES_FIRST_PADDING_BYTE;
             for (i = 5; i < STSAFEA_HOST_AES_BLOCK_SIZE; i++) {
@@ -473,12 +473,12 @@ static stse_ReturnCode_t stsafea_session_frame_r_mac_verify(stse_session_t *p_se
 
         stse_frame_element_allocate_push(
             &r_mac_frame,
-            eRsp_Length,
+            ersp_Length,
             STSAFEA_CMD_RSP_LEN_SIZE,
             (PLAT_UI8 *)&rsp_payload_length);
-        stse_frame_element_swap_byte_order(&eRsp_Length);
+        stse_frame_element_swap_byte_order(&ersp_Length);
 
-        eRsp_Length.next = p_rsp_frame->first_element->next;
+        ersp_Length.next = p_rsp_frame->first_element->next;
         stse_frame_update(&r_mac_frame);
         p_element = r_mac_frame.first_element;
 
@@ -507,14 +507,14 @@ static stse_ReturnCode_t stsafea_session_frame_r_mac_verify(stse_session_t *p_se
     return ret;
 }
 
-stse_ReturnCode_t stsafea_session_encrypted_transfer(stse_session_t *p_session,
+stse_return_code_t stsafea_session_encrypted_transfer(stse_session_t *p_session,
                                                      stse_frame_t *p_cmd_frame,
                                                      stse_frame_t *p_rsp_frame,
                                                      PLAT_UI8 cmd_encryption_flag,
                                                      PLAT_UI8 rsp_encryption_flag,
                                                      stse_cmd_access_conditions_t cmd_ac_info,
                                                      PLAT_UI16 processing_time) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     PLAT_UI16 encrypted_cmd_payload_size = 0;
     PLAT_UI16 encrypted_rsp_payload_size = 0;
     PLAT_UI8 padding = 16;
@@ -589,15 +589,15 @@ stse_ReturnCode_t stsafea_session_encrypted_transfer(stse_session_t *p_session,
     return ret;
 }
 
-stse_ReturnCode_t stsafea_session_authenticated_transfer(stse_session_t *p_session,
+stse_return_code_t stsafea_session_authenticated_transfer(stse_session_t *p_session,
                                                          stse_frame_t *p_cmd_frame,
                                                          stse_frame_t *p_rsp_frame,
                                                          stse_cmd_access_conditions_t cmd_ac_info,
                                                          PLAT_UI16 processing_time) {
     (void)cmd_ac_info;
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     PLAT_UI8 Cmd_MAC[STSAFEA_MAC_SIZE];
-    PLAT_UI8 Rsp_MAC[STSAFEA_MAC_SIZE];
+    PLAT_UI8 rsp_MAC[STSAFEA_MAC_SIZE];
 
     if (p_session == NULL || p_cmd_frame == NULL || p_rsp_frame == NULL ||
         p_cmd_frame->first_element == NULL || p_cmd_frame->first_element->p_data == NULL ||
@@ -611,7 +611,7 @@ stse_ReturnCode_t stsafea_session_authenticated_transfer(stse_session_t *p_sessi
 
     *(p_cmd_frame->first_element->p_data) |= ((1 << 7) | (1 << 6));
 
-    stse_frame_element_allocate_push(p_rsp_frame, eRsp_mac, STSAFEA_MAC_SIZE, Rsp_MAC);
+    stse_frame_element_allocate_push(p_rsp_frame, ersp_mac, STSAFEA_MAC_SIZE, rsp_MAC);
 
     ret = stsafea_session_frame_c_mac_compute(p_session, p_cmd_frame, Cmd_MAC);
     if (ret != STSE_OK) {
@@ -625,7 +625,7 @@ stse_ReturnCode_t stsafea_session_authenticated_transfer(stse_session_t *p_sessi
     case STSE_HOST_SESSION:
         ret = stsafea_frame_raw_transfer(p_session->context.host.p_stse, p_cmd_frame, p_rsp_frame, processing_time);
         if (ret <= 0xFF && ret != STSE_INVALID_C_MAC && ret != STSE_COMMUNICATION_ERROR) {
-            p_session->context.host.MAC_counter++;
+            p_session->context.host.MAc_counter++;
         }
         break;
 
@@ -638,7 +638,7 @@ stse_ReturnCode_t stsafea_session_authenticated_transfer(stse_session_t *p_sessi
     stse_frame_pop_element(p_cmd_frame);
 
     if (ret == STSE_OK) {
-        ret = stsafea_session_frame_r_mac_verify(p_session, p_cmd_frame, p_rsp_frame, Rsp_MAC);
+        ret = stsafea_session_frame_r_mac_verify(p_session, p_cmd_frame, p_rsp_frame, rsp_MAC);
     }
 
     return ret;

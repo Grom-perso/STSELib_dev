@@ -23,8 +23,8 @@
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
-stse_ReturnCode_t stsafea_frame_transmit(stse_Handler_t *p_stse, stse_frame_t *p_frame) {
-    stse_ReturnCode_t ret = STSE_PLATFORM_BUS_ACK_ERROR;
+stse_return_code_t stsafea_frame_transmit(stse_handler_t *p_stse, stse_frame_t *p_frame) {
+    stse_return_code_t ret = STSE_PLATFORM_BUS_ACK_ERROR;
     PLAT_UI16 retry_count = STSE_MAX_POLLING_RETRY;
     stse_frame_element_t *p_current_element;
     PLAT_UI16 crc_ret;
@@ -90,7 +90,7 @@ stse_ReturnCode_t stsafea_frame_transmit(stse_Handler_t *p_stse, stse_frame_t *p
 
         if (ret != STSE_OK) {
             retry_count--;
-            stse_platform_Delay_ms(STSE_POLLING_RETRY_INTERVAL);
+            stse_platform_delay_ms(STSE_POLLING_RETRY_INTERVAL);
         }
     }
 
@@ -99,8 +99,8 @@ stse_ReturnCode_t stsafea_frame_transmit(stse_Handler_t *p_stse, stse_frame_t *p
     return ret;
 }
 
-stse_ReturnCode_t stsafea_frame_receive(stse_Handler_t *p_stse, stse_frame_t *p_frame) {
-    stse_ReturnCode_t ret = STSE_PLATFORM_BUS_ACK_ERROR;
+stse_return_code_t stsafea_frame_receive(stse_handler_t *p_stse, stse_frame_t *p_frame) {
+    stse_return_code_t ret = STSE_PLATFORM_BUS_ACK_ERROR;
     stse_frame_element_t *p_current_element;
     PLAT_UI8 received_header;
     PLAT_UI16 received_length;
@@ -131,7 +131,7 @@ stse_ReturnCode_t stsafea_frame_receive(stse_Handler_t *p_stse, stse_frame_t *p_
 
         if (ret != STSE_OK) {
             retry_count--;
-            stse_platform_Delay_ms(STSE_POLLING_RETRY_INTERVAL);
+            stse_platform_delay_ms(STSE_POLLING_RETRY_INTERVAL);
         }
     }
 
@@ -204,7 +204,7 @@ stse_ReturnCode_t stsafea_frame_receive(stse_Handler_t *p_stse, stse_frame_t *p_
 
         if (ret != STSE_OK) {
             retry_count--;
-            stse_platform_Delay_ms(STSE_POLLING_RETRY_INTERVAL);
+            stse_platform_delay_ms(STSE_POLLING_RETRY_INTERVAL);
         }
     }
 
@@ -313,16 +313,16 @@ stse_ReturnCode_t stsafea_frame_receive(stse_Handler_t *p_stse, stse_frame_t *p_
         return (STSE_CORE_FRAME_CRC_ERROR);
     }
 
-    ret = (stse_ReturnCode_t)(p_frame->first_element->p_data[0] & STSE_STSAFEA_RSP_STATUS_MASK);
+    ret = (stse_return_code_t)(p_frame->first_element->p_data[0] & STSE_STSAFEA_RSP_STATUS_MASK);
 
     return ret;
 }
 
-stse_ReturnCode_t stsafea_frame_raw_transfer(stse_Handler_t *p_stse,
+stse_return_code_t stsafea_frame_raw_transfer(stse_handler_t *p_stse,
                                              stse_frame_t *p_cmd_frame,
                                              stse_frame_t *p_rsp_frame,
                                              PLAT_UI16 inter_frame_delay) {
-    stse_ReturnCode_t ret = STSE_CORE_INVALID_PARAMETER;
+    stse_return_code_t ret = STSE_CORE_INVALID_PARAMETER;
 
 #ifdef STSE_USE_RSP_POLLING
     (void)inter_frame_delay;
@@ -333,10 +333,10 @@ stse_ReturnCode_t stsafea_frame_raw_transfer(stse_Handler_t *p_stse,
     if (ret == STSE_OK) {
 #ifdef STSE_USE_RSP_POLLING
         /* - Wait for command to be executed by target STSAFE  */
-        stse_platform_Delay_ms(STSE_FIRST_POLLING_INTERVAL);
+        stse_platform_delay_ms(STSE_FIRST_POLLING_INTERVAL);
 #else
         /* - Wait for command to be executed by target STSAFE  */
-        stse_platform_Delay_ms(inter_frame_delay);
+        stse_platform_delay_ms(inter_frame_delay);
 #endif /* STSE_USE_RSP_POLLING */
         /* - Receive non protected Frame */
         ret = stsafea_frame_receive(p_stse, p_rsp_frame);
@@ -345,9 +345,9 @@ stse_ReturnCode_t stsafea_frame_raw_transfer(stse_Handler_t *p_stse,
     return ret;
 }
 
-stse_ReturnCode_t stsafea_frame_transfer(stse_Handler_t *p_stse, stse_frame_t *p_cmd_frame,
+stse_return_code_t stsafea_frame_transfer(stse_handler_t *p_stse, stse_frame_t *p_cmd_frame,
                                          stse_frame_t *p_rsp_frame) {
-    stse_ReturnCode_t ret = STSE_CORE_INVALID_PARAMETER;
+    stse_return_code_t ret = STSE_CORE_INVALID_PARAMETER;
     PLAT_UI16 inter_frame_delay = STSAFEA_EXEC_TIME_DEFAULT;
 
 #ifdef STSE_CONF_USE_HOST_SESSION

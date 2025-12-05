@@ -19,8 +19,8 @@
 #include "api/stse_ecc.h"
 #include "api/stse_hash.h"
 
-stse_ReturnCode_t stse_certificate_verify_cert_signature(const stse_certificate_t *parent, const stse_certificate_t *child) {
-    stse_ReturnCode_t ret;
+stse_return_code_t stse_certificate_verify_cert_signature(const stse_certificate_t *parent, const stse_certificate_t *child) {
+    stse_return_code_t ret;
     stse_hash_algorithm_t hash_algo;
 
     if ((parent == NULL) || (child == NULL)) {
@@ -71,7 +71,7 @@ stse_ReturnCode_t stse_certificate_verify_cert_signature(const stse_certificate_
                                               child->Sign.sSize));
 }
 
-stse_ReturnCode_t stse_certificate_verify_signature(const stse_certificate_t *cert,
+stse_return_code_t stse_certificate_verify_signature(const stse_certificate_t *cert,
                                                     const PLAT_UI8 *digest,
                                                     PLAT_I32 digestSize,
                                                     const PLAT_UI8 *signatureR,
@@ -80,7 +80,7 @@ stse_ReturnCode_t stse_certificate_verify_signature(const stse_certificate_t *ce
                                                     PLAT_I32 signatureSsize) {
     (void)signatureRsize;
     (void)signatureSsize;
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     stse_ecc_key_type_t key_type;
 
     if ((cert == NULL) || (digest == NULL) || (signatureR == NULL) || (signatureS == NULL)) {
@@ -177,15 +177,15 @@ stse_ecc_key_type_t stse_certificate_get_key_type(const stse_certificate_t *cert
         return STSE_ECC_KT_NIST_P_521;
 #endif
 #ifdef STSE_CONF_ECC_BRAINPOOL_P_256
-    case EC_bp256r1:
+    case Ec_bp256r1:
         return STSE_ECC_KT_BP_P_256;
 #endif
 #ifdef STSE_CONF_ECC_BRAINPOOL_P_384
-    case EC_bp384r1:
+    case Ec_bp384r1:
         return STSE_ECC_KT_BP_P_384;
 #endif
 #ifdef STSE_CONF_ECC_BRAINPOOL_P_512
-    case EC_bp512r1:
+    case Ec_bp512r1:
         return STSE_ECC_KT_BP_P_512;
 #endif
 #ifdef STSE_CONF_ECC_EDWARD_25519

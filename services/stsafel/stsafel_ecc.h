@@ -42,10 +42,10 @@
  * \param[in] 	challenge_length 	Challenge length
  * \param[in] 	p_challenge 			Challenge to be signed
  * \param[out]	p_signature			Signature output buffer
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafel_ecc_generate_signature(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafel_ecc_generate_signature(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_challenge,
     PLAT_UI16 challenge_length,

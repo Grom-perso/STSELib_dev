@@ -22,8 +22,8 @@
 
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
 
-stse_ReturnCode_t stsafel_ecc_generate_signature(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafel_ecc_generate_signature(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_challenge,
     PLAT_UI16 challenge_length,
@@ -44,20 +44,20 @@ stse_ReturnCode_t stsafel_ecc_generate_signature(
     }
 #endif
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eChallenge, challenge_length, p_challenge);
-    stse_frame_element_allocate_push(&CmdFrame, eInternal_data_subject, 1, &internal_data_subject);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eChallenge, challenge_length, p_challenge);
+    stse_frame_element_allocate_push(&cmd_frame, eInternal_data_subject, 1, &internal_data_subject);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, STSAFEL_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&Rsp_frame, eSignature, stse_ecc_info_table[key_type].signature_size, p_signature);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEL_HEADER_SIZE, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eSignature, stse_ecc_info_table[key_type].signature_size, p_signature);
 
     /*- Perform Transfer*/
     return stsafel_frame_transfer(p_stse,
-                                  &CmdFrame,
-                                  &Rsp_frame);
+                                  &cmd_frame,
+                                  &rsp_frame);
 }
 
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */

@@ -30,11 +30,11 @@
 #if defined(STSE_CONF_USE_HOST_KEY_PROVISIONING_WRAPPED) || \
     defined(STSE_CONF_USE_SYMMETRIC_KEY_PROVISIONING_WRAPPED)
 
-static stse_ReturnCode_t stse_start_volatile_KEK_session(
-    stse_Handler_t *p_stse,
+static stse_return_code_t stse_start_volatile_KEk_session(
+    stse_handler_t *p_stse,
     stse_session_t *p_session,
     stse_ecc_key_type_t ecc_key_type) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     /* - Check function parameters */
     if (p_stse == NULL) {
@@ -81,7 +81,7 @@ static stse_ReturnCode_t stse_start_volatile_KEK_session(
     }
 
     /* - Generate ECDHE key pair on target SE */
-    ret = stsafea_generate_ECDHE_key_pair(
+    ret = stsafea_generate_ECDHe_key_pair(
         p_stse,
         ecc_key_type,
         stsafe_ecdhe_public_key);
@@ -94,7 +94,7 @@ static stse_ReturnCode_t stse_start_volatile_KEK_session(
     }
 
     /* - Start volatile KEK session with target SE*/
-    ret = stsafea_start_volatile_KEK_session(
+    ret = stsafea_start_volatile_KEk_session(
         p_stse,
         ecc_key_type,
         host_ecdhe_public_key);
@@ -158,15 +158,15 @@ static stse_ReturnCode_t stse_start_volatile_KEK_session(
 #if defined(STSE_CONF_USE_HOST_KEY_PROVISIONING_WRAPPED_AUTHENTICATED) || \
     defined(STSE_CONF_USE_SYMMETRIC_KEY_PROVISIONING_WRAPPED_AUTHENTICATED)
 
-static stse_ReturnCode_t stse_start_volatile_KEK_session_authenticated(
-    stse_Handler_t *p_stse,
+static stse_return_code_t stse_start_volatile_KEk_session_authenticated(
+    stse_handler_t *p_stse,
     stse_session_t *p_session,
     stse_ecc_key_type_t ecc_key_type,
     PLAT_UI8 signature_public_key_slot_number,
     stse_hash_algorithm_t hash_algo,
     stse_ecc_key_type_t private_ecc_key_type,
     PLAT_UI8 *private_key) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     /* - Check STSE handler initialization */
     if (p_stse == NULL) {
@@ -223,7 +223,7 @@ static stse_ReturnCode_t stse_start_volatile_KEK_session_authenticated(
     }
 
     /* - Generate STSE ECDHE key pair */
-    ret = stsafea_generate_ECDHE_key_pair(
+    ret = stsafea_generate_ECDHe_key_pair(
         p_stse,
         ecc_key_type,
         stsafe_ecdhe_public_key);
@@ -310,7 +310,7 @@ static stse_ReturnCode_t stse_start_volatile_KEK_session_authenticated(
     }
 
     /* - Start volatile KEK session */
-    ret = stsafea_start_volatile_KEK_session_authenticated(
+    ret = stsafea_start_volatile_KEk_session_authenticated(
         p_stse,
         ecc_key_type,
         host_ecdhe_public_key,
@@ -378,8 +378,8 @@ static stse_ReturnCode_t stse_start_volatile_KEK_session_authenticated(
     defined(STSE_CONF_USE_HOST_KEY_PROVISIONING_WRAPPED_AUTHENTICATED) || \
     defined(STSE_CONF_USE_SYMMETRIC_KEY_PROVISIONING_WRAPPED) ||          \
     defined(STSE_CONF_USE_SYMMETRIC_KEY_PROVISIONING_WRAPPED_AUTHENTICATED)
-static stse_ReturnCode_t stse_stop_volatile_KEK_session(stse_Handler_t *p_stse, stse_session_t *p_session) {
-    stse_ReturnCode_t ret;
+static stse_return_code_t stse_stop_volatile_KEk_session(stse_handler_t *p_stse, stse_session_t *p_session) {
+    stse_return_code_t ret;
 
     /* - Check function parameters */
     if (p_stse == NULL) {
@@ -390,16 +390,16 @@ static stse_ReturnCode_t stse_stop_volatile_KEK_session(stse_Handler_t *p_stse, 
     stsafea_session_clear_context(p_session);
 
     /* - Clear KEK session context in target SE */
-    ret = stsafea_stop_volatile_KEK_session(p_stse);
+    ret = stsafea_stop_volatile_KEk_session(p_stse);
 
     return ret;
 }
 
-static stse_ReturnCode_t stse_derive_working_KEK(
-    stse_Handler_t *p_stse,
+static stse_return_code_t stse_derive_working_KEK(
+    stse_handler_t *p_stse,
     stse_session_t *p_session,
     PLAT_UI8 *working_kek) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     PLAT_UI8 p_hkdf_salt[STSAFEA_KEK_HKDF_SALT_SIZE] = STSAFEA_KEK_HKDF_SALT;
 
     p_session->context.kek.working_kek_counter += 1;
@@ -430,14 +430,14 @@ static stse_ReturnCode_t stse_derive_working_KEK(
     return ret;
 }
 
-static stse_ReturnCode_t stse_KEK_wrap(
-    stse_Handler_t *p_stse,
+static stse_return_code_t stse_KEk_wrap(
+    stse_handler_t *p_stse,
     stse_session_t *p_session,
     PLAT_UI8 *p_payload,
     PLAT_UI32 payload_length,
     PLAT_UI8 *p_envelope,
     PLAT_UI32 envelope_length) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     PLAT_UI8 working_kek[STSAFEA_KEK_KEY_SIZE];
 
     /* - Check stsafe handler initialization */
@@ -477,11 +477,11 @@ static stse_ReturnCode_t stse_KEK_wrap(
 
 /* Exported functions --------------------------------------------------------*/
 
-stse_ReturnCode_t stse_host_key_provisioning(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_host_key_provisioning(
+    stse_handler_t *p_stse,
     stsafea_host_key_type_t host_key_type,
     stsafea_host_keys_t *host_keys) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
@@ -516,12 +516,12 @@ stse_ReturnCode_t stse_host_key_provisioning(
 
 #ifdef STSE_CONF_USE_HOST_KEY_PROVISIONING_WRAPPED
 
-stse_ReturnCode_t stse_host_key_provisioning_wrapped(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_host_key_provisioning_wrapped(
+    stse_handler_t *p_stse,
     stsafea_host_key_type_t host_key_type,
     stsafea_host_keys_t *host_keys,
     stse_ecc_key_type_t ecdhe_ecc_key_type) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
@@ -542,13 +542,13 @@ stse_ReturnCode_t stse_host_key_provisioning_wrapped(
 
     PLAT_UI8 host_key_envelope[host_keys_envelope_length];
 
-    stse_session_t volatile_KEK_session;
-    stsafea_session_clear_context(&volatile_KEK_session);
+    stse_session_t volatile_KEk_session;
+    stsafea_session_clear_context(&volatile_KEk_session);
 
     /* - Start volatile KEK  */
-    ret = stse_start_volatile_KEK_session(
+    ret = stse_start_volatile_KEk_session(
         p_stse,
-        &volatile_KEK_session,
+        &volatile_KEk_session,
         ecdhe_ecc_key_type);
     if (ret != STSE_OK) {
         return ret;
@@ -568,9 +568,9 @@ stse_ReturnCode_t stse_host_key_provisioning_wrapped(
                       host_keys_length] = 0x80;
 
     /* - Wrap */
-    ret = stse_KEK_wrap(
+    ret = stse_KEk_wrap(
         p_stse,
-        &volatile_KEK_session,
+        &volatile_KEk_session,
         host_key_envelope,
         (host_keys_envelope_length - STSAFEA_HOST_KEY_WRAPPING_AUTHENTICATION_TAG_LENGTH),
         host_key_envelope,
@@ -591,7 +591,7 @@ stse_ReturnCode_t stse_host_key_provisioning_wrapped(
     }
 
     /* - Stop volatile KEK */
-    ret = stsafea_stop_volatile_KEK_session(p_stse);
+    ret = stsafea_stop_volatile_KEk_session(p_stse);
 
     return ret;
 }
@@ -599,8 +599,8 @@ stse_ReturnCode_t stse_host_key_provisioning_wrapped(
 
 #ifdef STSE_CONF_USE_HOST_KEY_PROVISIONING_WRAPPED_AUTHENTICATED
 
-stse_ReturnCode_t stse_host_key_provisioning_wrapped_authenticated(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_host_key_provisioning_wrapped_authenticated(
+    stse_handler_t *p_stse,
     stsafea_host_key_type_t host_key_type,
     stsafea_host_keys_t *host_keys,
     stse_ecc_key_type_t ecdhe_ecc_key_type,
@@ -608,7 +608,7 @@ stse_ReturnCode_t stse_host_key_provisioning_wrapped_authenticated(
     stse_hash_algorithm_t signature_hash_algo,
     stse_ecc_key_type_t signature_private_ecc_key_type,
     PLAT_UI8 *signature_private_key) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
@@ -629,13 +629,13 @@ stse_ReturnCode_t stse_host_key_provisioning_wrapped_authenticated(
 
     PLAT_UI8 host_key_envelope[host_keys_envelope_length];
 
-    stse_session_t volatile_KEK_session;
-    stsafea_session_clear_context(&volatile_KEK_session);
+    stse_session_t volatile_KEk_session;
+    stsafea_session_clear_context(&volatile_KEk_session);
 
     /* - Start volatile KEK Authenticated */
-    ret = stse_start_volatile_KEK_session_authenticated(
+    ret = stse_start_volatile_KEk_session_authenticated(
         p_stse,
-        &volatile_KEK_session,
+        &volatile_KEk_session,
         ecdhe_ecc_key_type,
         signature_public_key_slot_number,
         signature_hash_algo,
@@ -657,9 +657,9 @@ stse_ReturnCode_t stse_host_key_provisioning_wrapped_authenticated(
     host_key_envelope[STSE_HOST_KEY_ENVELOPE_FRONT_PADDING_LENGTH + STSE_HOST_KEY_ENVELOPE_KEY_TYPE_LENGTH + host_keys_length] = 0x80;
 
     /* - Wrap */
-    ret = stse_KEK_wrap(
+    ret = stse_KEk_wrap(
         p_stse,
-        &volatile_KEK_session,
+        &volatile_KEk_session,
         host_key_envelope,
         (host_keys_envelope_length - STSAFEA_HOST_KEY_WRAPPING_AUTHENTICATION_TAG_LENGTH),
         host_key_envelope,
@@ -678,20 +678,20 @@ stse_ReturnCode_t stse_host_key_provisioning_wrapped_authenticated(
     }
 
     /* - Stop volatile KEK */
-    ret = stse_stop_volatile_KEK_session(p_stse, &volatile_KEK_session);
+    ret = stse_stop_volatile_KEk_session(p_stse, &volatile_KEk_session);
 
     return ret;
 }
 #endif /* STSE_CONF_USE_HOST_KEY_PROVISIONING_WRAPPED_AUTHENTICATED */
 
 #ifdef STSE_CONF_USE_HOST_KEY_ESTABLISHMENT
-stse_ReturnCode_t stse_establish_host_key(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_establish_host_key(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t ecdh_key_type,
     stsafea_host_key_type_t host_secure_channel_keys_type,
     PLAT_UI8 *host_mac_key,
     PLAT_UI8 *host_cipher_key) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     /* - Check function parameters */
     if (p_stse == NULL) {
@@ -739,7 +739,7 @@ stse_ReturnCode_t stse_establish_host_key(
     }
 
     /* - Generate ECDHE key pair on target SE */
-    ret = stsafea_generate_ECDHE_key_pair(
+    ret = stsafea_generate_ECDHe_key_pair(
         p_stse,
         ecdh_key_type,
         stsafe_ecdhe_public_key);
@@ -816,8 +816,8 @@ stse_ReturnCode_t stse_establish_host_key(
     return ret;
 }
 
-stse_ReturnCode_t stse_establish_host_key_authenticated(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_establish_host_key_authenticated(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t ecdh_key_type,
     stsafea_host_key_type_t host_secure_channel_keys_type,
     stse_hash_algorithm_t tbs_hash_algo,
@@ -825,7 +825,7 @@ stse_ReturnCode_t stse_establish_host_key_authenticated(
     PLAT_UI8 *tbs_private_key,
     PLAT_UI8 *host_mac_key,
     PLAT_UI8 *host_cipher_key) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     /* - Check function parameters */
     if (p_stse == NULL) {
@@ -891,7 +891,7 @@ stse_ReturnCode_t stse_establish_host_key_authenticated(
     }
 
     /* - Generate ECDHE key pair on target SE */
-    ret = stsafea_generate_ECDHE_key_pair(
+    ret = stsafea_generate_ECDHe_key_pair(
         p_stse,
         ecdh_key_type,
         stsafe_ecdhe_public_key);
@@ -1072,8 +1072,8 @@ stse_ReturnCode_t stse_establish_host_key_authenticated(
 
    ------------------------------------------------------------------------------------------ */
 
-stse_ReturnCode_t stse_get_symmetric_key_slots_count(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_get_symmetric_key_slots_count(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_symmetric_key_slot_count) {
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
@@ -1082,11 +1082,11 @@ stse_ReturnCode_t stse_get_symmetric_key_slots_count(
     return stsafea_query_symmetric_key_slots_count(p_stse, p_symmetric_key_slot_count);
 }
 
-stse_ReturnCode_t stse_get_symmetric_key_slot_info(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_get_symmetric_key_slot_info(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stsafea_symmetric_key_slot_information_t *p_symmetric_key_slot_info) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     PLAT_UI8 slot_count;
 
     if (p_stse == NULL) {
@@ -1118,8 +1118,8 @@ stse_ReturnCode_t stse_get_symmetric_key_slot_info(
     return STSE_OK;
 }
 
-stse_ReturnCode_t stse_get_symmetric_key_table_info(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_get_symmetric_key_table_info(
+    stse_handler_t *p_stse,
     PLAT_UI16 total_slot_count,
     stsafea_symmetric_key_slot_information_t *p_symmetric_key_table_info) {
     if (p_stse == NULL) {
@@ -1129,8 +1129,8 @@ stse_ReturnCode_t stse_get_symmetric_key_table_info(
     return stsafea_query_symmetric_key_table(p_stse, total_slot_count, p_symmetric_key_table_info);
 }
 
-stse_ReturnCode_t stse_get_symmetric_key_slot_provisioning_ctrl_fields(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_get_symmetric_key_slot_provisioning_ctrl_fields(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stsafea_symmetric_key_slot_provisioning_ctrl_fields_t *p_ctrl_fields) {
     if (p_stse == NULL) {
@@ -1140,8 +1140,8 @@ stse_ReturnCode_t stse_get_symmetric_key_slot_provisioning_ctrl_fields(
     return stsafea_query_symmetric_key_slot_provisioning_ctrl_fields(p_stse, slot_number, p_ctrl_fields);
 }
 
-stse_ReturnCode_t stse_set_symmetric_key_slot_provisioning_ctrl_fields(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_set_symmetric_key_slot_provisioning_ctrl_fields(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stsafea_symmetric_key_slot_provisioning_ctrl_fields_t *p_ctrl_fields) {
     if (p_stse == NULL) {
@@ -1151,8 +1151,8 @@ stse_ReturnCode_t stse_set_symmetric_key_slot_provisioning_ctrl_fields(
     return stsafea_put_symmetric_key_slot_provisioning_ctrl_fields(p_stse, slot_number, p_ctrl_fields);
 }
 
-stse_ReturnCode_t stse_write_symmetric_key_plaintext(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_write_symmetric_key_plaintext(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_key,
     stsafea_generic_key_information_t *p_symmetric_key_info) {
     /* - Check stsafe handler initialization */
@@ -1166,23 +1166,23 @@ stse_ReturnCode_t stse_write_symmetric_key_plaintext(
 
 #ifdef STSE_CONF_USE_SYMMETRIC_KEY_PROVISIONING_WRAPPED
 
-stse_ReturnCode_t stse_write_symmetric_key_wrapped(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_write_symmetric_key_wrapped(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_key,
     stsafea_generic_key_information_t *key_info,
     stse_ecc_key_type_t kek_session_ecc_type) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     /* - Check stsafe handler initialization */
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    stse_session_t volatile_KEK_session;
-    stsafea_session_clear_context(&volatile_KEK_session);
+    stse_session_t volatile_KEk_session;
+    stsafea_session_clear_context(&volatile_KEk_session);
 
     /* - Start Volatile KEK session */
-    ret = stse_start_volatile_KEK_session(p_stse, &volatile_KEK_session, kek_session_ecc_type);
+    ret = stse_start_volatile_KEk_session(p_stse, &volatile_KEk_session, kek_session_ecc_type);
     if (ret != STSE_OK) {
         return ret;
     }
@@ -1206,9 +1206,9 @@ stse_ReturnCode_t stse_write_symmetric_key_wrapped(
     envelope[key_info->info_length + envelope_key_length] = 0x80;
 
     /* - Wrap the envelope */
-    ret = stse_KEK_wrap(
+    ret = stse_KEk_wrap(
         p_stse,
-        &volatile_KEK_session,
+        &volatile_KEk_session,
         envelope,
         envelope_length,
         envelope,
@@ -1229,7 +1229,7 @@ stse_ReturnCode_t stse_write_symmetric_key_wrapped(
     }
 
     /* - Close Volatile KEK session */
-    ret = stse_stop_volatile_KEK_session(p_stse, &volatile_KEK_session);
+    ret = stse_stop_volatile_KEk_session(p_stse, &volatile_KEk_session);
 
     return ret;
 }
@@ -1237,8 +1237,8 @@ stse_ReturnCode_t stse_write_symmetric_key_wrapped(
 
 #ifdef STSE_CONF_USE_SYMMETRIC_KEY_PROVISIONING_WRAPPED_AUTHENTICATED
 
-stse_ReturnCode_t stse_write_symmetric_key_wrapped_authenticated(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_write_symmetric_key_wrapped_authenticated(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_key,
     stsafea_generic_key_information_t *key_info,
     stse_ecc_key_type_t kek_session_ecc_type,
@@ -1246,7 +1246,7 @@ stse_ReturnCode_t stse_write_symmetric_key_wrapped_authenticated(
     stse_hash_algorithm_t signature_hash_algo,
     stse_ecc_key_type_t signature_private_ecc_key_type,
     PLAT_UI8 *signature_private_key) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     /* - Check stsafe handler initialization */
     if (p_stse == NULL) {
@@ -1257,13 +1257,13 @@ stse_ReturnCode_t stse_write_symmetric_key_wrapped_authenticated(
         return (STSE_COMMAND_CODE_NOT_SUPPORTED);
     }
 
-    stse_session_t volatile_KEK_session;
-    stsafea_session_clear_context(&volatile_KEK_session);
+    stse_session_t volatile_KEk_session;
+    stsafea_session_clear_context(&volatile_KEk_session);
 
     /* - Start volatile KEK Authenticated */
-    ret = stse_start_volatile_KEK_session_authenticated(
+    ret = stse_start_volatile_KEk_session_authenticated(
         p_stse,
-        &volatile_KEK_session,
+        &volatile_KEk_session,
         kek_session_ecc_type,
         signature_public_key_slot_number,
         signature_hash_algo,
@@ -1292,9 +1292,9 @@ stse_ReturnCode_t stse_write_symmetric_key_wrapped_authenticated(
     envelope[key_info->info_length + envelope_key_length] = 0x80;
 
     /* - Wrap the envelope */
-    ret = stse_KEK_wrap(
+    ret = stse_KEk_wrap(
         p_stse,
-        &volatile_KEK_session,
+        &volatile_KEk_session,
         envelope,
         envelope_length,
         envelope,
@@ -1313,7 +1313,7 @@ stse_ReturnCode_t stse_write_symmetric_key_wrapped_authenticated(
     }
 
     /* - Close Volatile KEK session */
-    ret = stse_stop_volatile_KEK_session(p_stse, &volatile_KEK_session);
+    ret = stse_stop_volatile_KEk_session(p_stse, &volatile_KEk_session);
 
     return ret;
 }
@@ -1321,13 +1321,13 @@ stse_ReturnCode_t stse_write_symmetric_key_wrapped_authenticated(
 
 #ifdef STSE_CONF_USE_SYMMETRIC_KEY_ESTABLISHMENT
 
-stse_ReturnCode_t stse_establish_symmetric_key(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_establish_symmetric_key(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t ecc_key_type,
     PLAT_UI8 key_infos_count,
     stsafea_generic_key_information_t *key_infos_list,
     PLAT_UI8 *key_list) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     /* - HKDF variables */
     PLAT_UI8 p_hkdf_salt[STSAFEA_KEK_HKDF_SALT_SIZE] = STSAFEA_KEK_HKDF_SALT;
@@ -1376,7 +1376,7 @@ stse_ReturnCode_t stse_establish_symmetric_key(
     }
 
     /* - Generate stsafea ECDHE key pair */
-    ret = stsafea_generate_ECDHE_key_pair(
+    ret = stsafea_generate_ECDHe_key_pair(
         p_stse,
         ecc_key_type,
         stsafe_public_key);
@@ -1439,8 +1439,8 @@ stse_ReturnCode_t stse_establish_symmetric_key(
 
 #ifdef STSE_CONF_USE_SYMMETRIC_KEY_ESTABLISHMENT_AUTHENTICATED
 
-stse_ReturnCode_t stse_establish_symmetric_key_authenticated(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_establish_symmetric_key_authenticated(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t ecc_key_type,
     PLAT_UI8 key_infos_count,
     stsafea_generic_key_information_t *key_infos_list,
@@ -1449,7 +1449,7 @@ stse_ReturnCode_t stse_establish_symmetric_key_authenticated(
     stse_hash_algorithm_t hash_algo,
     stse_ecc_key_type_t private_ecc_key_type,
     PLAT_UI8 *private_key) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
@@ -1513,7 +1513,7 @@ stse_ReturnCode_t stse_establish_symmetric_key_authenticated(
     }
 
     /* - Generate stsafe ECDHE key pair */
-    ret = stsafea_generate_ECDHE_key_pair(
+    ret = stsafea_generate_ECDHe_key_pair(
         p_stse,
         ecc_key_type,
         stsafe_ecdhe_public_key);

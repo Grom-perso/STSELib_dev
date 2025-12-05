@@ -47,10 +47,10 @@ typedef enum {
  * \param[in] 	p_stse 					Pointer to STSE Handler
  * \param[in] 	key_type				ECC key type for ECDHE
  * \param[in] 	host_ecdhe_public_key	Pointer to host ECDHE public key
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_start_volatile_KEK_session(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_start_volatile_KEk_session(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *host_ecdhe_public_key);
 
@@ -64,10 +64,10 @@ stse_ReturnCode_t stsafea_start_volatile_KEK_session(
  * \param[in] 	signature_public_key_slot_number	Slot number of signature public key
  * \param[in] 	signature_key_type				Signature key type
  * \param[in] 	p_signature						Pointer to signature buffer
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_start_volatile_KEK_session_authenticated(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_start_volatile_KEk_session_authenticated(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t ecdhe_key_type,
     PLAT_UI8 *host_ecdhe_public_key,
     stse_hash_algorithm_t hash_algo,
@@ -79,10 +79,10 @@ stse_ReturnCode_t stsafea_start_volatile_KEK_session_authenticated(
  * \brief 		Stop volatile KEK session
  * \details 	This service terminates the active volatile Key Encryption Key session
  * \param[in] 	p_stse 		Pointer to STSE Handler
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_stop_volatile_KEK_session(
-    stse_Handler_t *p_stse);
+stse_return_code_t stsafea_stop_volatile_KEk_session(
+    stse_handler_t *p_stse);
 
 /**
  * \brief 		Verify the signature in arguments
@@ -95,11 +95,11 @@ stse_ReturnCode_t stsafea_stop_volatile_KEK_session(
  * \param[in] 	message_length 			Message length
  * \param[in] 	eddsa_variant 			Flag indicating a pre-hashed EdDSA (1) message or a pure EdDSA (0) plaintext message. Used only in case of Edwards25519 public key
  * \param[out] 	p_signature_validity		Signature validity flag (1 = valid signature, invalid otherwise)
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_ecc_verify_signature.dox
  */
-stse_ReturnCode_t stsafea_ecc_verify_signature(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_ecc_verify_signature(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key,
     PLAT_UI8 *p_signature,
@@ -117,11 +117,11 @@ stse_ReturnCode_t stsafea_ecc_verify_signature(
  * \param[in] 	p_message 				Message used in signature
  * \param[in] 	message_length 			Message length
  * \param[out] 	p_signature 				Signature buffer
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_ecc_verify_signature.dox
  */
-stse_ReturnCode_t stsafea_ecc_generate_signature(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_ecc_generate_signature(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_message,
@@ -136,10 +136,10 @@ stse_ReturnCode_t stsafea_ecc_generate_signature(
  * \param[in] 	key_type				ECC key type
  * \param[in] 	p_public_key				Pointer to the peer's public key
  * \param[out] 	p_shared_secret			Pointer to buffer for the shared secret
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_ecc_establish_shared_secret(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_ecc_establish_shared_secret(
+    stse_handler_t *p_stse,
     PLAT_UI8 private_key_slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key,
@@ -153,10 +153,10 @@ stse_ReturnCode_t stsafea_ecc_establish_shared_secret(
  * \param[in] 	point_representation_id	Point representation identifier
  * \param[in] 	p_public_key_X			Pointer to X coordinate of public key
  * \param[out] 	p_public_key_Y			Pointer to buffer for Y coordinate of public key
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_ecc_decompress_public_key(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_ecc_decompress_public_key(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 point_representation_id,
     PLAT_UI8 *p_public_key_X,

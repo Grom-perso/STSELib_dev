@@ -37,37 +37,37 @@
 
 /*!
  * \brief      Platform delay initialization callback function
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_delay_init(void);
+stse_return_code_t stse_platform_delay_init(void);
 
 /*!
  * \brief      Platform power control initialization callback function
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_power_init(void);
+stse_return_code_t stse_platform_power_init(void);
 
 /*!
  * \brief      Platform CRC16 initialization callback function
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_crc16_init(void);
+stse_return_code_t stse_platform_crc16_init(void);
 
 /*!
  * \brief      Platform crypto library initialization callback function
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_crypto_init(void);
+stse_return_code_t stse_platform_crypto_init(void);
 
 /*!
  * \brief      Platform random number generation initialization callback function
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_generate_random_init(void);
+stse_return_code_t stse_platform_generate_random_init(void);
 
 /*!
  * \brief      Platform generate random callback function
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
 PLAT_UI32 stse_platform_generate_random(void);
 
@@ -92,7 +92,7 @@ PLAT_UI16 stse_platform_Crc16_Accumulate(PLAT_UI8 *pbuffer, PLAT_UI16 length);
  * \param[in]  delay_val length of the delay in milliseconds
  * \return     None
  */
-void stse_platform_Delay_ms(PLAT_UI32 delay_val);
+void stse_platform_delay_ms(PLAT_UI32 delay_val);
 
 /*!
  * \brief      Start a timeout counter of "timeout_val" ms
@@ -114,9 +114,9 @@ PLAT_UI8 stse_platform_timeout_ms_get_status(void);
  * \param[in]  p_digest Pointer to the digest
  * \param[in]  digestLen Length of the digest
  * \param[in]  p_signature Pointer to the signature
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_ecc_verify(stse_ecc_key_type_t key_type,
+stse_return_code_t stse_platform_ecc_verify(stse_ecc_key_type_t key_type,
                                            const PLAT_UI8 *p_pub_key,
                                            PLAT_UI8 *p_digest,
                                            PLAT_UI16 digestLen,
@@ -129,9 +129,9 @@ stse_ReturnCode_t stse_platform_ecc_verify(stse_ecc_key_type_t key_type,
  * \param[in]  payload_length Length of the payload
  * \param[out] p_hash Pointer to the hash output buffer
  * \param[out] hash_length Pointer to the length of the hash output buffer
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_hash_compute(stse_hash_algorithm_t hash_algo,
+stse_return_code_t stse_platform_hash_compute(stse_hash_algorithm_t hash_algo,
                                              PLAT_UI8 *p_payload, PLAT_UI16 payload_length,
                                              PLAT_UI8 *p_hash, PLAT_UI16 *hash_length);
 
@@ -148,9 +148,9 @@ stse_ReturnCode_t stse_platform_hash_compute(stse_hash_algorithm_t hash_algo,
  * \param[in]  key_type Type of ECC key
  * \param[out] p_priv_key Pointer to the private key buffer
  * \param[out] p_pub_key Pointer to the public key buffer
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_ecc_generate_key_pair(stse_ecc_key_type_t key_type,
+stse_return_code_t stse_platform_ecc_generate_key_pair(stse_ecc_key_type_t key_type,
                                                       PLAT_UI8 *p_priv_key,
                                                       PLAT_UI8 *p_pub_key);
 #endif
@@ -166,9 +166,9 @@ stse_ReturnCode_t stse_platform_ecc_generate_key_pair(stse_ecc_key_type_t key_ty
  * \param[in]  p_digest Pointer to the digest
  * \param[in]  digestLen Length of the digest
  * \param[out] p_signature Pointer to the signature buffer
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_ecc_sign(stse_ecc_key_type_t key_type,
+stse_return_code_t stse_platform_ecc_sign(stse_ecc_key_type_t key_type,
                                          PLAT_UI8 *p_priv_key,
                                          PLAT_UI8 *p_digest,
                                          PLAT_UI16 digestLen,
@@ -190,9 +190,9 @@ stse_ReturnCode_t stse_platform_ecc_sign(stse_ecc_key_type_t key_type,
  * \param[in]  p_pub_key Pointer to the public key
  * \param[in]  p_priv_key Pointer to the private key
  * \param[out] p_shared_secret Pointer to the shared secret buffer
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_ecc_ecdh(stse_ecc_key_type_t key_type,
+stse_return_code_t stse_platform_ecc_ecdh(stse_ecc_key_type_t key_type,
                                          const PLAT_UI8 *p_pub_key,
                                          const PLAT_UI8 *p_priv_key,
                                          PLAT_UI8 *p_shared_secret);
@@ -212,9 +212,9 @@ stse_ReturnCode_t stse_platform_ecc_ecdh(stse_ecc_key_type_t key_type,
  * \param[in]	key_length			Length of the key in bytes
  * \param[out]	p_output				Pointer to the output buffer for encrypted data
  * \param[out]	p_output_length		Pointer to store the output length
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_nist_kw_encrypt(PLAT_UI8 *p_payload, PLAT_UI32 payload_length,
+stse_return_code_t stse_platform_nist_kw_encrypt(PLAT_UI8 *p_payload, PLAT_UI32 payload_length,
                                                 PLAT_UI8 *p_key, PLAT_UI8 key_length,
                                                 PLAT_UI8 *p_output, PLAT_UI32 *p_output_length);
 #endif
@@ -226,9 +226,9 @@ stse_ReturnCode_t stse_platform_nist_kw_encrypt(PLAT_UI8 *p_payload, PLAT_UI32 p
  * \param[in]  p_key Pointer to the key
  * \param[in]  key_length Length of the key
  * \param[in]  exp_tag_size Expected tag size
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_aes_cmac_init(const PLAT_UI8 *p_key,
+stse_return_code_t stse_platform_aes_cmac_init(const PLAT_UI8 *p_key,
                                               PLAT_UI16 key_length,
                                               PLAT_UI16 exp_tag_size);
 
@@ -236,24 +236,24 @@ stse_ReturnCode_t stse_platform_aes_cmac_init(const PLAT_UI8 *p_key,
  * \brief      Append data to AES CMAC computation
  * \param[in]  p_input Pointer to the input data
  * \param[in]  length Length of the input data
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_aes_cmac_append(PLAT_UI8 *p_input, PLAT_UI16 length);
+stse_return_code_t stse_platform_aes_cmac_append(PLAT_UI8 *p_input, PLAT_UI16 length);
 
 /*!
  * \brief      Finish AES CMAC computation and get the tag
  * \param[out] p_tag Pointer to the tag buffer
  * \param[out] p_tagLen Pointer to the tag length
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_aes_cmac_compute_finish(PLAT_UI8 *p_tag, PLAT_UI8 *p_tagLen);
+stse_return_code_t stse_platform_aes_cmac_compute_finish(PLAT_UI8 *p_tag, PLAT_UI8 *p_tagLen);
 
 /*!
  * \brief      Finish AES CMAC verification
  * \param[in]  p_tag Pointer to the tag
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_aes_cmac_verify_finish(PLAT_UI8 *p_tag);
+stse_return_code_t stse_platform_aes_cmac_verify_finish(PLAT_UI8 *p_tag);
 
 /*!
  * \brief      Perform an AES CMAC encryption
@@ -264,9 +264,9 @@ stse_ReturnCode_t stse_platform_aes_cmac_verify_finish(PLAT_UI8 *p_tag);
  * \param[in]  exp_tag_size Expected tag size in bytes
  * \param[out] p_tag Pointer to Tag
  * \param[out] p_tag_length Pointer to Tag length value output
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_aes_cmac_compute(const PLAT_UI8 *p_payload, PLAT_UI16 payload_length,
+stse_return_code_t stse_platform_aes_cmac_compute(const PLAT_UI8 *p_payload, PLAT_UI16 payload_length,
                                                  const PLAT_UI8 *p_key, PLAT_UI16 key_length,
                                                  PLAT_UI16 exp_tag_size,
                                                  PLAT_UI8 *p_tag, PLAT_UI16 *p_tag_length);
@@ -279,9 +279,9 @@ stse_ReturnCode_t stse_platform_aes_cmac_compute(const PLAT_UI8 *p_payload, PLAT
  * \param[in]  key_length Length of the key in bytes
  * \param[in]  p_tag Pointer to Tag
  * \param[in]  tag_length Pointer to Tag length value output
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_aes_cmac_verify(const PLAT_UI8 *p_payload, PLAT_UI16 payload_length,
+stse_return_code_t stse_platform_aes_cmac_verify(const PLAT_UI8 *p_payload, PLAT_UI16 payload_length,
                                                 const PLAT_UI8 *p_key, PLAT_UI16 key_length,
                                                 const PLAT_UI8 *p_tag, PLAT_UI16 tag_length);
 
@@ -294,9 +294,9 @@ stse_ReturnCode_t stse_platform_aes_cmac_verify(const PLAT_UI8 *p_payload, PLAT_
  * \param[in]  key_length Length of the key
  * \param[out] p_encryptedtext Pointer to the encrypted payload
  * \param[out] p_encryptedtext_length Length of encrypted payload
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_aes_cbc_enc(const PLAT_UI8 *p_plaintext, PLAT_UI16 plaintext_length,
+stse_return_code_t stse_platform_aes_cbc_enc(const PLAT_UI8 *p_plaintext, PLAT_UI16 plaintext_length,
                                             PLAT_UI8 *p_initial_value, const PLAT_UI8 *p_key,
                                             PLAT_UI16 key_length, PLAT_UI8 *p_encryptedtext,
                                             PLAT_UI16 *p_encryptedtext_length);
@@ -310,9 +310,9 @@ stse_ReturnCode_t stse_platform_aes_cbc_enc(const PLAT_UI8 *p_plaintext, PLAT_UI
  * \param[in]  key_length Length of the key
  * \param[out] p_plaintext Pointer to PlainText payload
  * \param[out] p_plaintext_length Length of the PlainText payload
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_aes_cbc_dec(const PLAT_UI8 *p_encryptedtext, PLAT_UI16 encryptedtext_length,
+stse_return_code_t stse_platform_aes_cbc_dec(const PLAT_UI8 *p_encryptedtext, PLAT_UI16 encryptedtext_length,
                                             PLAT_UI8 *p_initial_value, const PLAT_UI8 *p_key,
                                             PLAT_UI16 key_length, PLAT_UI8 *p_plaintext,
                                             PLAT_UI16 *p_plaintext_length);
@@ -325,9 +325,9 @@ stse_ReturnCode_t stse_platform_aes_cbc_dec(const PLAT_UI8 *p_encryptedtext, PLA
  * \param[in]  key_length Length of the key
  * \param[out] p_encryptedtext Pointer to the encrypted payload
  * \param[out] p_encryptedtext_length Length of encrypted payload
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_aes_ecb_enc(const PLAT_UI8 *p_plaintext, PLAT_UI16 plaintext_length,
+stse_return_code_t stse_platform_aes_ecb_enc(const PLAT_UI8 *p_plaintext, PLAT_UI16 plaintext_length,
                                             const PLAT_UI8 *p_key, PLAT_UI16 key_length,
                                             PLAT_UI8 *p_encryptedtext, PLAT_UI16 *p_encryptedtext_length);
 
@@ -341,9 +341,9 @@ stse_ReturnCode_t stse_platform_aes_ecb_enc(const PLAT_UI8 *p_plaintext, PLAT_UI
  *  \param[in]  key_length 				Length of the key
  *  \param[out] p_output 				Pointer to encrypted output
  *  \param[out] p_output_length 			Length of the encrypted output
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_nist_kw_encrypt(PLAT_UI8 *p_payload, PLAT_UI32 payload_length,
+stse_return_code_t stse_platform_nist_kw_encrypt(PLAT_UI8 *p_payload, PLAT_UI32 payload_length,
                                                 PLAT_UI8 *p_key, PLAT_UI8 key_length,
                                                 PLAT_UI8 *p_output, PLAT_UI32 *p_output_length);
 
@@ -357,9 +357,9 @@ stse_ReturnCode_t stse_platform_nist_kw_encrypt(PLAT_UI8 *p_payload, PLAT_UI32 p
 *  \param[in] 		info_length 					Information length
 *  \param[out] 	p_output_keying_material 		Output keying material (OKM)
 *  \param[in] 		output_keying_material_length 	Output keying material expected length
-* \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+* \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
 */
-stse_ReturnCode_t stse_platform_hmac_sha256_compute(PLAT_UI8 *p_salt, PLAT_UI16 salt_length,
+stse_return_code_t stse_platform_hmac_sha256_compute(PLAT_UI8 *p_salt, PLAT_UI16 salt_length,
                                                     PLAT_UI8 *p_input_keying_material, PLAT_UI16 input_keying_material_length,
                                                     PLAT_UI8 *p_info, PLAT_UI16 info_length,
                                                     PLAT_UI8 *p_output_keying_material, PLAT_UI16 output_keying_material_length);
@@ -372,9 +372,9 @@ stse_ReturnCode_t stse_platform_hmac_sha256_compute(PLAT_UI8 *p_salt, PLAT_UI16 
 *  \param[in] 		input_keying_material_length 		Input keying material length
 *  \param[out] 	p_pseudorandom_key 					Pseudorandom key (PRK)
 *  \param[in] 		pseudorandom_key_expected_length 	Pseudorandom key length
-* \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+* \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
 */
-stse_ReturnCode_t stse_platform_hmac_sha256_extract(PLAT_UI8 *p_salt, PLAT_UI16 salt_length,
+stse_return_code_t stse_platform_hmac_sha256_extract(PLAT_UI8 *p_salt, PLAT_UI16 salt_length,
                                                     PLAT_UI8 *p_input_keying_material, PLAT_UI16 input_keying_material_length,
                                                     PLAT_UI8 *p_pseudorandom_key, PLAT_UI16 pseudorandom_key_expected_length);
 
@@ -386,37 +386,37 @@ stse_ReturnCode_t stse_platform_hmac_sha256_extract(PLAT_UI8 *p_salt, PLAT_UI16 
 *  \param[in] 		info_length 					Information length
 *  \param[out] 	p_output_keying_material 		Output keying material (OKM)
 *  \param[in] 		output_keying_material_length 	Output keying material expected length
-* \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+* \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
 */
-stse_ReturnCode_t stse_platform_hmac_sha256_expand(PLAT_UI8 *p_pseudorandom_key, PLAT_UI16 pseudorandom_key_length,
+stse_return_code_t stse_platform_hmac_sha256_expand(PLAT_UI8 *p_pseudorandom_key, PLAT_UI16 pseudorandom_key_length,
                                                    PLAT_UI8 *p_info, PLAT_UI16 info_length,
                                                    PLAT_UI8 *p_output_keying_material, PLAT_UI16 output_keying_material_length);
 
 /*!
 *  \brief Platform Abstraction function for STSAFE power control initialization
 */
-stse_ReturnCode_t stse_platform_power_ctrl_init(void);
+stse_return_code_t stse_platform_power_ctrl_init(void);
 
 /*!
 *  \brief Platform Abstraction function for target STSAFE power-on
 *  \param[in]  bus_id Target STSAFE bus ID
 *  \param[in]  dev_addr Target STSAFE device address
 */
-stse_ReturnCode_t stse_platform_power_on(PLAT_UI8 bus_id, PLAT_UI8 dev_addr);
+stse_return_code_t stse_platform_power_on(PLAT_UI8 bus_id, PLAT_UI8 dev_addr);
 
 /*!
  *  \brief Platform Abstraction function for target STSAFE power-off
  *  \param[in]  bus_id Target STSAFE bus ID
  *  \param[in]  dev_addr Target STSAFE device address
  */
-stse_ReturnCode_t stse_platform_power_off(PLAT_UI8 bus_id, PLAT_UI8 dev_addr);
+stse_return_code_t stse_platform_power_off(PLAT_UI8 bus_id, PLAT_UI8 dev_addr);
 
 /*!
  * \brief      Initialize I2C communication
  * \param[in]  bus_id I2C bus ID
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_i2c_init(PLAT_UI8 bus_id);
+stse_return_code_t stse_platform_i2c_init(PLAT_UI8 bus_id);
 
 /*!
  * \brief      Send data over I2C
@@ -425,9 +425,9 @@ stse_ReturnCode_t stse_platform_i2c_init(PLAT_UI8 bus_id);
  * \param[in]  speed I2C speed
  * \param[in]  p_frame Pointer to the data frame
  * \param[in]  frame_length Length of the data frame
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_i2c_send(PLAT_UI8 bus_id,
+stse_return_code_t stse_platform_i2c_send(PLAT_UI8 bus_id,
                                          PLAT_UI8 dev_addr,
                                          PLAT_UI16 speed,
                                          PLAT_UI8 *p_frame,
@@ -441,9 +441,9 @@ stse_ReturnCode_t stse_platform_i2c_send(PLAT_UI8 bus_id,
  * \param[in]  p_frame_header Pointer to the frame header
  * \param[out] p_frame_payload Pointer to the frame payload
  * \param[out] p_frame_payload_Length Pointer to the length of the frame payload
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_i2c_receive(
+stse_return_code_t stse_platform_i2c_receive(
     PLAT_UI8 bus_id,
     PLAT_UI8 dev_addr,
     PLAT_UI16 speed,
@@ -456,9 +456,9 @@ stse_ReturnCode_t stse_platform_i2c_receive(
  * \param[in]  bus_id I2C bus ID
  * \param[in]  dev_addr I2C device address
  * \param[in]  speed I2C speed
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_i2c_wake(PLAT_UI8 bus_id,
+stse_return_code_t stse_platform_i2c_wake(PLAT_UI8 bus_id,
                                          PLAT_UI8 dev_addr,
                                          PLAT_UI16 speed);
 
@@ -468,9 +468,9 @@ stse_ReturnCode_t stse_platform_i2c_wake(PLAT_UI8 bus_id,
  * \param[in]  dev_addr I2C device address
  * \param[in]  speed I2C speed
  * \param[in]  frame_length Length of the data frame
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_i2c_send_start(
+stse_return_code_t stse_platform_i2c_send_start(
     PLAT_UI8 bus_id,
     PLAT_UI8 dev_addr,
     PLAT_UI16 speed,
@@ -483,9 +483,9 @@ stse_ReturnCode_t stse_platform_i2c_send_start(
  * \param[in]  speed I2C speed
  * \param[in]  p_element Pointer to the data element
  * \param[in]  element_size Size of the data element
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_i2c_send_continue(
+stse_return_code_t stse_platform_i2c_send_continue(
     PLAT_UI8 bus_id,
     PLAT_UI8 dev_addr,
     PLAT_UI16 speed,
@@ -499,9 +499,9 @@ stse_ReturnCode_t stse_platform_i2c_send_continue(
  * \param[in]  speed I2C speed
  * \param[in]  p_element Pointer to the data element
  * \param[in]  element_size Size of the data element
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_i2c_send_stop(
+stse_return_code_t stse_platform_i2c_send_stop(
     PLAT_UI8 bus_id,
     PLAT_UI8 dev_addr,
     PLAT_UI16 speed,
@@ -514,9 +514,9 @@ stse_ReturnCode_t stse_platform_i2c_send_stop(
  * \param[in]  dev_addr I2C device address
  * \param[in]  speed I2C speed
  * \param[in]  frame_Length Length of the data frame
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_i2c_receive_start(
+stse_return_code_t stse_platform_i2c_receive_start(
     PLAT_UI8 bus_id,
     PLAT_UI8 dev_addr,
     PLAT_UI16 speed,
@@ -529,9 +529,9 @@ stse_ReturnCode_t stse_platform_i2c_receive_start(
  * \param[in]  speed I2C speed
  * \param[in]  p_element Pointer to the data element
  * \param[in]  element_size Size of the data element
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_i2c_receive_continue(
+stse_return_code_t stse_platform_i2c_receive_continue(
     PLAT_UI8 bus_id,
     PLAT_UI8 dev_addr,
     PLAT_UI16 speed,
@@ -545,9 +545,9 @@ stse_ReturnCode_t stse_platform_i2c_receive_continue(
  * \param[in]  speed I2C speed
  * \param[in]  p_element Pointer to the data element
  * \param[in]  element_size Size of the data element
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_i2c_receive_stop(
+stse_return_code_t stse_platform_i2c_receive_stop(
     PLAT_UI8 bus_id,
     PLAT_UI8 dev_addr,
     PLAT_UI16 speed,
@@ -557,18 +557,18 @@ stse_ReturnCode_t stse_platform_i2c_receive_stop(
 /*!
  * \brief      Initialize 1-wire communication
  * \param[in]  bus_id 1-wire bus ID
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_st1wire_init(PLAT_UI8 bus_id);
+stse_return_code_t stse_platform_st1wire_init(PLAT_UI8 bus_id);
 
 /*!
  * \brief      Wake up 1-wire device
  * \param[in]  bus_id 1-wire bus ID
  * \param[in]  dev_addr 1-wire device address
  * \param[in]  speed 1-wire speed
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_st1wire_wake(PLAT_UI8 bus_id,
+stse_return_code_t stse_platform_st1wire_wake(PLAT_UI8 bus_id,
                                              PLAT_UI8 dev_addr,
                                              PLAT_UI16 speed);
 
@@ -578,9 +578,9 @@ stse_ReturnCode_t stse_platform_st1wire_wake(PLAT_UI8 bus_id,
  * \param[in]  dev_addr 1-wire device address
  * \param[in]  speed 1-wire speed
  * \param[in]  frame_length Length of the data frame
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_st1wire_send_start(
+stse_return_code_t stse_platform_st1wire_send_start(
     PLAT_UI8 bus_id,
     PLAT_UI8 dev_addr,
     PLAT_UI16 speed,
@@ -593,9 +593,9 @@ stse_ReturnCode_t stse_platform_st1wire_send_start(
  * \param[in]  speed 1-wire speed
  * \param[in]  p_data Pointer to the data
  * \param[in]  data_size Size of the data
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_st1wire_send_continue(
+stse_return_code_t stse_platform_st1wire_send_continue(
     PLAT_UI8 bus_id,
     PLAT_UI8 dev_addr,
     PLAT_UI16 speed,
@@ -609,9 +609,9 @@ stse_ReturnCode_t stse_platform_st1wire_send_continue(
  * \param[in]  speed 1-wire speed
  * \param[in]  p_data Pointer to the data
  * \param[in]  data_size Size of the data
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_st1wire_send_stop(
+stse_return_code_t stse_platform_st1wire_send_stop(
     PLAT_UI8 bus_id,
     PLAT_UI8 dev_addr,
     PLAT_UI16 speed,
@@ -624,9 +624,9 @@ stse_ReturnCode_t stse_platform_st1wire_send_stop(
  * \param[in]  dev_addr 1-wire device address
  * \param[in]  speed 1-wire speed
  * \param[in]  frameLength Length of the data frame
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_st1wire_receive_start(
+stse_return_code_t stse_platform_st1wire_receive_start(
     PLAT_UI8 bus_id,
     PLAT_UI8 dev_addr,
     PLAT_UI16 speed,
@@ -639,9 +639,9 @@ stse_ReturnCode_t stse_platform_st1wire_receive_start(
  * \param[in]  speed 1-wire speed
  * \param[in]  p_data Pointer to the data
  * \param[in]  data_size Size of the data
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_st1wire_receive_continue(
+stse_return_code_t stse_platform_st1wire_receive_continue(
     PLAT_UI8 bus_id,
     PLAT_UI8 dev_addr,
     PLAT_UI16 speed,
@@ -655,9 +655,9 @@ stse_ReturnCode_t stse_platform_st1wire_receive_continue(
  * \param[in]  speed 1-wire speed
  * \param[in]  p_data Pointer to the data
  * \param[in]  data_size Size of the data
- * \return     \ref STSE_OK on success; \ref stse_ReturnCode_t error code otherwise
+ * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_platform_st1wire_receive_stop(
+stse_return_code_t stse_platform_st1wire_receive_stop(
     PLAT_UI8 bus_id,
     PLAT_UI8 dev_addr,
     PLAT_UI16 speed,

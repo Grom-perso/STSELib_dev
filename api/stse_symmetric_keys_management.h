@@ -43,11 +43,11 @@
  * \param[in] 	p_stse 			Pointer to STSE Handler
  * \param[in] 	host_ecc_key_type 		Key type
  * \param[in] 	host_keys 			Pointer to the key structure
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_host_key_provisioning.dox
  */
-stse_ReturnCode_t stse_host_key_provisioning(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_host_key_provisioning(
+    stse_handler_t *p_stse,
     stsafea_host_key_type_t host_ecc_key_type,
     stsafea_host_keys_t *host_keys);
 
@@ -58,11 +58,11 @@ stse_ReturnCode_t stse_host_key_provisioning(
  * \param[in] 	host_key_type 		Key type
  * \param[in] 	host_keys 			Pointer to the key structure
  * \param[in] 	ecdhe_key_type 		ECC key type to use in KEK session
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_host_key_provisioning_wrapped.dox
  */
-stse_ReturnCode_t stse_host_key_provisioning_wrapped(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_host_key_provisioning_wrapped(
+    stse_handler_t *p_stse,
     stsafea_host_key_type_t host_key_type,
     stsafea_host_keys_t *host_keys,
     stse_ecc_key_type_t ecdhe_key_type);
@@ -78,12 +78,12 @@ stse_ReturnCode_t stse_host_key_provisioning_wrapped(
  * \param[in] 	signature_hash_algo 				Hash algo used for the signature digest
  * \param[in] 	signature_private_key_type 			Key type of the private key used in authentication
  * \param[in] 	signature_private_key 				Private key used in authentication
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_host_key_provisioning_wrapped_authenticated.dox
  * \warning Few specific cryptographic library required to have public key concatenated to private key for EdDSA mechanism. In such case, p_private_key pointer shall reference concatenated key pair buffer's address.
  */
-stse_ReturnCode_t stse_host_key_provisioning_wrapped_authenticated(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_host_key_provisioning_wrapped_authenticated(
+    stse_handler_t *p_stse,
     stsafea_host_key_type_t host_key_type,
     stsafea_host_keys_t *host_keys,
     stse_ecc_key_type_t ecdhe_key_type,
@@ -100,11 +100,11 @@ stse_ReturnCode_t stse_host_key_provisioning_wrapped_authenticated(
  * \param[in] 	host_secure_channel_keys_type 		Host secure channel keys type
  * \param[in] 	host_mac_key 						Pointer to the host mac key buffer
  * \param[in] 	host_cipher_key 					Pointer to the host cipher key buffer
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_host_key_provisioning.dox
  */
-stse_ReturnCode_t stse_establish_host_key(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_establish_host_key(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t ecdh_key_type,
     stsafea_host_key_type_t host_secure_channel_keys_type,
     PLAT_UI8 *host_mac_key,
@@ -121,12 +121,12 @@ stse_ReturnCode_t stse_establish_host_key(
  * \param[in] 	tbs_private_key 					Private key associated to public key slot used for the signature
  * \param[in] 	host_mac_key 						Pointer to the host mac key buffer
  * \param[in] 	host_cipher_key 					Pointer to the host cipher key buffer
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_host_key_provisioning.dox
  * \warning Few specific cryptographic library required to have public key concatenated to private key for EdDSA mechanism. In such case, p_private_key pointer shall reference concatenated key pair buffer's address.
  */
-stse_ReturnCode_t stse_establish_host_key_authenticated(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_establish_host_key_authenticated(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t ecdh_key_type,
     stsafea_host_key_type_t host_secure_channel_keys_type,
     stse_hash_algorithm_t tbs_hash_algo,
@@ -140,10 +140,10 @@ stse_ReturnCode_t stse_establish_host_key_authenticated(
  * \details 	Get the number of slot in symmetric key table
  * \param[in] 	p_stse 			 		Pointer to STSE Handler
  * \param[out] 	p_symmetric_key_slot_count	Number of slot in symmetric key table
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_get_symmetric_key_slots_count(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_get_symmetric_key_slots_count(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_symmetric_key_slot_count);
 
 /**
@@ -152,10 +152,10 @@ stse_ReturnCode_t stse_get_symmetric_key_slots_count(
  * \param[in] 	p_stse 					Pointer to STSE Handler
  * \param[in] 	slot_number					Slot number to get the information
  * \param[out]  p_symmetric_key_slot_info	Buffer to store the information structure
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_get_symmetric_key_slot_info(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_get_symmetric_key_slot_info(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stsafea_symmetric_key_slot_information_t *p_symmetric_key_slot_info);
 
@@ -165,10 +165,10 @@ stse_ReturnCode_t stse_get_symmetric_key_slot_info(
  * \param[in] 	p_stse 			 			Pointer to STSE Handler
  * \param[in]	total_slot_count			Target Device total symmetric key slots number
  * \param[out] 	symmetric_key_table_info	Buffer to store the information structure list for all slots
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_get_symmetric_key_table_info(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_get_symmetric_key_table_info(
+    stse_handler_t *p_stse,
     PLAT_UI16 total_slot_count,
     stsafea_symmetric_key_slot_information_t *symmetric_key_table_info);
 
@@ -178,10 +178,10 @@ stse_ReturnCode_t stse_get_symmetric_key_table_info(
  * \param[in] 	p_stse 				Pointer to STSE Handler
  * \param[in] 	slot_number			Slot number of the slot to query
  * \param[out] 	p_ctrl_fields		Output structure for the provisioning control fields of the target slot
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_get_symmetric_key_slot_provisioning_ctrl_fields(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_get_symmetric_key_slot_provisioning_ctrl_fields(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stsafea_symmetric_key_slot_provisioning_ctrl_fields_t *p_ctrl_fields);
 
@@ -191,10 +191,10 @@ stse_ReturnCode_t stse_get_symmetric_key_slot_provisioning_ctrl_fields(
  * \param[in] 	p_stse 				Pointer to STSE Handler
  * \param[in] 	slot_number			Slot number of the slot to query
  * \param[in] 	p_ctrl_fields		Input structure for the provisioning control fields of the target slot
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_set_symmetric_key_slot_provisioning_ctrl_fields(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_set_symmetric_key_slot_provisioning_ctrl_fields(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stsafea_symmetric_key_slot_provisioning_ctrl_fields_t *p_ctrl_fields);
 
@@ -204,11 +204,11 @@ stse_ReturnCode_t stse_set_symmetric_key_slot_provisioning_ctrl_fields(
  * \param[in] 	p_stse 			 	 Pointer to STSE Handler
  * \param[in] 	p_key 				 Key material to write in STSE
  * \param[in] 	p_symmetric_key_info	 Key information used to populate the symmetric key table
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_write_symmetric_key_plaintext.dox
  */
-stse_ReturnCode_t stse_write_symmetric_key_plaintext(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_write_symmetric_key_plaintext(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_key,
     stsafea_generic_key_information_t *p_symmetric_key_info);
 
@@ -219,11 +219,11 @@ stse_ReturnCode_t stse_write_symmetric_key_plaintext(
  * \param[in] 	p_key 				 Key material to write in STSE
  * \param[in] 	key_info 			 Key information used to populate the symmetric key table
  * \param[in]	kek_session_ecc_type Key type to use in volatile KEK session
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_write_symmetric_key_wrapped.dox
  */
-stse_ReturnCode_t stse_write_symmetric_key_wrapped(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_write_symmetric_key_wrapped(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_key,
     stsafea_generic_key_information_t *key_info,
     stse_ecc_key_type_t kek_session_ecc_type);
@@ -239,12 +239,12 @@ stse_ReturnCode_t stse_write_symmetric_key_wrapped(
  * \param[in] 	signature_hash_algo 				Hash algo used for the signature digest
  * \param[in] 	signature_private_key_type 			Key type of the private key used in authentication
  * \param[in] 	signature_private_key 				Private key used in authentication
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_write_symmetric_key_wrapped_authenticated.dox
  * \warning Few specific cryptographic library required to have public key concatenated to private key for EdDSA mechanism. In such case, p_private_key pointer shall reference concatenated key pair buffer's address.
  */
-stse_ReturnCode_t stse_write_symmetric_key_wrapped_authenticated(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_write_symmetric_key_wrapped_authenticated(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_key,
     stsafea_generic_key_information_t *key_info,
     stse_ecc_key_type_t kek_session_ecc_type,
@@ -261,11 +261,11 @@ stse_ReturnCode_t stse_write_symmetric_key_wrapped_authenticated(
  * \param[in]   key_infos_count		Number of keys
  * \param[in] 	key_infos_list 		Key information list used to populate the symmetric key table
  * \param[out]	key_list			Key list resulting of the ECDHE ( OKM[1..N] )
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_establish_symmetric_key.dox
  */
-stse_ReturnCode_t stse_establish_symmetric_key(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_establish_symmetric_key(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t ecc_key_type,
     PLAT_UI8 key_infos_count,
     stsafea_generic_key_information_t *key_infos_list,
@@ -283,12 +283,12 @@ stse_ReturnCode_t stse_establish_symmetric_key(
  * \param[in] 	hash_algo						 Hash algorithm ID used to hash the authentication digest
  * \param[in] 	private_key_type				 Key type of the authentication private key
  * \param[in] 	private_key						 Authentication private key buffer
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_establish_symmetric_key.dox
  * \warning Few specific cryptographic library required to have public key concatenated to private key for EdDSA mechanism. In such case, p_private_key pointer shall reference concatenated key pair buffer's address.
  */
-stse_ReturnCode_t stse_establish_symmetric_key_authenticated(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_establish_symmetric_key_authenticated(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 key_infos_count,
     stsafea_generic_key_information_t *key_infos_list,

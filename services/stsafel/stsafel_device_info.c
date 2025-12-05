@@ -22,8 +22,8 @@
 
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
 
-stse_ReturnCode_t stsafel_get_device_UID(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafel_get_device_UID(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_device_uid) {
     return stsafel_get_data(
         p_stse,
@@ -34,8 +34,8 @@ stse_ReturnCode_t stsafel_get_device_UID(
         p_device_uid);
 }
 
-stse_ReturnCode_t stsafel_get_device_traceability(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafel_get_device_traceability(
+    stse_handler_t *p_stse,
     stsafel_device_traceability_t *p_device_traceability) {
     return stsafel_get_data(
         p_stse,
@@ -46,8 +46,8 @@ stse_ReturnCode_t stsafel_get_device_traceability(
         (PLAT_UI8 *)p_device_traceability);
 }
 
-stse_ReturnCode_t stsafel_get_data(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafel_get_data(
+    stse_handler_t *p_stse,
     stsafel_device_info_tag_t tag,
     PLAT_UI16 additional_data_length,
     PLAT_UI8 *p_additional_data,
@@ -66,24 +66,24 @@ stse_ReturnCode_t stsafel_get_data(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eTag, 1, (PLAT_UI8 *)&tag);
-    stse_frame_element_allocate_push(&CmdFrame, eAdditional_data, additional_data_length, p_additional_data);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eTag, 1, (PLAT_UI8 *)&tag);
+    stse_frame_element_allocate_push(&cmd_frame, eAdditional_data, additional_data_length, p_additional_data);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, STSAFEL_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&Rsp_frame, eDevice_info, device_info_expected_length, p_device_info);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEL_HEADER_SIZE, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eDevice_info, device_info_expected_length, p_device_info);
 
     /*- Perform Transfer*/
     return stsafel_frame_transfer(p_stse,
-                                  &CmdFrame,
-                                  &Rsp_frame);
+                                  &cmd_frame,
+                                  &rsp_frame);
 }
 
-stse_ReturnCode_t stsafel_put_data(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafel_put_data(
+    stse_handler_t *p_stse,
     stsafel_device_info_tag_t tag,
     PLAT_UI16 device_info_length,
     PLAT_UI8 *p_device_info) {
@@ -99,19 +99,19 @@ stse_ReturnCode_t stsafel_put_data(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eTag, 1, (PLAT_UI8 *)&tag);
-    stse_frame_element_allocate_push(&CmdFrame, eDevice_info, device_info_length, p_device_info);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eTag, 1, (PLAT_UI8 *)&tag);
+    stse_frame_element_allocate_push(&cmd_frame, eDevice_info, device_info_length, p_device_info);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, STSAFEL_HEADER_SIZE, &rsp_header);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEL_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/
     return stsafel_frame_transfer(p_stse,
-                                  &CmdFrame,
-                                  &Rsp_frame);
+                                  &cmd_frame,
+                                  &rsp_frame);
 }
 
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */

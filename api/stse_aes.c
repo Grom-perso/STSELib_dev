@@ -17,8 +17,8 @@
 
 #include "api/stse_aes.h"
 
-stse_ReturnCode_t stse_aes_ecb_encrypt(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ecb_encrypt(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI16 message_length,
     PLAT_UI8 *p_plaintext_message,
@@ -35,8 +35,8 @@ stse_ReturnCode_t stse_aes_ecb_encrypt(
         p_encrypted_message);
 }
 
-stse_ReturnCode_t stse_aes_ecb_decrypt(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ecb_decrypt(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI16 message_length,
     PLAT_UI8 *p_encrypted_message,
@@ -53,8 +53,8 @@ stse_ReturnCode_t stse_aes_ecb_decrypt(
         p_plaintext_message);
 }
 
-stse_ReturnCode_t stse_aes_ccm_encrypt(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_encrypt(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI8 authentication_tag_length,
     PLAT_UI8 *p_nonce,
@@ -81,10 +81,10 @@ stse_ReturnCode_t stse_aes_ccm_encrypt(
         counter_presence, p_counter);
 }
 
-stse_ReturnCode_t stse_aes_ccm_encrypt_start(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_encrypt_start(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
-    PLAT_UI16 Nonce_length,
+    PLAT_UI16 nonce_length,
     PLAT_UI8 *p_nonce,
     PLAT_UI16 total_associated_data_length,
     PLAT_UI32 total_message_length,
@@ -102,7 +102,7 @@ stse_ReturnCode_t stse_aes_ccm_encrypt_start(
     return stsafea_aes_ccm_encrypt_start(
         p_stse,
         slot_number,
-        Nonce_length,
+        nonce_length,
         p_nonce,
         total_associated_data_length,
         total_message_length,
@@ -115,8 +115,8 @@ stse_ReturnCode_t stse_aes_ccm_encrypt_start(
         p_counter);
 }
 
-stse_ReturnCode_t stse_aes_ccm_encrypt_process(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_encrypt_process(
+    stse_handler_t *p_stse,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
     PLAT_UI16 message_chunk_length,
@@ -135,8 +135,8 @@ stse_ReturnCode_t stse_aes_ccm_encrypt_process(
         p_encrypted_message_chunk);
 }
 
-stse_ReturnCode_t stse_aes_ccm_encrypt_finish(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_encrypt_finish(
+    stse_handler_t *p_stse,
     PLAT_UI8 authentication_tag_length,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
@@ -159,8 +159,8 @@ stse_ReturnCode_t stse_aes_ccm_encrypt_finish(
         p_encrypted_authentication_tag);
 }
 
-stse_ReturnCode_t stse_aes_ccm_decrypt(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_decrypt(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI8 authentication_tag_length,
     PLAT_UI8 *p_nonce,
@@ -189,11 +189,11 @@ stse_ReturnCode_t stse_aes_ccm_decrypt(
         p_plaintext_message);
 }
 
-stse_ReturnCode_t stse_aes_gcm_encrypt(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_encrypt(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI8 authentication_tag_length,
-    PLAT_UI16 IV_length,
+    PLAT_UI16 iv_length,
     PLAT_UI8 *p_iv,
     PLAT_UI16 associated_data_length,
     PLAT_UI8 *p_associated_data,
@@ -209,7 +209,7 @@ stse_ReturnCode_t stse_aes_gcm_encrypt(
         p_stse,
         slot_number,
         authentication_tag_length,
-        IV_length,
+        iv_length,
         p_iv,
         associated_data_length,
         p_associated_data,
@@ -219,10 +219,10 @@ stse_ReturnCode_t stse_aes_gcm_encrypt(
         p_authentication_tag);
 }
 
-stse_ReturnCode_t stse_aes_ccm_decrypt_start(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_decrypt_start(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
-    PLAT_UI16 Nonce_length,
+    PLAT_UI16 nonce_length,
     PLAT_UI8 *p_nonce,
     PLAT_UI16 total_associated_data_length,
     PLAT_UI16 total_ciphertext_length,
@@ -238,7 +238,7 @@ stse_ReturnCode_t stse_aes_ccm_decrypt_start(
     return stsafea_aes_ccm_decrypt_start(
         p_stse,
         slot_number,
-        Nonce_length,
+        nonce_length,
         p_nonce,
         total_associated_data_length,
         total_ciphertext_length,
@@ -249,8 +249,8 @@ stse_ReturnCode_t stse_aes_ccm_decrypt_start(
         p_plaintext_message_chunk);
 }
 
-stse_ReturnCode_t stse_aes_ccm_decrypt_process(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_decrypt_process(
+    stse_handler_t *p_stse,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
     PLAT_UI16 message_chunk_length,
@@ -269,8 +269,8 @@ stse_ReturnCode_t stse_aes_ccm_decrypt_process(
         p_plaintext_message_chunk);
 }
 
-stse_ReturnCode_t stse_aes_ccm_decrypt_finish(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_ccm_decrypt_finish(
+    stse_handler_t *p_stse,
     PLAT_UI8 authentication_tag_length,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
@@ -295,10 +295,10 @@ stse_ReturnCode_t stse_aes_ccm_decrypt_finish(
         p_plaintext_message_chunk);
 }
 
-stse_ReturnCode_t stse_aes_gcm_encrypt_start(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_encrypt_start(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
-    PLAT_UI16 IV_length,
+    PLAT_UI16 iv_length,
     PLAT_UI8 *p_iv,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
@@ -312,7 +312,7 @@ stse_ReturnCode_t stse_aes_gcm_encrypt_start(
     return stsafea_aes_gcm_encrypt_start(
         p_stse,
         slot_number,
-        IV_length,
+        iv_length,
         p_iv,
         associated_data_chunk_length,
         p_associated_data_chunk,
@@ -321,8 +321,8 @@ stse_ReturnCode_t stse_aes_gcm_encrypt_start(
         p_encrypted_message_chunk);
 }
 
-stse_ReturnCode_t stse_aes_gcm_encrypt_process(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_encrypt_process(
+    stse_handler_t *p_stse,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
     PLAT_UI16 message_chunk_length,
@@ -341,8 +341,8 @@ stse_ReturnCode_t stse_aes_gcm_encrypt_process(
         p_encrypted_message_chunk);
 }
 
-stse_ReturnCode_t stse_aes_gcm_encrypt_finish(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_encrypt_finish(
+    stse_handler_t *p_stse,
     PLAT_UI8 authentication_tag_length,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
@@ -365,11 +365,11 @@ stse_ReturnCode_t stse_aes_gcm_encrypt_finish(
         p_authentication_tag);
 }
 
-stse_ReturnCode_t stse_aes_gcm_decrypt(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_decrypt(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI8 authentication_tag_length,
-    PLAT_UI16 IV_length,
+    PLAT_UI16 iv_length,
     PLAT_UI8 *p_iv,
     PLAT_UI16 associated_data_length,
     PLAT_UI8 *p_associated_data,
@@ -386,7 +386,7 @@ stse_ReturnCode_t stse_aes_gcm_decrypt(
         p_stse,
         slot_number,
         authentication_tag_length,
-        IV_length,
+        iv_length,
         p_iv,
         associated_data_length,
         p_associated_data,
@@ -397,10 +397,10 @@ stse_ReturnCode_t stse_aes_gcm_decrypt(
         p_plaintext_message);
 }
 
-stse_ReturnCode_t stse_aes_gcm_decrypt_start(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_decrypt_start(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
-    PLAT_UI16 IV_length,
+    PLAT_UI16 iv_length,
     PLAT_UI8 *p_iv,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
@@ -414,7 +414,7 @@ stse_ReturnCode_t stse_aes_gcm_decrypt_start(
     return stsafea_aes_gcm_decrypt_start(
         p_stse,
         slot_number,
-        IV_length,
+        iv_length,
         p_iv,
         associated_data_chunk_length,
         p_associated_data_chunk,
@@ -423,8 +423,8 @@ stse_ReturnCode_t stse_aes_gcm_decrypt_start(
         p_plaintext_message_chunk);
 }
 
-stse_ReturnCode_t stse_aes_gcm_decrypt_process(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_decrypt_process(
+    stse_handler_t *p_stse,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,
     PLAT_UI16 message_chunk_length,
@@ -443,8 +443,8 @@ stse_ReturnCode_t stse_aes_gcm_decrypt_process(
         p_plaintext_message_chunk);
 }
 
-stse_ReturnCode_t stse_aes_gcm_decrypt_finish(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gcm_decrypt_finish(
+    stse_handler_t *p_stse,
     PLAT_UI8 authentication_tag_length,
     PLAT_UI16 associated_data_chunk_length,
     PLAT_UI8 *p_associated_data_chunk,

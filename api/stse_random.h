@@ -34,10 +34,10 @@
  * \param[in]		p_stse 			Pointer to target STSecureElement device
  * \param[in,out] 	p_random 		Pointer to random buffer
  * \param[in,out] 	random_size 	Random size
- * \return 			\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 			\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_generate_random(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_generate_random(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_random,
     PLAT_UI16 random_size);
 

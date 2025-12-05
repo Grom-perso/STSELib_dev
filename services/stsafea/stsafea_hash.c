@@ -81,8 +81,8 @@ const stsafea_hash_info_t stsafea_hash_info_table[] =
     defined(STSE_CONF_HASH_SHA_256) || defined(STSE_CONF_HASH_SHA_384) || defined(STSE_CONF_HASH_SHA_512) || \
     defined(STSE_CONF_HASH_SHA_3_256) || defined(STSE_CONF_HASH_SHA_3_384) || defined(STSE_CONF_HASH_SHA_3_512)
 
-stse_ReturnCode_t stsafea_start_hash(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_start_hash(
+    stse_handler_t *p_stse,
     stse_hash_algorithm_t sha_algorithm,
     PLAT_UI8 *p_message,
     PLAT_UI16 message_size) {
@@ -99,23 +99,23 @@ stse_ReturnCode_t stsafea_start_hash(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eHashAlgo, hash_algo_id_length, (PLAT_UI8 *)&stsafea_hash_info_table[sha_algorithm].id);
-    stse_frame_element_allocate_push(&CmdFrame, eMessage, message_size, p_message);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eHashAlgo, hash_algo_id_length, (PLAT_UI8 *)&stsafea_hash_info_table[sha_algorithm].id);
+    stse_frame_element_allocate_push(&cmd_frame, eMessage, message_size, p_message);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, 1, &rsp_header);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, 1, &rsp_header);
 
     /*- Perform Transfer*/
     return stsafea_frame_transfer(p_stse,
-                                  &CmdFrame,
-                                  &Rsp_frame);
+                                  &cmd_frame,
+                                  &rsp_frame);
 }
 
-stse_ReturnCode_t stsafea_process_hash(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_process_hash(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_message,
     PLAT_UI16 message_size) {
     PLAT_UI8 cmd_header[STSAFEA_EXT_HEADER_SIZE] = {STSAFEA_EXTENDED_COMMAND_PREFIX, STSAFEA_EXTENDED_CMD_PROCESS_HASH};
@@ -130,28 +130,28 @@ stse_ReturnCode_t stsafea_process_hash(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eMessage, message_size, p_message);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eMessage, message_size, p_message);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, 1, &rsp_header);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, 1, &rsp_header);
 
     /*- Perform Transfer*/
     return stsafea_frame_transfer(p_stse,
-                                  &CmdFrame,
-                                  &Rsp_frame);
+                                  &cmd_frame,
+                                  &rsp_frame);
 }
 
-stse_ReturnCode_t stsafea_finish_hash(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_finish_hash(
+    stse_handler_t *p_stse,
     stse_hash_algorithm_t sha_algorithm,
     PLAT_UI8 *p_message,
     PLAT_UI16 message_size,
     PLAT_UI8 *p_digest,
     PLAT_UI16 *p_digest_size) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     PLAT_UI8 cmd_header[STSAFEA_EXT_HEADER_SIZE] = {STSAFEA_EXTENDED_COMMAND_PREFIX, STSAFEA_EXTENDED_CMD_FINISH_HASH};
     PLAT_UI8 rsp_header;
     PLAT_UI8 digest_size_array[STSAFEA_GENERIC_LENGTH_SIZE];
@@ -167,20 +167,20 @@ stse_ReturnCode_t stsafea_finish_hash(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eMessage, message_size, p_message);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eMessage, message_size, p_message);
 
     /*- Create Rsp frame and populate elements */
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&Rsp_frame, eDigestSize, STSAFEA_GENERIC_LENGTH_SIZE, digest_size_array);
-    stse_frame_element_allocate_push(&Rsp_frame, eDigest, expected_digest_size, p_digest);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eDigestSize, STSAFEA_GENERIC_LENGTH_SIZE, digest_size_array);
+    stse_frame_element_allocate_push(&rsp_frame, eDigest, expected_digest_size, p_digest);
 
     /*- Perform Transfer*/
     ret = stsafea_frame_transfer(p_stse,
-                                 &CmdFrame,
-                                 &Rsp_frame);
+                                 &cmd_frame,
+                                 &rsp_frame);
 
     if (ret == STSE_OK) {
         *p_digest_size = ARRAY_2B_SWAP_TO_UI16(digest_size_array);

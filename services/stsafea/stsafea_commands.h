@@ -132,7 +132,7 @@ typedef enum stsafea_extended_cmd_code_t {
 
 extern const PLAT_UI16 stsafea_maximum_command_length[4];
 
-stse_ReturnCode_t stsafea_get_command_count(stse_Handler_t *p_stse, PLAT_UI8 *p_command_count);
+stse_return_code_t stsafea_get_command_count(stse_handler_t *p_stse, PLAT_UI8 *p_command_count);
 
 /**
  * \brief 		Get command access control table
@@ -141,14 +141,14 @@ stse_ReturnCode_t stsafea_get_command_count(stse_Handler_t *p_stse, PLAT_UI8 *p_
  * \param[in] 	total_command_count		Total number of commands
  * \param[out] 	p_change_rights			Pointer to change rights structure
  * \param[out] 	p_record_table			Pointer to record table array
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_get_command_AC_table(stse_Handler_t *p_stse,
+stse_return_code_t stsafea_get_command_Ac_table(stse_handler_t *p_stse,
                                                PLAT_UI8 total_command_count,
                                                stse_cmd_authorization_CR_t *p_change_rights,
                                                stse_cmd_authorization_record_t *p_record_table);
 
-stse_ReturnCode_t stsafea_perso_info_update(stse_Handler_t *p_stse);
+stse_return_code_t stsafea_perso_info_update(stse_handler_t *p_stse);
 
 /**
  * \brief 		Get command access conditions from personalization info

@@ -104,10 +104,10 @@ typedef struct
  * \details 	This service format and send/receive the put life cycle command/response
  * \param[in] 	p_stse 				Pointer to STSE Handler
  * \param[in] 	life_cycle_state 	Life cycle state
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_put_life_cyle_state(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_put_life_cyle_state(
+    stse_handler_t *p_stse,
     stsafea_life_cycle_state_t life_cycle_state);
 
 /**
@@ -115,10 +115,10 @@ stse_ReturnCode_t stsafea_put_life_cyle_state(
  * \details 	This service format and send/receive the put life cycle command/response
  * \param[in] 	p_stse	 			Pointer to STSE Handler
  * \param[out] 	p_life_cycle_state 	Life cycle state
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_query_life_cycle_state(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_query_life_cycle_state(
+    stse_handler_t *p_stse,
     stsafea_life_cycle_state_t *p_life_cycle_state);
 
 /**
@@ -126,10 +126,10 @@ stse_ReturnCode_t stsafea_query_life_cycle_state(
  * \details 	This service format and send/receive the put I2C parameters command/response
  * \param[in] 	p_stse 						Pointer to STSE Handler
  * \param[in] 	p_i2c_parameters 			I2C parameters
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_put_i2c_parameters(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_put_i2c_parameters(
+    stse_handler_t *p_stse,
     stsafea_i2c_parameters_t *p_i2c_parameters);
 
 /**
@@ -137,10 +137,10 @@ stse_ReturnCode_t stsafea_put_i2c_parameters(
  * \details 	This service format and send/receive the put life cycle command/response
  * \param[in] 	p_stse	 			Pointer to STSE Handler
  * \param[out] 	p_life_cycle_state 	Life cycle state
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_query_i2c_parameters(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_query_i2c_parameters(
+    stse_handler_t *p_stse,
     stsafea_i2c_parameters_t *p_i2c_parameters);
 
 /** \}*/

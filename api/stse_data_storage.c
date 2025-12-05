@@ -20,11 +20,11 @@
 #include "api/stse_data_storage.h"
 #include <string.h>
 
-stse_ReturnCode_t stse_data_storage_get_total_partition_count(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_data_storage_get_total_partition_count(
+    stse_handler_t *p_stse,
     PLAT_UI8 *total_partition_count) {
 
-    stse_ReturnCode_t ret = STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+    stse_return_code_t ret = STSE_API_INCOMPATIBLE_DEVICE_TYPE;
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
@@ -39,19 +39,19 @@ stse_ReturnCode_t stse_data_storage_get_total_partition_count(
     return ret;
 }
 
-stse_ReturnCode_t stse_data_storage_get_partitioning_table(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_data_storage_get_partitioning_table(
+    stse_handler_t *p_stse,
     PLAT_UI8 total_partition_count,
     stsafea_data_partition_record_t *p_partitioning_table,
-    PLAT_UI16 Partitioning_table_length) {
+    PLAT_UI16 partitioning_table_length) {
 
-    stse_ReturnCode_t ret = STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+    stse_return_code_t ret = STSE_API_INCOMPATIBLE_DEVICE_TYPE;
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
     if (p_stse->device_type != STSAFE_L010) {
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
-        ret = stsafea_get_data_partitions_configuration(p_stse, total_partition_count, p_partitioning_table, Partitioning_table_length);
+        ret = stsafea_get_data_partitions_configuration(p_stse, total_partition_count, p_partitioning_table, partitioning_table_length);
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
@@ -60,15 +60,15 @@ stse_ReturnCode_t stse_data_storage_get_partitioning_table(
     return ret;
 }
 
-stse_ReturnCode_t stse_data_storage_read_data_zone(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_data_storage_read_data_zone(
+    stse_handler_t *p_stse,
     PLAT_UI32 zone,
     PLAT_UI16 offset,
     PLAT_UI8 *p_buffer,
     PLAT_UI16 length,
     PLAT_UI16 chunk_size,
     stse_cmd_protection_t protection) {
-    stse_ReturnCode_t ret = STSE_API_INVALID_PARAMETER;
+    stse_return_code_t ret = STSE_API_INVALID_PARAMETER;
     PLAT_UI16 remaning_length = length;
     PLAT_UI16 chunk_length = 0;
     PLAT_UI16 chunk_offset = offset;
@@ -141,8 +141,8 @@ stse_ReturnCode_t stse_data_storage_read_data_zone(
     return ret;
 }
 
-stse_ReturnCode_t stse_data_storage_update_data_zone(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_data_storage_update_data_zone(
+    stse_handler_t *p_stse,
     PLAT_UI32 zone,
     PLAT_UI16 offset,
     PLAT_UI8 *p_buffer,
@@ -150,7 +150,7 @@ stse_ReturnCode_t stse_data_storage_update_data_zone(
     stse_zone_update_atomicity_t atomicity,
     stse_cmd_protection_t protection) {
 
-    stse_ReturnCode_t ret = STSE_API_INVALID_PARAMETER;
+    stse_return_code_t ret = STSE_API_INVALID_PARAMETER;
     union {
         stsafea_update_option_t stsafea;
         stsafel_update_option_t stsafel;
@@ -200,8 +200,8 @@ stse_ReturnCode_t stse_data_storage_update_data_zone(
     return ret;
 }
 
-stse_ReturnCode_t stse_data_storage_decrement_counter_zone(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_data_storage_decrement_counter_zone(
+    stse_handler_t *p_stse,
     PLAT_UI32 zone,
     PLAT_UI32 amount,
     PLAT_UI16 offset,
@@ -209,7 +209,7 @@ stse_ReturnCode_t stse_data_storage_decrement_counter_zone(
     PLAT_UI16 length,
     PLAT_UI32 *new_counter_value,
     stse_cmd_protection_t protection) {
-    stse_ReturnCode_t ret = STSE_API_INVALID_PARAMETER;
+    stse_return_code_t ret = STSE_API_INVALID_PARAMETER;
     union {
         stsafea_decrement_option_t stsafea;
         stsafel_decrement_option_t stsafel;
@@ -263,8 +263,8 @@ stse_ReturnCode_t stse_data_storage_decrement_counter_zone(
     return ret;
 }
 
-stse_ReturnCode_t stse_data_storage_read_counter_zone(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_data_storage_read_counter_zone(
+    stse_handler_t *p_stse,
     PLAT_UI32 zone,
     PLAT_UI16 offset,
     PLAT_UI8 *p_buffer,
@@ -272,7 +272,7 @@ stse_ReturnCode_t stse_data_storage_read_counter_zone(
     PLAT_UI16 chunk_size,
     PLAT_UI32 *p_counter_value,
     stse_cmd_protection_t protection) {
-    stse_ReturnCode_t ret = STSE_API_INVALID_PARAMETER;
+    stse_return_code_t ret = STSE_API_INVALID_PARAMETER;
     PLAT_UI16 remaning_length = length;
     PLAT_UI16 chunk_length = 0;
     PLAT_UI16 chunk_offset = offset;
@@ -339,13 +339,13 @@ stse_ReturnCode_t stse_data_storage_read_counter_zone(
     return ret;
 }
 
-stse_ReturnCode_t stse_data_storage_change_read_access_condition(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_data_storage_change_read_access_condition(
+    stse_handler_t *p_stse,
     PLAT_UI32 zone,
     stse_zone_ac_t ac,
     stse_ac_change_right_t ac_change_right,
     stse_cmd_protection_t protection) {
-    volatile stse_ReturnCode_t ret = STSE_API_INVALID_PARAMETER;
+    volatile stse_return_code_t ret = STSE_API_INVALID_PARAMETER;
 
     stsafea_read_option_t options;
 
@@ -368,7 +368,7 @@ stse_ReturnCode_t stse_data_storage_change_read_access_condition(
     return ret;
 }
 
-stse_ReturnCode_t stse_data_storage_change_update_access_condition(stse_Handler_t *p_stse,
+stse_return_code_t stse_data_storage_change_update_access_condition(stse_handler_t *p_stse,
                                                                    PLAT_UI32 zone,
                                                                    stse_zone_ac_t ac,
                                                                    stse_ac_change_right_t ac_change_right,
@@ -377,7 +377,7 @@ stse_ReturnCode_t stse_data_storage_change_update_access_condition(stse_Handler_
                                                                    PLAT_UI16 length,
                                                                    stse_zone_update_atomicity_t atomicity,
                                                                    stse_cmd_protection_t protection) {
-    volatile stse_ReturnCode_t ret = STSE_API_INVALID_PARAMETER;
+    volatile stse_return_code_t ret = STSE_API_INVALID_PARAMETER;
     stsafea_update_option_t options;
 
     /*- Prepare update options */
@@ -401,7 +401,7 @@ stse_ReturnCode_t stse_data_storage_change_update_access_condition(stse_Handler_
     return ret;
 }
 
-stse_ReturnCode_t stse_data_storage_change_decrement_access_condition(stse_Handler_t *p_stse,
+stse_return_code_t stse_data_storage_change_decrement_access_condition(stse_handler_t *p_stse,
                                                                       PLAT_UI32 zone,
                                                                       stse_zone_ac_t ac,
                                                                       stse_ac_change_right_t ac_change_right,

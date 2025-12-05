@@ -25,10 +25,10 @@
  */
 
 /**
- * \enum stse_ReturnCode_t
+ * \enum stse_return_code_t
  * \brief STSE response codes enumeration
  */
-enum stse_ReturnCode_t {
+enum stse_return_code_t {
     /*- Target device response code (MSB Mask 0x00xx)*/
     STSE_OK = 0x00,                             /*!< STSE Successful processing */
     STSE_COMMUNICATION_ERROR = 0x01,            /*!< STSE Generic communication error */
@@ -123,7 +123,7 @@ enum stse_ReturnCode_t {
     STSE_CERT_UNSUPPORTED_FEATURE,
 };
 
-typedef enum stse_ReturnCode_t stse_ReturnCode_t;
+typedef enum stse_return_code_t stse_return_code_t;
 
 /** @}*/
 

@@ -54,10 +54,10 @@ typedef struct stsafea_generic_public_key_configuration_flags_t {
  * \details 	This service format and send/receive the get public key slots count command/response
  * \param[in] 	p_stse 					Pointer to STSE Handler
  * \param[out] 	p_generic_public_key_slot_count 	Target STSAFE-A total public key slot count
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_query_generic_public_key_slots_count(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_query_generic_public_key_slots_count(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_generic_public_key_slot_count);
 
 /*!
@@ -68,10 +68,10 @@ stse_ReturnCode_t stsafea_query_generic_public_key_slots_count(
  * \param[out] 	p_presence_flag 			Pointer indicating presence of public into selected slot
  * \param[out] 	p_configuration_flags 	Pointer indicating indicating configuration usage of public key slot
  * \param[out] 	p_key_type 				Pointer indicating key type of public key present into selected slot
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_query_generic_public_key_slot_info(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_query_generic_public_key_slot_info(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI8 *p_presence_flag,
     stsafea_generic_public_key_configuration_flags_t *p_configuration_flags,
@@ -84,10 +84,10 @@ stse_ReturnCode_t stsafea_query_generic_public_key_slot_info(
  * \param[in] 	slot_number 			Public key slot value
  * \param[in] 	key_type 				Targeted STSAFE-A public key type
  * \param[out] 	p_public_key 			Targeted STSAFE-A public key value
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_query_generic_public_key_slot_value(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_query_generic_public_key_slot_value(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key);
@@ -99,10 +99,10 @@ stse_ReturnCode_t stsafea_query_generic_public_key_slot_value(
  * \param[in] 	slot_number 			Public key slot value
  * \param[in] 	key_type 				Targeted STSAFE-A public key type
  * \param[out] 	p_public_key 			Targeted STSAFE-A public key value
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_write_generic_ecc_public_key(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_write_generic_ecc_public_key(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key);
@@ -113,10 +113,10 @@ stse_ReturnCode_t stsafea_write_generic_ecc_public_key(
  * \param[in] 	p_stse 				    Pointer to STSE Handler
  * \param[in] 	slot_number 			Public key slot value
  * \param[out] 	configuration_flags 	Generic public key slot's configuration flags
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_set_generic_public_slot_configuration_flag(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_set_generic_public_slot_configuration_flag(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stsafea_generic_public_key_configuration_flags_t configuration_flags);
 

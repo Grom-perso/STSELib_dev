@@ -102,9 +102,9 @@ void stse_frame_update(stse_frame_t *p_frame);
  * \details 		This core function compute and return the CRC of a Frame
  * \param[in] 		p_frame 			Pointer to frame
  * \param[in] 		p_crc 			Pointer to crc (2-byte CRC value)
- * \return 			\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 			\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stse_frame_crc16_compute(stse_frame_t *p_frame, PLAT_UI16 *p_crc);
+stse_return_code_t stse_frame_crc16_compute(stse_frame_t *p_frame, PLAT_UI16 *p_crc);
 
 /**
  * \brief 			swap the Data byte order pointed by p_data frame element

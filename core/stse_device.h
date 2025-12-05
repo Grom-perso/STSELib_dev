@@ -34,7 +34,7 @@ extern "C" {
  *  @{
  */
 
-typedef struct stse_Handler_t stse_Handler_t;
+typedef struct stse_handler_t stse_handler_t;
 
 /*
  * \brief STSE Session_type type
@@ -67,8 +67,8 @@ typedef struct stse_perso_info_t {
     PLAT_UI32 rsp_encryption_status;
     PLAT_UI32 ext_cmd_encryption_status;
     PLAT_UI32 ext_rsp_encryption_status;
-    PLAT_UI64 cmd_AC_status;
-    PLAT_UI64 ext_cmd_AC_status;
+    PLAT_UI64 cmd_Ac_status;
+    PLAT_UI64 ext_cmd_Ac_status;
 } PLAT_PACKED_STRUCT stse_perso_info_t;
 
 /*
@@ -90,59 +90,59 @@ typedef enum stse_bus {
  */
 typedef struct
 {
-    stse_ReturnCode_t (*bus_recv_start)(
+    stse_return_code_t (*bus_recv_start)(
         PLAT_UI8,  /* bus_id */
         PLAT_UI8,  /* dev_addr */
         PLAT_UI16, /* speed */
         PLAT_UI16  /* p_frame_length */
     );             /*\var stse_io_t::bus_recv_start Bus Receive start function callback */
-    stse_ReturnCode_t (*bus_recv_continue)(
+    stse_return_code_t (*bus_recv_continue)(
         PLAT_UI8,   /*bus_id*/
         PLAT_UI8,   /*dev_addr*/
         PLAT_UI16,  /*speed*/
         PLAT_UI8 *, /*p_element*/
         PLAT_UI16   /*element_size*/
     );              /*<\var stse_io_t::bus_recv_continue Bus Receive continue function callback */
-    stse_ReturnCode_t (*bus_recv_stop)(
+    stse_return_code_t (*bus_recv_stop)(
         PLAT_UI8,   /*bus_id*/
         PLAT_UI8,   /*dev_addr*/
         PLAT_UI16,  /*speed*/
         PLAT_UI8 *, /*p_element*/
         PLAT_UI16   /*element_size*/
     );              /*<\var stse_io_t::bus_recv_stop Bus Receive stop function callback */
-    stse_ReturnCode_t (*bus_send_start)(
+    stse_return_code_t (*bus_send_start)(
         PLAT_UI8,  /* bus_id */
         PLAT_UI8,  /* dev_addr */
         PLAT_UI16, /* speed */
         PLAT_UI16  /* frame_length */
     );             /*<\var stse_io_t::bus_send_start Bus Send start function callback */
-    stse_ReturnCode_t (*bus_send_continue)(
+    stse_return_code_t (*bus_send_continue)(
         PLAT_UI8,   /*bus_id*/
         PLAT_UI8,   /*dev_addr*/
         PLAT_UI16,  /*speed*/
         PLAT_UI8 *, /*p_element*/
         PLAT_UI16   /*element_size*/
     );              /*<\var stse_io_t::bus_send_continue Bus Send continue function callback */
-    stse_ReturnCode_t (*bus_send_stop)(
+    stse_return_code_t (*bus_send_stop)(
         PLAT_UI8,   /*bus_id*/
         PLAT_UI8,   /*dev_addr*/
         PLAT_UI16,  /*speed*/
         PLAT_UI8 *, /*p_element*/
         PLAT_UI16   /*element_size*/
     );              /*<\var stse_io_t::bus_send_stop Bus Send stop function callback */
-    stse_ReturnCode_t (*io_line_get)(
+    stse_return_code_t (*io_line_get)(
         PLAT_UI8); /*<\var stse_io_t::io_line_get Get Bus I/O Line state function callback */
-    stse_ReturnCode_t (*bus_wake)(
+    stse_return_code_t (*bus_wake)(
         PLAT_UI8,
         PLAT_UI8,
         PLAT_UI16); /*<\var stse_io_t::bus_wake Bus wake function callback */
-    stse_ReturnCode_t (*bus_recovery)(
+    stse_return_code_t (*bus_recovery)(
         PLAT_UI8,
         PLAT_UI8); /*<\var stse_io_t::bus_recovery Bus recovery function callback */
-    stse_ReturnCode_t (*power_line_off)(
+    stse_return_code_t (*power_line_off)(
         PLAT_UI8,
         PLAT_UI8); /*<\var stse_io_t::power_line_off Bus power line off function callback */
-    stse_ReturnCode_t (*power_line_on)(
+    stse_return_code_t (*power_line_on)(
         PLAT_UI8,
         PLAT_UI8);      /*<\var stse_io_t::power_line_on Bus power line on function callback */
     PLAT_UI8 bus_id;     /*<\var stse_io_t::bus_id Bus ID */
@@ -160,11 +160,11 @@ struct stse_session_t {
     stse_session_type_t type;
     union {
         struct {
-            stse_Handler_t *p_stse;
+            stse_handler_t *p_stse;
             PLAT_UI8 *p_host_mac_key;
             PLAT_UI8 *p_host_cypher_key;
             stse_aes_key_type_t key_type;
-            PLAT_UI32 MAC_counter;
+            PLAT_UI32 MAc_counter;
         } host;
 
         struct {
@@ -175,13 +175,13 @@ struct stse_session_t {
 } PLAT_PACKED_STRUCT;
 
 /*!
- * \typedef stse_Handler_t
+ * \typedef stse_handler_t
  * \brief STSE Handler
  *        This handler stores all the context and working data related to a specific STSE target. \n
  *        Pointer to a specific stsafe_Handler is the main parameters of all STSE middleware API functions. \n
  *        A specific STSE target Handler must be initialized using the "stsafe_init" API function
  */
-struct stse_Handler_t {
+struct stse_handler_t {
     stse_device_t device_type;
     stse_perso_info_t perso_info;
     stse_session_t *p_active_host_session;
@@ -195,9 +195,9 @@ struct stse_Handler_t {
  * \brief       Initialise the STSE handler to default value
  * \details     This core function initialise the handler to default value
  * \param[in]   p_stse_handler : Pointer to STSE handler
- * \return \ref stse_ReturnCode_t : STSE_OK on success ; error code otherwise
+ * \return \ref stse_return_code_t : STSE_OK on success ; error code otherwise
  */
-stse_ReturnCode_t stse_set_default_handler_value(stse_Handler_t *p_stse_handler);
+stse_return_code_t stse_set_default_handler_value(stse_handler_t *p_stse_handler);
 
 /*! @}*/
 

@@ -19,7 +19,7 @@ void stse_session_erase_context(stse_session_t *p_session) {
     memset(p_session, 0x00, sizeof(stse_session_t));
 }
 
-stse_ReturnCode_t stse_set_active_session(stse_Handler_t *p_stse, stse_session_t *p_session) {
+stse_return_code_t stse_set_active_session(stse_handler_t *p_stse, stse_session_t *p_session) {
     if (p_stse == NULL) {
         return STSE_CORE_HANDLER_NOT_INITIALISED;
     }

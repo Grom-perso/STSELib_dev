@@ -17,8 +17,8 @@
 
 #include "api/stse_mac.h"
 
-stse_ReturnCode_t stse_cmac_hmac_compute(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_cmac_hmac_compute(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI8 *p_message,
     PLAT_UI8 message_length,
@@ -31,8 +31,8 @@ stse_ReturnCode_t stse_cmac_hmac_compute(
     return stsafea_cmac_hmac_compute(p_stse, slot_number, p_message, message_length, p_mac, mac_length);
 }
 
-stse_ReturnCode_t stse_cmac_hmac_verify(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_cmac_hmac_verify(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI8 *p_mac,
     PLAT_UI8 mac_length,
@@ -46,10 +46,10 @@ stse_ReturnCode_t stse_cmac_hmac_verify(
     return stsafea_cmac_hmac_verify(p_stse, slot_number, p_mac, mac_length, p_message, message_length, verification_result);
 }
 
-stse_ReturnCode_t stse_aes_gmac_compute(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gmac_compute(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
-    PLAT_UI16 IV_length,
+    PLAT_UI16 iv_length,
     PLAT_UI8 *p_iv,
     PLAT_UI16 associated_data_length,
     PLAT_UI8 *p_associated_data,
@@ -59,13 +59,13 @@ stse_ReturnCode_t stse_aes_gmac_compute(
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    return stsafea_aes_gmac_compute(p_stse, slot_number, IV_length, p_iv, associated_data_length, p_associated_data, authentication_tag_length, p_authentication_tag);
+    return stsafea_aes_gmac_compute(p_stse, slot_number, iv_length, p_iv, associated_data_length, p_associated_data, authentication_tag_length, p_authentication_tag);
 }
 
-stse_ReturnCode_t stse_aes_gmac_verify(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_aes_gmac_verify(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
-    PLAT_UI16 IV_length,
+    PLAT_UI16 iv_length,
     PLAT_UI8 *p_iv,
     PLAT_UI16 associated_data_length,
     PLAT_UI8 *p_associated_data,
@@ -76,5 +76,5 @@ stse_ReturnCode_t stse_aes_gmac_verify(
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    return stsafea_aes_gmac_verify(p_stse, slot_number, IV_length, p_iv, associated_data_length, p_associated_data, authentication_tag_length, p_authentication_tag, p_verification_result);
+    return stsafea_aes_gmac_verify(p_stse, slot_number, iv_length, p_iv, associated_data_length, p_associated_data, authentication_tag_length, p_authentication_tag, p_verification_result);
 }

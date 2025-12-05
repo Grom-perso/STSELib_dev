@@ -30,10 +30,10 @@
  * \param[in] 	*p_session 			\ref stse_session_t Pointer to session
  * \param[in] 	*p_host_mac_key 		Pointer to MAC key buffer to be used under the session
  * \param[in] 	*p_host_cypher_key 	Pointer to cypher key buffer to be used under the session
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stsafe_erase_context.dox
  */
-stse_ReturnCode_t stsafea_open_host_session(stse_Handler_t *p_stse,
+stse_return_code_t stsafea_open_host_session(stse_handler_t *p_stse,
                                             stse_session_t *p_session,
                                             PLAT_UI8 *p_host_mac_key,
                                             PLAT_UI8 *p_host_cypher_key);
@@ -41,14 +41,14 @@ stse_ReturnCode_t stsafea_open_host_session(stse_Handler_t *p_stse,
 /*!
  * \brief 		This Core function Close an existing host session context
  * \param[in] 	*p_session 			\ref stse_session_t Pointer to session
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
 void stsafea_close_host_session(stse_session_t *p_session);
 
 /*!
  * \brief 		This Core function Erase the session context from STSAFE handler
  * \param[in] 	*p_stse 	Pointer to target STSAFE handler
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stsafe_erase_context.dox
  */
 void stsafea_session_clear_context(stse_session_t *p_session);
@@ -63,9 +63,9 @@ void stsafea_session_clear_context(stse_session_t *p_session);
  * \param[in] 	rsp_encryption_flag		Response encryption flag
  * \param[in] 	cmd_ac_info				Command access conditions
  * \param[in] 	processing_time			Expected processing time
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_session_encrypted_transfer(stse_session_t *p_session,
+stse_return_code_t stsafea_session_encrypted_transfer(stse_session_t *p_session,
                                                      stse_frame_t *p_cmd_frame,
                                                      stse_frame_t *p_rsp_frame,
                                                      PLAT_UI8 cmd_encryption_flag,
@@ -81,9 +81,9 @@ stse_ReturnCode_t stsafea_session_encrypted_transfer(stse_session_t *p_session,
  * \param[out] 	p_rsp_frame			Pointer to response frame
  * \param[in] 	cmd_ac_info			Command access conditions
  * \param[in] 	processing_time		Expected processing time
- * \return 		\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_session_authenticated_transfer(stse_session_t *p_session,
+stse_return_code_t stsafea_session_authenticated_transfer(stse_session_t *p_session,
                                                          stse_frame_t *p_cmd_frame,
                                                          stse_frame_t *p_rsp_frame,
                                                          stse_cmd_access_conditions_t cmd_ac_info,

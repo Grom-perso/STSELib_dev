@@ -17,11 +17,11 @@
 
 #include "api/stse_random.h"
 
-stse_ReturnCode_t stse_generate_random(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_generate_random(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_random,
     PLAT_UI16 random_size) {
-    stse_ReturnCode_t ret = STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+    stse_return_code_t ret = STSE_API_INCOMPATIBLE_DEVICE_TYPE;
     /* - Check stsafe handler initialization */
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);

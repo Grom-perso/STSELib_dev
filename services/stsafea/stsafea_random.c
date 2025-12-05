@@ -21,11 +21,11 @@
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
-stse_ReturnCode_t stsafea_generate_random(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_generate_random(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_random,
     PLAT_UI8 random_size) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     PLAT_UI8 cmd_header = STSAFEA_CMD_GENERATE_RANDOM;
     PLAT_UI8 subject = 0x00;
     PLAT_UI8 rsp_header;
@@ -39,20 +39,20 @@ stse_ReturnCode_t stsafea_generate_random(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eSubject, 1, &subject);
-    stse_frame_element_allocate_push(&CmdFrame, eSize, 1, &random_size);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, 1, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eSubject, 1, &subject);
+    stse_frame_element_allocate_push(&cmd_frame, eSize, 1, &random_size);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&Rsp_frame, eRandom, random_size, p_random);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, 1, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eRandom, random_size, p_random);
 
     /*- Perform Transfer*/
     ret = stsafea_frame_transfer(p_stse,
-                                 &CmdFrame,
-                                 &Rsp_frame);
+                                 &cmd_frame,
+                                 &rsp_frame);
 
     return (ret);
 }

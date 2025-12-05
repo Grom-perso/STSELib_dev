@@ -43,9 +43,9 @@
  * \param[in]	 	password_length 		Password length in bytes
  * \param[out]	 	p_verification_status 	Pointer to verification status
  * \param[out]	 	p_remaining_tries 		Pointer to remaining tries
- * \return 			\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 			\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_verify_password(stse_Handler_t *p_stse,
+stse_return_code_t stsafea_verify_password(stse_handler_t *p_stse,
                                           PLAT_UI8 *p_password_buffer,
                                           PLAT_UI8 password_length,
                                           PLAT_UI8 *p_verification_status,
@@ -55,9 +55,9 @@ stse_ReturnCode_t stsafea_verify_password(stse_Handler_t *p_stse,
  * \brief 			STSAFEA delete password service
  * \details 		This service format and send/receive the generate random command/response
  * \param[in]		p_stse					Pointer to target SE handler
- * \return 			\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 			\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_delete_password(stse_Handler_t *p_stse);
+stse_return_code_t stsafea_delete_password(stse_handler_t *p_stse);
 
 /** \}*/
 

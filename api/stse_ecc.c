@@ -17,8 +17,8 @@
 
 #include "api/stse_ecc.h"
 
-stse_ReturnCode_t stse_ecc_verify_signature(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_ecc_verify_signature(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key,
     PLAT_UI8 *p_signature,
@@ -26,7 +26,7 @@ stse_ReturnCode_t stse_ecc_verify_signature(
     PLAT_UI16 message_length,
     PLAT_UI8 eddsa_variant,
     PLAT_UI8 *p_signature_validity) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     /* - Check stsafe handler initialization */
     if (p_stse == NULL) {
@@ -49,14 +49,14 @@ stse_ReturnCode_t stse_ecc_verify_signature(
     return ret;
 }
 
-stse_ReturnCode_t stse_ecc_generate_signature(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_ecc_generate_signature(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_message,
     PLAT_UI16 message_length,
     PLAT_UI8 *p_signature) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     /* - Check stsafe handler initialization */
     if (p_stse == NULL) {
@@ -88,13 +88,13 @@ stse_ReturnCode_t stse_ecc_generate_signature(
     return ret;
 }
 
-stse_ReturnCode_t stse_ecc_establish_shared_secret(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_ecc_establish_shared_secret(
+    stse_handler_t *p_stse,
     PLAT_UI8 private_key_slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key,
     PLAT_UI8 *p_shared_secret) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     /* - Check stsafe handler initialization */
     if (p_stse == NULL) {
@@ -121,13 +121,13 @@ stse_ReturnCode_t stse_ecc_establish_shared_secret(
     return ret;
 }
 
-stse_ReturnCode_t stse_ecc_decompress_public_key(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_ecc_decompress_public_key(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 point_representation_id,
     PLAT_UI8 *p_public_key_X,
     PLAT_UI8 *p_public_key_Y) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     /* - Check stsafe handler initialization */
     if (p_stse == NULL) {

@@ -22,12 +22,12 @@
     defined(STSE_CONF_HASH_SHA_256) || defined(STSE_CONF_HASH_SHA_384) || defined(STSE_CONF_HASH_SHA_512) || \
     defined(STSE_CONF_HASH_SHA_3_256) || defined(STSE_CONF_HASH_SHA_3_384) || defined(STSE_CONF_HASH_SHA_3_512)
 
-stse_ReturnCode_t stse_start_hash(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_start_hash(
+    stse_handler_t *p_stse,
     stse_hash_algorithm_t sha_algorithm,
     PLAT_UI8 *p_message,
     PLAT_UI16 message_size) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     /* - Check stsafe handler initialization */
     if (p_stse == NULL) {
@@ -43,11 +43,11 @@ stse_ReturnCode_t stse_start_hash(
     return ret;
 }
 
-stse_ReturnCode_t stse_process_hash(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_process_hash(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_message,
     PLAT_UI16 message_size) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     /* - Check stsafe handler initialization */
     if (p_stse == NULL) {
@@ -63,14 +63,14 @@ stse_ReturnCode_t stse_process_hash(
     return ret;
 }
 
-stse_ReturnCode_t stse_finish_hash(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_finish_hash(
+    stse_handler_t *p_stse,
     stse_hash_algorithm_t sha_algorithm,
     PLAT_UI8 *p_message,
     PLAT_UI16 message_size,
     PLAT_UI8 *p_digest,
     PLAT_UI16 *p_digest_size) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
 
     /* - Check stsafe handler initialization */
     if (p_stse == NULL) {
@@ -86,14 +86,14 @@ stse_ReturnCode_t stse_finish_hash(
     return ret;
 }
 
-stse_ReturnCode_t stse_compute_hash(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_compute_hash(
+    stse_handler_t *p_stse,
     stse_hash_algorithm_t sha_algorithm,
     PLAT_UI8 *p_message,
     PLAT_UI16 message_size,
     PLAT_UI8 *p_digest,
     PLAT_UI16 *p_digest_size) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     PLAT_UI16 remaining_length = message_size;
 
     /* - Check stsafe handler initialization */

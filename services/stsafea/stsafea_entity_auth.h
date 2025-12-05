@@ -38,10 +38,10 @@
  * \param[in]		p_stse 			Pointer to target STSecureElement device
  * \param[in]		challenge_size 	Challenge buffer size (expected STSE_EDDSA_CHALLENGE_SIZE)
  * \param[out]		p_challenge 		Pointer to challenge buffer
- * \return 			\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 			\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_generate_challenge(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_generate_challenge(
+    stse_handler_t *p_stse,
     PLAT_UI8 challenge_size,
     PLAT_UI8 *p_challenge);
 
@@ -53,10 +53,10 @@ stse_ReturnCode_t stsafea_generate_challenge(
  * \param[in] 		key_type 			Targeted public key's type stored through STSAFE-A generic public slot
  * \param[out]		p_signature 			Pointer to signature buffer
  * \param[out]		p_signature_validity Pointer to signature validity byte
- * \return 			\ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return 			\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_verify_entity_signature(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_verify_entity_signature(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_signature,

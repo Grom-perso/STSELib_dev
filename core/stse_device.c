@@ -20,7 +20,7 @@
 #include "core/stse_platform.h"
 #include <string.h>
 
-stse_ReturnCode_t stse_set_default_handler_value(stse_Handler_t *p_stse_handler) {
+stse_return_code_t stse_set_default_handler_value(stse_handler_t *p_stse_handler) {
     if (p_stse_handler == NULL) {
         return STSE_CORE_HANDLER_NOT_INITIALISED;
     }

@@ -68,10 +68,10 @@ typedef struct /*!< Device traceability info */
  * \details 	This service format and send the get UID command
  * \param[in] 	p_stse 				Pointer to STSE Handler
  * \param[out]	p_device_uid			Device unique identifier
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafel_get_device_UID(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafel_get_device_UID(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_device_uid);
 
 /**
@@ -79,10 +79,10 @@ stse_ReturnCode_t stsafel_get_device_UID(
  * \details 	This service format and send the get traceability info command
  * \param[in] 	p_stse 					Pointer to STSE Handler
  * \param[out]	p_device_traceability	Device traceability info
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafel_get_device_traceability(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafel_get_device_traceability(
+    stse_handler_t *p_stse,
     stsafel_device_traceability_t *p_device_traceability);
 
 /**
@@ -94,10 +94,10 @@ stse_ReturnCode_t stsafel_get_device_traceability(
  * \param[in]	p_additional_data            Additional data relative to requested info
  * \param[in]	device_info_expected_length	Expected device info length
  * \param[out]	p_device_info			    Device info output buffer
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafel_get_data(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafel_get_data(
+    stse_handler_t *p_stse,
     stsafel_device_info_tag_t tag,
     PLAT_UI16 additional_data_length,
     PLAT_UI8 *p_additional_data,
@@ -111,10 +111,10 @@ stse_ReturnCode_t stsafel_get_data(
  * \param[in]	tag                         Tag of the data to put
  * \param[in]	device_info_length	        Device info length
  * \param[in]	p_device_info			    Device info buffer
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafel_put_data(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafel_put_data(
+    stse_handler_t *p_stse,
     stsafel_device_info_tag_t tag,
     PLAT_UI16 device_info_length,
     PLAT_UI8 *p_device_info);

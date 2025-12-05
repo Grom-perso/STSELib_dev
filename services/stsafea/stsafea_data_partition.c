@@ -27,7 +27,7 @@
 #define STSAFEA_INC_DEC_AMOUT_SIZE 4U
 #define STSAFEA_ZONE_ACCESS_LENGTH_SIZE 2U
 
-stse_ReturnCode_t stsafea_switch_data_partition_access_protection(stse_Handler_t *p_stse, PLAT_UI8 command_code, stse_cmd_protection_t protection) {
+stse_return_code_t stsafea_switch_data_partition_access_protection(stse_handler_t *p_stse, PLAT_UI8 command_code, stse_cmd_protection_t protection) {
     switch (protection) {
 
     case STSE_HOST_C_MAC_R_MAC:
@@ -45,7 +45,7 @@ stse_ReturnCode_t stsafea_switch_data_partition_access_protection(stse_Handler_t
     return STSE_OK;
 }
 
-stse_ReturnCode_t stsafea_get_total_partition_count(stse_Handler_t *p_stse,
+stse_return_code_t stsafea_get_total_partition_count(stse_handler_t *p_stse,
                                                     PLAT_UI8 *p_total_partition_count) {
     PLAT_UI8 cmd_header = STSAFEA_CMD_QUERY;
     PLAT_UI8 tag = STSAFEA_SUBJECT_TAG_DATA_PARTITION_CONFIGURATION;
@@ -56,27 +56,27 @@ stse_ReturnCode_t stsafea_get_total_partition_count(stse_Handler_t *p_stse,
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &tag);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, 1, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eTag, 1, &tag);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&Rsp_frame, eTotal_partition_count, 1, p_total_partition_count);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, 1, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eTotal_partition_count, 1, p_total_partition_count);
 
     /*- Perform Transfer*/
     return stsafea_frame_raw_transfer(p_stse,
-                                      &CmdFrame,
-                                      &Rsp_frame,
+                                      &cmd_frame,
+                                      &rsp_frame,
                                       stsafea_cmd_timings[p_stse->device_type][cmd_header]);
 }
 
-stse_ReturnCode_t stsafea_get_data_partitions_configuration(stse_Handler_t *p_stse,
+stse_return_code_t stsafea_get_data_partitions_configuration(stse_handler_t *p_stse,
                                                             PLAT_UI8 total_partitions_count,
                                                             stsafea_data_partition_record_t *p_record_table,
                                                             PLAT_UI16 record_table_length) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     volatile PLAT_UI8 partition_idx;
     PLAT_UI8 cmd_header = STSAFEA_CMD_QUERY;
     PLAT_UI8 tag = STSAFEA_SUBJECT_TAG_DATA_PARTITION_CONFIGURATION;
@@ -88,19 +88,19 @@ stse_ReturnCode_t stsafea_get_data_partitions_configuration(stse_Handler_t *p_st
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &tag);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, 1, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eTag, 1, &tag);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&Rsp_frame, eRaw, record_table_length, raw_data);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, 1, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eRaw, record_table_length, raw_data);
 
     /*- Perform Transfer*/
     ret = stsafea_frame_raw_transfer(p_stse,
-                                     &CmdFrame,
-                                     &Rsp_frame,
+                                     &cmd_frame,
+                                     &rsp_frame,
                                      stsafea_cmd_timings[p_stse->device_type][cmd_header]);
 
     /* - Verify transfer result and build Partition record table */
@@ -130,7 +130,7 @@ stse_ReturnCode_t stsafea_get_data_partitions_configuration(stse_Handler_t *p_st
     return (ret);
 }
 
-stse_ReturnCode_t stsafea_decrement_counter_zone(stse_Handler_t *p_stse,
+stse_return_code_t stsafea_decrement_counter_zone(stse_handler_t *p_stse,
                                                  PLAT_UI8 zone_index,
                                                  stsafea_decrement_option_t option,
                                                  PLAT_UI32 amount,
@@ -140,7 +140,7 @@ stse_ReturnCode_t stsafea_decrement_counter_zone(stse_Handler_t *p_stse,
                                                  PLAT_UI32 *p_new_counter_value,
                                                  stse_cmd_protection_t protection) {
 
-    volatile stse_ReturnCode_t ret = STSE_SERVICE_INVALID_PARAMETER;
+    volatile stse_return_code_t ret = STSE_SERVICE_INVALID_PARAMETER;
     PLAT_UI8 cmd_header = STSAFEA_CMD_DECREMENT;
     PLAT_UI8 rsp_header;
 
@@ -161,22 +161,22 @@ stse_ReturnCode_t stsafea_decrement_counter_zone(stse_Handler_t *p_stse,
 #endif
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmdHeader, STSAFEA_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eOption, STSAFEA_ZONE_ACCESS_OPTION_SIZE, (PLAT_UI8 *)&option);
-    stse_frame_element_allocate_push(&CmdFrame, eZoneIndex, STSAFEA_ZONE_INDEX_SIZE, &zone_index);
-    stse_frame_element_allocate_push(&CmdFrame, eOffset, STSAFEA_ZONE_OFFSET_SIZE, (PLAT_UI8 *)&offset);
-    stse_frame_element_allocate_push(&CmdFrame, eAmount, STSAFEA_INC_DEC_AMOUT_SIZE, (PLAT_UI8 *)&amount);
-    stse_frame_element_allocate_push(&CmdFrame, eData, data_length, p_data);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, eCmdHeader, STSAFEA_HEADER_SIZE, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eOption, STSAFEA_ZONE_ACCESS_OPTION_SIZE, (PLAT_UI8 *)&option);
+    stse_frame_element_allocate_push(&cmd_frame, eZoneIndex, STSAFEA_ZONE_INDEX_SIZE, &zone_index);
+    stse_frame_element_allocate_push(&cmd_frame, eOffset, STSAFEA_ZONE_OFFSET_SIZE, (PLAT_UI8 *)&offset);
+    stse_frame_element_allocate_push(&cmd_frame, eAmount, STSAFEA_INC_DEC_AMOUT_SIZE, (PLAT_UI8 *)&amount);
+    stse_frame_element_allocate_push(&cmd_frame, eData, data_length, p_data);
 
     if (data_length >= stsafea_maximum_command_length[p_stse->device_type]) {
         return STSE_SERVICE_BUFFER_OVERFLOW;
     }
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&Rsp_frame, eNewCounterVal, STSAFEA_COUNTER_VALUE_SIZE, (PLAT_UI8 *)p_new_counter_value);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eNewCounterVal, STSAFEA_COUNTER_VALUE_SIZE, (PLAT_UI8 *)p_new_counter_value);
 
     /*- Swap Elements byte order before sending*/
     stse_frame_element_swap_byte_order(&eOffset);
@@ -184,8 +184,8 @@ stse_ReturnCode_t stsafea_decrement_counter_zone(stse_Handler_t *p_stse,
 
     /*- Perform Transfer*/
     ret = stsafea_frame_transfer(p_stse,
-                                 &CmdFrame,
-                                 &Rsp_frame);
+                                 &cmd_frame,
+                                 &rsp_frame);
 
     /*- unSwap Elements bytes from Command frame*/
     stse_frame_element_swap_byte_order(&eOffset);
@@ -201,16 +201,16 @@ stse_ReturnCode_t stsafea_decrement_counter_zone(stse_Handler_t *p_stse,
     return (ret);
 }
 
-stse_ReturnCode_t stsafea_read_counter_zone(stse_Handler_t *p_stse,
+stse_return_code_t stsafea_read_counter_zone(stse_handler_t *p_stse,
                                             PLAT_UI32 zone_index,
                                             stsafea_read_option_t option,
                                             PLAT_UI16 offset,
                                             PLAT_UI8 *p_associated_data,
-                                            PLAT_UI16 Associated_data_length,
+                                            PLAT_UI16 associated_data_length,
                                             PLAT_UI32 *p_counter_value,
                                             stse_cmd_protection_t protection) {
 
-    volatile stse_ReturnCode_t ret = STSE_SERVICE_INVALID_PARAMETER;
+    volatile stse_return_code_t ret = STSE_SERVICE_INVALID_PARAMETER;
     PLAT_UI8 cmd_header = STSAFEA_CMD_READ;
     PLAT_UI8 rsp_header;
 
@@ -231,22 +231,22 @@ stse_ReturnCode_t stsafea_read_counter_zone(stse_Handler_t *p_stse,
 #endif
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmdHeader, STSAFEA_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eOption, STSAFEA_ZONE_ACCESS_OPTION_SIZE, (PLAT_UI8 *)&option);
-    stse_frame_element_allocate_push(&CmdFrame, eZoneIndex, STSAFEA_ZONE_INDEX_SIZE, (PLAT_UI8 *)&zone_index);
-    stse_frame_element_allocate_push(&CmdFrame, eOffset, STSAFEA_ZONE_OFFSET_SIZE, (PLAT_UI8 *)&offset);
-    stse_frame_element_allocate_push(&CmdFrame, eLength, STSAFEA_ZONE_ACCESS_LENGTH_SIZE, (PLAT_UI8 *)&Associated_data_length);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, eCmdHeader, STSAFEA_HEADER_SIZE, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eOption, STSAFEA_ZONE_ACCESS_OPTION_SIZE, (PLAT_UI8 *)&option);
+    stse_frame_element_allocate_push(&cmd_frame, eZoneIndex, STSAFEA_ZONE_INDEX_SIZE, (PLAT_UI8 *)&zone_index);
+    stse_frame_element_allocate_push(&cmd_frame, eOffset, STSAFEA_ZONE_OFFSET_SIZE, (PLAT_UI8 *)&offset);
+    stse_frame_element_allocate_push(&cmd_frame, eLength, STSAFEA_ZONE_ACCESS_LENGTH_SIZE, (PLAT_UI8 *)&associated_data_length);
 
-    if (Associated_data_length >= stsafea_maximum_command_length[p_stse->device_type]) {
+    if (associated_data_length >= stsafea_maximum_command_length[p_stse->device_type]) {
         return STSE_SERVICE_BUFFER_OVERFLOW;
     }
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&Rsp_frame, eCounterVal, STSAFEA_COUNTER_VALUE_SIZE, (PLAT_UI8 *)p_counter_value);
-    stse_frame_element_allocate_push(&Rsp_frame, eAssociatedData, Associated_data_length, p_associated_data);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eCounterVal, STSAFEA_COUNTER_VALUE_SIZE, (PLAT_UI8 *)p_counter_value);
+    stse_frame_element_allocate_push(&rsp_frame, eAssociatedData, associated_data_length, p_associated_data);
 
     /*- Swap Elements bytes from Command frame*/
     stse_frame_element_swap_byte_order(&eOffset);
@@ -254,8 +254,8 @@ stse_ReturnCode_t stsafea_read_counter_zone(stse_Handler_t *p_stse,
 
     /*- Perform Transfer*/
     ret = stsafea_frame_transfer(p_stse,
-                                 &CmdFrame,
-                                 &Rsp_frame);
+                                 &cmd_frame,
+                                 &rsp_frame);
 
     /*- Swap Counter value*/
     stse_frame_element_swap_byte_order(&eCounterVal);
@@ -271,14 +271,14 @@ stse_ReturnCode_t stsafea_read_counter_zone(stse_Handler_t *p_stse,
     return (ret);
 }
 
-stse_ReturnCode_t stsafea_read_data_zone(stse_Handler_t *p_stse,
+stse_return_code_t stsafea_read_data_zone(stse_handler_t *p_stse,
                                          PLAT_UI32 zone_index,
                                          stsafea_read_option_t option,
                                          PLAT_UI16 offset,
                                          PLAT_UI8 *p_read_buffer,
                                          PLAT_UI16 read_length,
                                          stse_cmd_protection_t protection) {
-    volatile stse_ReturnCode_t ret = STSE_SERVICE_INVALID_PARAMETER;
+    volatile stse_return_code_t ret = STSE_SERVICE_INVALID_PARAMETER;
     PLAT_UI8 cmd_header = STSAFEA_CMD_READ;
     PLAT_UI8 rsp_header;
 
@@ -299,21 +299,21 @@ stse_ReturnCode_t stsafea_read_data_zone(stse_Handler_t *p_stse,
 #endif
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmdHeader, STSAFEA_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eOption, STSAFEA_ZONE_ACCESS_OPTION_SIZE, (PLAT_UI8 *)&option);
-    stse_frame_element_allocate_push(&CmdFrame, eZoneIndex, STSAFEA_ZONE_INDEX_SIZE, (PLAT_UI8 *)&zone_index);
-    stse_frame_element_allocate_push(&CmdFrame, eOffset, STSAFEA_ZONE_OFFSET_SIZE, (PLAT_UI8 *)&offset);
-    stse_frame_element_allocate_push(&CmdFrame, eLength, STSAFEA_ZONE_ACCESS_LENGTH_SIZE, (PLAT_UI8 *)&read_length);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, eCmdHeader, STSAFEA_HEADER_SIZE, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eOption, STSAFEA_ZONE_ACCESS_OPTION_SIZE, (PLAT_UI8 *)&option);
+    stse_frame_element_allocate_push(&cmd_frame, eZoneIndex, STSAFEA_ZONE_INDEX_SIZE, (PLAT_UI8 *)&zone_index);
+    stse_frame_element_allocate_push(&cmd_frame, eOffset, STSAFEA_ZONE_OFFSET_SIZE, (PLAT_UI8 *)&offset);
+    stse_frame_element_allocate_push(&cmd_frame, eLength, STSAFEA_ZONE_ACCESS_LENGTH_SIZE, (PLAT_UI8 *)&read_length);
 
     if (read_length >= stsafea_maximum_command_length[p_stse->device_type]) {
         return STSE_SERVICE_BUFFER_OVERFLOW;
     }
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&Rsp_frame, eData, read_length, (PLAT_UI8 *)p_read_buffer);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eData, read_length, (PLAT_UI8 *)p_read_buffer);
 
     /*- Swap Elements byte order before sending*/
     stse_frame_element_swap_byte_order(&eOffset);
@@ -321,8 +321,8 @@ stse_ReturnCode_t stsafea_read_data_zone(stse_Handler_t *p_stse,
 
     /*- Perform Transfer*/
     ret = stsafea_frame_transfer(p_stse,
-                                 &CmdFrame,
-                                 &Rsp_frame);
+                                 &cmd_frame,
+                                 &rsp_frame);
 
     /*- UnSwap Elements bytes from Command frame*/
     stse_frame_element_swap_byte_order(&eOffset);
@@ -335,7 +335,7 @@ stse_ReturnCode_t stsafea_read_data_zone(stse_Handler_t *p_stse,
     return (ret);
 }
 
-stse_ReturnCode_t stsafea_update_data_zone(stse_Handler_t *p_stse,
+stse_return_code_t stsafea_update_data_zone(stse_handler_t *p_stse,
                                            PLAT_UI32 zone_index,
                                            stsafea_update_option_t option,
                                            PLAT_UI16 offset,
@@ -343,7 +343,7 @@ stse_ReturnCode_t stsafea_update_data_zone(stse_Handler_t *p_stse,
                                            PLAT_UI32 data_length,
                                            stse_cmd_protection_t protection) {
 
-    volatile stse_ReturnCode_t ret = STSE_SERVICE_INVALID_PARAMETER;
+    volatile stse_return_code_t ret = STSE_SERVICE_INVALID_PARAMETER;
     PLAT_UI8 cmd_header = STSAFEA_CMD_UPDATE;
     PLAT_UI8 rsp_header;
 
@@ -365,28 +365,28 @@ stse_ReturnCode_t stsafea_update_data_zone(stse_Handler_t *p_stse,
 #endif
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmdHeader, STSAFEA_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eOption, STSAFEA_ZONE_ACCESS_OPTION_SIZE, (PLAT_UI8 *)&option);
-    stse_frame_element_allocate_push(&CmdFrame, eZoneIndex, STSAFEA_ZONE_INDEX_SIZE, (PLAT_UI8 *)&zone_index);
-    stse_frame_element_allocate_push(&CmdFrame, eOffset, STSAFEA_ZONE_OFFSET_SIZE, (PLAT_UI8 *)&offset);
-    stse_frame_element_allocate_push(&CmdFrame, eData, data_length, p_data);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, eCmdHeader, STSAFEA_HEADER_SIZE, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eOption, STSAFEA_ZONE_ACCESS_OPTION_SIZE, (PLAT_UI8 *)&option);
+    stse_frame_element_allocate_push(&cmd_frame, eZoneIndex, STSAFEA_ZONE_INDEX_SIZE, (PLAT_UI8 *)&zone_index);
+    stse_frame_element_allocate_push(&cmd_frame, eOffset, STSAFEA_ZONE_OFFSET_SIZE, (PLAT_UI8 *)&offset);
+    stse_frame_element_allocate_push(&cmd_frame, eData, data_length, p_data);
 
     if (data_length >= stsafea_maximum_command_length[p_stse->device_type]) {
         return STSE_SERVICE_BUFFER_OVERFLOW;
     }
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Swap Elements byte order before sending*/
     stse_frame_element_swap_byte_order(&eOffset);
 
     /*- Perform Transfer*/
     ret = stsafea_frame_transfer(p_stse,
-                                 &CmdFrame,
-                                 &Rsp_frame);
+                                 &cmd_frame,
+                                 &rsp_frame);
 
 #ifdef STSE_CONF_USE_HOST_SESSION
     p_stse->perso_info = perso_info_backup;

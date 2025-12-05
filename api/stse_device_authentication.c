@@ -34,8 +34,8 @@
 
 /* Exported functions --------------------------------------------------------*/
 
-stse_ReturnCode_t stse_get_device_id(stse_Handler_t *p_stse, PLAT_UI8 certificate_zone, PLAT_UI8 *p_device_id) {
-    volatile stse_ReturnCode_t ret = STSE_API_INVALID_PARAMETER;
+stse_return_code_t stse_get_device_id(stse_handler_t *p_stse, PLAT_UI8 certificate_zone, PLAT_UI8 *p_device_id) {
+    volatile stse_return_code_t ret = STSE_API_INVALID_PARAMETER;
 
     /* - Check stsafe handler initialization */
     if (p_stse == NULL) {
@@ -54,8 +54,8 @@ stse_ReturnCode_t stse_get_device_id(stse_Handler_t *p_stse, PLAT_UI8 certificat
     return ret;
 }
 
-stse_ReturnCode_t stse_get_device_certificate_size(stse_Handler_t *p_stse, PLAT_UI8 certificate_zone, PLAT_UI16 *p_certificate_size) {
-    volatile stse_ReturnCode_t ret = STSE_API_INVALID_PARAMETER;
+stse_return_code_t stse_get_device_certificate_size(stse_handler_t *p_stse, PLAT_UI8 certificate_zone, PLAT_UI16 *p_certificate_size) {
+    volatile stse_return_code_t ret = STSE_API_INVALID_PARAMETER;
     PLAT_UI8 certificate_size_ui8[2];
 
     /* - Check stsafe handler initialization */
@@ -85,8 +85,8 @@ stse_ReturnCode_t stse_get_device_certificate_size(stse_Handler_t *p_stse, PLAT_
     return STSE_OK;
 }
 
-stse_ReturnCode_t stse_get_device_certificate(stse_Handler_t *p_stse, PLAT_UI8 certificate_zone, PLAT_UI16 certificate_size, PLAT_UI8 *p_certificate) {
-    volatile stse_ReturnCode_t ret = STSE_API_INVALID_PARAMETER;
+stse_return_code_t stse_get_device_certificate(stse_handler_t *p_stse, PLAT_UI8 certificate_zone, PLAT_UI16 certificate_size, PLAT_UI8 *p_certificate) {
+    volatile stse_return_code_t ret = STSE_API_INVALID_PARAMETER;
 
     /* - Check stsafe handler initialization */
     if (p_stse == NULL) {
@@ -113,12 +113,12 @@ stse_ReturnCode_t stse_get_device_certificate(stse_Handler_t *p_stse, PLAT_UI8 c
     return (STSE_OK);
 }
 
-stse_ReturnCode_t stse_device_authenticate(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_device_authenticate(
+    stse_handler_t *p_stse,
     const PLAT_UI8 *p_root_ca_certificate,
     PLAT_UI8 certificate_zone,
     PLAT_UI8 priv_key_slot_number) {
-    stse_ReturnCode_t ret;
+    stse_return_code_t ret;
     stse_certificate_t leaf_certificate;
     PLAT_UI16 certificate_size;
     PLAT_UI8 certificate_size_ui8[2];

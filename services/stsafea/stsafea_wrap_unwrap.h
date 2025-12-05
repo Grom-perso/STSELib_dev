@@ -42,10 +42,10 @@
  * \param[in]	payload_size			size of the payload buffer
  * \param[out] 	p_wrapped_payload		Pointer to the wrapped payload buffer
  * \param[in]	wrapped_payload_size	size of the wrapped payload buffer
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_wrap_payload(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_wrap_payload(
+    stse_handler_t *p_stse,
     PLAT_UI8 wrap_key_slot,
     PLAT_UI8 *p_payload,
     PLAT_UI16 payload_size,
@@ -61,10 +61,10 @@ stse_ReturnCode_t stsafea_wrap_payload(
  * \param[in]	wrapped_payload_size	Size of the wrapped payload buffer
  * \param[out]	p_payload				Pointer to the plain text payload buffer
  * \param[in]	payload_size			Size of the payload buffer
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_unwrap_payload(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_unwrap_payload(
+    stse_handler_t *p_stse,
     PLAT_UI8 wrap_key_slot,
     PLAT_UI8 *p_wrapped_payload,
     PLAT_UI16 wrapped_payload_size,

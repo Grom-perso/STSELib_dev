@@ -120,11 +120,11 @@ const stse_ecc_info_t stse_ecc_info_table[] =
     defined(STSE_CONF_ECC_BRAINPOOL_P_256) || defined(STSE_CONF_ECC_BRAINPOOL_P_384) || defined(STSE_CONF_ECC_BRAINPOOL_P_512) || \
     defined(STSE_CONF_ECC_CURVE_25519) || defined(STSE_CONF_ECC_EDWARD_25519)
 
-stse_ReturnCode_t stse_get_ecc_key_type_from_curve_id(
+stse_return_code_t stse_get_ecc_key_type_from_curve_id(
     PLAT_UI8 curve_id_length,
     const PLAT_UI8 *p_curve_id_value,
     stse_ecc_key_type_t *p_key_type) {
-    stse_ReturnCode_t ret = STSE_OK;
+    stse_return_code_t ret = STSE_OK;
     stse_ecc_key_type_t key_type;
 
     for (key_type = (stse_ecc_key_type_t)0; (PLAT_I8)key_type < (PLAT_I8)STSE_ECC_KT_INVALID;) {

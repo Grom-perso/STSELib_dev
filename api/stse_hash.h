@@ -47,10 +47,10 @@
  * \param[in] 		sha_algorithm	\ref stse_hash_algorithm_t SHA algorithm
  * \param[in] 		p_message		Pointer to message buffer
  * \param[in]		message_size	Input message length in bytes
- * \return \ref stse_ReturnCode_t : STSE_OK on success ; error code otherwise
+ * \return \ref stse_return_code_t : STSE_OK on success ; error code otherwise
  */
-stse_ReturnCode_t stse_start_hash(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_start_hash(
+    stse_handler_t *p_stse,
     stse_hash_algorithm_t sha_algorithm,
     PLAT_UI8 *p_message,
     PLAT_UI16 message_size);
@@ -61,10 +61,10 @@ stse_ReturnCode_t stse_start_hash(
  * \param[in]		p_stse			Pointer to target SE handler
  * \param[in] 		p_message		Pointer to message buffer
  * \param[in]		message_size	Input message length in bytes
- * \return \ref stse_ReturnCode_t : STSE_OK on success ; error code otherwise
+ * \return \ref stse_return_code_t : STSE_OK on success ; error code otherwise
  */
-stse_ReturnCode_t stse_process_hash(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_process_hash(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_message,
     PLAT_UI16 message_size);
 
@@ -77,10 +77,10 @@ stse_ReturnCode_t stse_process_hash(
  * \param[in]		message_size	Input message length in bytes
  * \param[out] 		p_digest			Pointer to digest buffer
  * \param[out]		p_digest_size	Digest buffer length in bytes
- * \return \ref stse_ReturnCode_t : STSE_OK on success ; error code otherwise
+ * \return \ref stse_return_code_t : STSE_OK on success ; error code otherwise
  */
-stse_ReturnCode_t stse_finish_hash(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_finish_hash(
+    stse_handler_t *p_stse,
     stse_hash_algorithm_t sha_algorithm,
     PLAT_UI8 *p_message,
     PLAT_UI16 message_size,
@@ -96,10 +96,10 @@ stse_ReturnCode_t stse_finish_hash(
  * \param[in]		message_size	Input message length in bytes
  * \param[out] 		p_digest			Pointer to digest buffer
  * \param[out]		p_digest_size	Digest buffer length in bytes
- * \return \ref stse_ReturnCode_t : STSE_OK on success ; error code otherwise
+ * \return \ref stse_return_code_t : STSE_OK on success ; error code otherwise
  */
-stse_ReturnCode_t stse_compute_hash(
-    stse_Handler_t *p_stse,
+stse_return_code_t stse_compute_hash(
+    stse_handler_t *p_stse,
     stse_hash_algorithm_t sha_algorithm,
     PLAT_UI8 *p_message,
     PLAT_UI16 message_size,

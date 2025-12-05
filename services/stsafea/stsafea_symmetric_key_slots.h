@@ -154,10 +154,10 @@ typedef struct stsafea_symmetric_key_slot_information_t {
             PLAT_UI8 counter_value[4];
         } ccm;
         struct {
-            PLAT_UI8 minimum_MAC_length;
+            PLAT_UI8 minimum_MAc_length;
         } cmac;
         struct {
-            PLAT_UI8 minimum_MAC_length;
+            PLAT_UI8 minimum_MAc_length;
         } hmac;
         struct {
             PLAT_UI8 auth_tag_length;
@@ -194,7 +194,7 @@ typedef struct stsafe_generic_key_information_t {
             PLAT_UI8 counter_presence : 1;        /*!< Counter presence indicator */
         } CCM;
         struct {
-            PLAT_UI8 min_MAC_length; /*!< Byte length of the MAC to verify (optional) */
+            PLAT_UI8 min_MAc_length; /*!< Byte length of the MAC to verify (optional) */
         } CMAC;
         struct {
             PLAT_UI8 auth_tag_length; /*!< Length of the authentication tag (4, 8, 12, 13, 14, 15 or 16 bytes) */
@@ -205,7 +205,7 @@ typedef struct stsafe_generic_key_information_t {
             PLAT_UI8 generic_secret_key_length;     /*!< Byte length of the key (only present if key type == STSAFEA_SYMMETRIC_KEY_TYPE_GENERIC_SECRET */
         } HKDF;
         struct {
-            PLAT_UI8 min_MAC_length;            /*!< Byte length of the MAC to verify (optional) */
+            PLAT_UI8 min_MAc_length;            /*!< Byte length of the MAC to verify (optional) */
             PLAT_UI8 generic_secret_key_length; /*!< Byte length of the key (only present if key type == STSAFEA_SYMMETRIC_KEY_TYPE_GENERIC_SECRET */
         } HMAC;
     };
@@ -221,10 +221,10 @@ typedef struct stsafe_generic_key_information_t {
  * \param[in] 	p_stse 			Pointer to STSE Handler
  * \param[in] 	slot_number			Slot number of the slot to query
  * \param[out] 	p_ctrl_fields		Output structure for the provisioning control fields of the target slot
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_query_symmetric_key_slot_provisioning_ctrl_fields(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_query_symmetric_key_slot_provisioning_ctrl_fields(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stsafea_symmetric_key_slot_provisioning_ctrl_fields_t *p_ctrl_fields);
 
@@ -234,10 +234,10 @@ stse_ReturnCode_t stsafea_query_symmetric_key_slot_provisioning_ctrl_fields(
  * \param[in] 	p_stse 				Pointer to STSE Handler
  * \param[in] 	slot_number			Slot number of the slot to query
  * \param[in] 	p_ctrl_fields		Structure for the provisioning control fields of the target slot
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_put_symmetric_key_slot_provisioning_ctrl_fields(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_put_symmetric_key_slot_provisioning_ctrl_fields(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stsafea_symmetric_key_slot_provisioning_ctrl_fields_t *p_ctrl_fields);
 
@@ -246,9 +246,9 @@ stse_ReturnCode_t stsafea_put_symmetric_key_slot_provisioning_ctrl_fields(
  * \details 	This service format and send query symmetric key slot count
  * \param[in] 	p_stse 					Pointer to STSE Handler
  * \param[out] 	p_symmetric_key_slot_count	Slot count output
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_query_symmetric_key_slots_count(stse_Handler_t *p_stse, PLAT_UI8 *p_symmetric_key_slot_count);
+stse_return_code_t stsafea_query_symmetric_key_slots_count(stse_handler_t *p_stse, PLAT_UI8 *p_symmetric_key_slot_count);
 
 /**
  * \brief 		Query symmetric key table informations
@@ -256,10 +256,10 @@ stse_ReturnCode_t stsafea_query_symmetric_key_slots_count(stse_Handler_t *p_stse
  * \param[in] 	p_stse 					Pointer to STSE Handler
  * \param[in] 	symmetric_key_slot_count	Expected table slot count
  * \param[out] 	symmetric_key_table_info	Output key slot info list of length equal to symmetric_key_slot_count
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_query_symmetric_key_table(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_query_symmetric_key_table(
+    stse_handler_t *p_stse,
     PLAT_UI8 symmetric_key_slot_count,
     stsafea_symmetric_key_slot_information_t *symmetric_key_table_info);
 
@@ -269,10 +269,10 @@ stse_ReturnCode_t stsafea_query_symmetric_key_table(
  * \param[in] 	p_stse 				Pointer to STSE Handler
  * \param[in] 	key_type 				Type of the key used in ECDHE
  * \param[in] 	host_ecdhe_public_key	Key used in ECDHE
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_establish_symmetric_key(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_establish_symmetric_key(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *host_ecdhe_public_key);
 
@@ -286,10 +286,10 @@ stse_ReturnCode_t stsafea_establish_symmetric_key(
  * \param[in] 	signature_public_key_slot_number	Generic public key slot number to be used for the authentication
  * \param[in] 	signature_key_type					Authentication signature key type
  * \param[in] 	p_signature							Authentication signature
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_establish_symmetric_key_authenticated(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_establish_symmetric_key_authenticated(
+    stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *host_ecdhe_public_key,
     stse_hash_algorithm_t hash_algo,
@@ -304,10 +304,10 @@ stse_ReturnCode_t stsafea_establish_symmetric_key_authenticated(
  * \param[in] 	p_mac_confirmation_key 	Key used to MAC the confirmation command payload
  * \param[in] 	key_count				Number of key to populate
  * \param[in]	p_key_information_list	Key information list used to populate the symmetric key table
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_confirm_symmetric_key(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_confirm_symmetric_key(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_mac_confirmation_key,
     PLAT_UI8 key_count,
     stsafea_generic_key_information_t *p_key_information_list);
@@ -318,10 +318,10 @@ stse_ReturnCode_t stsafea_confirm_symmetric_key(
  * \param[in] 	p_stse 			 			Pointer to STSE Handler
  * \param[in] 	p_symmetric_key_envelope 		Envelope containing key materials to write in STSAFE
  * \param[in] 	symmetric_key_envelope_length 	Envelope length in bytes
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_write_symmetric_key_wrapped(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_write_symmetric_key_wrapped(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_symmetric_key_envelope,
     PLAT_UI8 symmetric_key_envelope_length);
 
@@ -331,10 +331,10 @@ stse_ReturnCode_t stsafea_write_symmetric_key_wrapped(
  * \param[in] 	p_stse 			 		Pointer to STSE Handler
  * \param[in] 	p_symmetric_key_value 	Key value buffer
  * \param[in] 	p_symmetric_key_info 	Key information used to populate the symmetric key slot
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_write_symmetric_key_plaintext(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_write_symmetric_key_plaintext(
+    stse_handler_t *p_stse,
     PLAT_UI8 *p_symmetric_key_value,
     stsafea_generic_key_information_t *p_symmetric_key_info);
 
@@ -344,10 +344,10 @@ stse_ReturnCode_t stsafea_write_symmetric_key_plaintext(
  * \param[in] 	p_stse 			 	Pointer to STSE Handler
  * \param[in] 	wrap_key_slot 		wrap/unwrap key slot number
  * \param[in] 	key_type 			\ref stse_aes_key_type_t key wrap/unwrap key type
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_generate_wrap_unwrap_key(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_generate_wrap_unwrap_key(
+    stse_handler_t *p_stse,
     PLAT_UI8 wrap_key_slot,
     stse_aes_key_type_t key_type);
 
@@ -356,10 +356,10 @@ stse_ReturnCode_t stsafea_generate_wrap_unwrap_key(
  * \details 	This service erase content of specified key slot in symmetric key table
  * \param[in] 	p_stse 							Pointer to STSE Handler
  * \param[in] 	symmetric_key_slot_number		Key's slot number in symmetric key table
- * \return \ref STSE_OK on success ; \ref stse_ReturnCode_t error code otherwise
+ * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_ReturnCode_t stsafea_erase_symmetric_key_slot(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_erase_symmetric_key_slot(
+    stse_handler_t *p_stse,
     PLAT_UI8 symmetric_key_slot_number);
 
 /** \}*/

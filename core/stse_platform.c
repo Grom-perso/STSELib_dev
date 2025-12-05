@@ -26,11 +26,11 @@
  *                STSAFE CRYPTO HAL
  **************************************************************/
 
-__WEAK stse_ReturnCode_t stse_platform_hmac_sha256_compute(PLAT_UI8 *p_salt, PLAT_UI16 salt_length,
+__WEAK stse_return_code_t stse_platform_hmac_sha256_compute(PLAT_UI8 *p_salt, PLAT_UI16 salt_length,
                                                            PLAT_UI8 *p_input_keying_material, PLAT_UI16 input_keying_material_length,
                                                            PLAT_UI8 *p_info, PLAT_UI16 info_length,
                                                            PLAT_UI8 *p_output_keying_material, PLAT_UI16 output_keying_material_length) {
-    stse_ReturnCode_t retval;
+    stse_return_code_t retval;
     PLAT_UI8 p_pseudorandom_key[STSAFEA_SHA_256_HASH_SIZE];
 
     /* Extract pseudo-random key from input keying material */

@@ -20,8 +20,8 @@
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
-stse_ReturnCode_t stsafea_cmac_hmac_compute(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_cmac_hmac_compute(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI8 *p_message,
     PLAT_UI8 message_length,
@@ -42,26 +42,26 @@ stse_ReturnCode_t stsafea_cmac_hmac_compute(
     }
 
     /* - Prepare CMD Frame : [HEADER] [CMD DISTINGUISHER] [SLOT] [MAC LENGTH] [MESSAGE] */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eSub_command_distinguisher, 1, &sub_command_distinguisher);
-    stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &slot_number);
-    stse_frame_element_allocate_push(&CmdFrame, eMac_length, 1, &mac_length);
-    stse_frame_element_allocate_push(&CmdFrame, eMessage, message_length, p_message);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, esub_command_distinguisher, 1, &sub_command_distinguisher);
+    stse_frame_element_allocate_push(&cmd_frame, eslot_number, 1, &slot_number);
+    stse_frame_element_allocate_push(&cmd_frame, eMac_length, 1, &mac_length);
+    stse_frame_element_allocate_push(&cmd_frame, eMessage, message_length, p_message);
 
     /* - Prepare RSP Frame : [HEADER] [MAC] */
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&Rsp_frame, eMac, mac_length, p_mac);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eMac, mac_length, p_mac);
 
     /* - Perform Transfer*/
     return stsafea_frame_transfer(p_stse,
-                                  &CmdFrame,
-                                  &Rsp_frame);
+                                  &cmd_frame,
+                                  &rsp_frame);
 }
 
-stse_ReturnCode_t stsafea_cmac_hmac_verify(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_cmac_hmac_verify(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     PLAT_UI8 *p_mac,
     PLAT_UI8 mac_length,
@@ -83,29 +83,29 @@ stse_ReturnCode_t stsafea_cmac_hmac_verify(
     }
 
     /* - Prepare CMD Frame : [HEADER] [CMD DISTINGUISHER] [SLOT] [MAC LENGTH] [MESSAGE] */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eSub_command_distinguisher, 1, &sub_command_distinguisher);
-    stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &slot_number);
-    stse_frame_element_allocate_push(&CmdFrame, eMac_length, 1, &mac_length);
-    stse_frame_element_allocate_push(&CmdFrame, eMac, mac_length, p_mac);
-    stse_frame_element_allocate_push(&CmdFrame, eMessage, message_length, p_message);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, esub_command_distinguisher, 1, &sub_command_distinguisher);
+    stse_frame_element_allocate_push(&cmd_frame, eslot_number, 1, &slot_number);
+    stse_frame_element_allocate_push(&cmd_frame, eMac_length, 1, &mac_length);
+    stse_frame_element_allocate_push(&cmd_frame, eMac, mac_length, p_mac);
+    stse_frame_element_allocate_push(&cmd_frame, eMessage, message_length, p_message);
 
     /* - Prepare RSP Frame : [HEADER] [VERIFICATION RESULT] */
-    stse_frame_allocate(Rsp_frame);
-    stse_frame_element_allocate_push(&Rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&Rsp_frame, eVerification_result, 1, p_verification_result);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, ersp_header, STSAFEA_HEADER_SIZE, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, everification_result, 1, p_verification_result);
 
     /* - Perform Transfer*/
     return stsafea_frame_transfer(p_stse,
-                                  &CmdFrame,
-                                  &Rsp_frame);
+                                  &cmd_frame,
+                                  &rsp_frame);
 }
 
-stse_ReturnCode_t stsafea_aes_gmac_compute(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_aes_gmac_compute(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
-    PLAT_UI16 IV_length,
+    PLAT_UI16 iv_length,
     PLAT_UI8 *p_iv,
     PLAT_UI16 associated_data_length,
     PLAT_UI8 *p_associated_data,
@@ -119,7 +119,7 @@ stse_ReturnCode_t stsafea_aes_gmac_compute(
         p_stse,
         slot_number,
         authentication_tag_length,
-        IV_length,
+        iv_length,
         p_iv,
         associated_data_length,
         p_associated_data,
@@ -129,10 +129,10 @@ stse_ReturnCode_t stsafea_aes_gmac_compute(
         p_authentication_tag));
 }
 
-stse_ReturnCode_t stsafea_aes_gmac_verify(
-    stse_Handler_t *p_stse,
+stse_return_code_t stsafea_aes_gmac_verify(
+    stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
-    PLAT_UI16 IV_length,
+    PLAT_UI16 iv_length,
     PLAT_UI8 *p_iv,
     PLAT_UI16 associated_data_length,
     PLAT_UI8 *p_associated_data,
@@ -146,7 +146,7 @@ stse_ReturnCode_t stsafea_aes_gmac_verify(
     return (stsafea_aes_gcm_decrypt(p_stse,
                                     slot_number,
                                     authentication_tag_length,
-                                    IV_length,
+                                    iv_length,
                                     p_iv,
                                     associated_data_length,
                                     p_associated_data,
