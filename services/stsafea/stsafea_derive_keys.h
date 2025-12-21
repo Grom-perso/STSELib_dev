@@ -27,6 +27,8 @@
 #include "services/stsafea/stsafea_symmetric_key_slots.h"
 #include "services/stsafea/stsafea_timings.h"
 
+#define STSAFEA_MAX_OKM_COUNT 16U  /* Maximum number of Output Key Material derivations */
+
 /*! \defgroup stsafea_derive_keys STSAFE-A Derive Keys
  *  \ingroup stsafea_services
  *  @{

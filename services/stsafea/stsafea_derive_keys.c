@@ -75,12 +75,12 @@ stse_ReturnCode_t stsafea_derive_keys(
     }
 
     /* 2. Loop Arrays & Buffer Allocation */
-    stse_frame_element_t eOkmDescLength[okm_count], eOkmDestination[okm_count];
-    stse_frame_element_t eOkmData1[okm_count], eOkmData2[okm_count];
-    stse_frame_element_t eRspOkmData[okm_count];
+    stse_frame_element_t eOkmDescLength[STSAFEA_MAX_OKM_COUNT], eOkmDestination[STSAFEA_MAX_OKM_COUNT];
+    stse_frame_element_t eOkmData1[STSAFEA_MAX_OKM_COUNT], eOkmData2[STSAFEA_MAX_OKM_COUNT];
+    stse_frame_element_t eRspOkmData[STSAFEA_MAX_OKM_COUNT];
 
-    PLAT_UI8 okm_desc_len_buf[okm_count][2];
-    PLAT_UI8 okm_key_len_buf[okm_count][2];
+    PLAT_UI8 okm_desc_len_buf[STSAFEA_MAX_OKM_COUNT][2];
+    PLAT_UI8 okm_key_len_buf[STSAFEA_MAX_OKM_COUNT][2];
 
     /* Initialize Frames */
     stse_frame_allocate(CmdFrame);

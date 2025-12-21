@@ -406,7 +406,7 @@ stse_ReturnCode_t stsafea_confirm_symmetric_key(
     }
 
     PLAT_UI8 pConfirmation_mac[STSE_KEY_CONFIRMATION_MAC_SIZE];
-    stse_frame_element_t eKey_information_list[key_count];
+    stse_frame_element_t eKey_information_list[STSAFEA_MAX_KEY_SLOTS];
     PLAT_UI8 rsp_header;
 
     stse_frame_allocate(CmdFrame);

@@ -131,7 +131,7 @@ stse_ReturnCode_t stsafea_perso_info_update(stse_Handler_t *pSTSE) {
         return ret;
     }
 
-    stse_cmd_authorization_record_t record_table[total_command_count];
+    stse_cmd_authorization_record_t record_table[STSAFEA_MAX_COMMAND_COUNT];
 
     ret = stsafea_get_command_AC_table(pSTSE,
                                        total_command_count,
