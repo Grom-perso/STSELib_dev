@@ -163,7 +163,7 @@ stse_ReturnCode_t stsafel_i2c_frame_receive(stse_Handler_t *pSTSE, stse_frame_t 
     }
 
     /* Append filler frame element even if its length equal 0 */
-    PLAT_UI8 filler[filler_size];
+    PLAT_UI8 filler[STSE_MAX_FRAME_FILLER_SIZE];
     stse_frame_element_allocate(eFiller,
                                 filler_size,
                                 filler);

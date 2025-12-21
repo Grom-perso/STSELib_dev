@@ -66,7 +66,7 @@ stse_ReturnCode_t stsafea_get_command_AC_table(stse_Handler_t *pSTSE,
     PLAT_UI8 cmd_header = STSAFEA_CMD_QUERY;
     PLAT_UI8 tag = STSAFEA_SUBJECT_TAG_COMMAND_AUTHORIZATION_CONFIG;
     PLAT_UI8 rsp_header = 0;
-    PLAT_UI8 raw_data[total_command_count * sizeof(stse_cmd_authorization_record_t)];
+    PLAT_UI8 raw_data[STSAFEA_MAX_COMMAND_COUNT * sizeof(stse_cmd_authorization_record_t)];
     PLAT_UI8 record_index = 0;
     PLAT_UI8 record_array_pos = 0;
 

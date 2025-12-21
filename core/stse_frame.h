@@ -34,6 +34,8 @@
 #define STSE_RSP_FRAME_HEADER_SIZE 1U
 #define STSE_STSAFEA_RSP_STATUS_MASK 0x1F
 #define STSE_STSAFEL_RSP_STATUS_MASK 0x0F
+#define STSE_MAX_FRAME_PAYLOAD_SIZE 2048U  /* Maximum payload size for dynamic buffers */
+#define STSE_MAX_FRAME_FILLER_SIZE 64U  /* Maximum filler size for frame alignment */
 
 typedef struct stse_frame_t stse_frame_t;
 typedef struct stse_frame_element_t stse_frame_element_t;

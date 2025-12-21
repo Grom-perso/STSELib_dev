@@ -81,7 +81,7 @@ stse_ReturnCode_t stsafea_get_data_partitions_configuration(stse_Handler_t *pSTS
     PLAT_UI8 cmd_header = STSAFEA_CMD_QUERY;
     PLAT_UI8 tag = STSAFEA_SUBJECT_TAG_DATA_PARTITION_CONFIGURATION;
     PLAT_UI8 rsp_header;
-    PLAT_UI8 raw_data[record_table_length];
+    PLAT_UI8 raw_data[STSAFEA_MAX_DATA_PARTITIONS * sizeof(stsafea_data_partition_record_t)];
 
     if (pSTSE == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;

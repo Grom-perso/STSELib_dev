@@ -40,6 +40,8 @@
 
 #define STSAFEA_PRIVATE_KEY_TABLE_INFO_COMMON_VALUES_LENGTH 4U
 #define STSAFEA_EPHEMERAL_KEY_USAGE_LIMIT 1U
+#define STSAFEA_MAX_KEY_SLOTS 32U  /* Maximum number of key slots in table queries */
+#define STSAFEA_MAX_DATA_PARTITIONS 32U  /* Maximum number of data partitions */
 
 /*!
  * \struct stsafea_private_key_operation_mode_t

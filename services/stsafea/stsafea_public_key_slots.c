@@ -146,7 +146,8 @@ stse_ReturnCode_t stsafea_query_generic_public_key_slot_value(
     PLAT_UI8 rsp_header;
     PLAT_UI8 presence_flag;
     stsafea_generic_public_key_configuration_flags_t configuration_flags;
-    PLAT_UI8 pCurve_id[stse_ecc_info_table[key_type].curve_id_total_length];
+    PLAT_UI8 pCurve_id[STSE_ECC_CURVE_ID_TOTAL_MAX_SIZE];
+    PLAT_UI16 curve_id_length = stse_ecc_info_table[key_type].curve_id_total_length;
 
     PLAT_UI8 point_representation_id = STSE_NIST_BRAINPOOL_POINT_REPRESENTATION_ID;
     stse_frame_element_allocate(ePoint_representation_id, 1, &point_representation_id);
@@ -170,7 +171,7 @@ stse_ReturnCode_t stsafea_query_generic_public_key_slot_value(
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, ePresence_flag, 1, &presence_flag);
     stse_frame_element_allocate_push(&RspFrame, eConfiguration_flags, sizeof(stsafea_generic_public_key_configuration_flags_t), (PLAT_UI8 *)&configuration_flags);
-    stse_frame_element_allocate_push(&RspFrame, eCurve_id, stse_ecc_info_table[key_type].curve_id_total_length, pCurve_id);
+    stse_frame_element_allocate_push(&RspFrame, eCurve_id, curve_id_length, pCurve_id);
 
 #ifdef STSE_CONF_ECC_EDWARD_25519
     if (key_type == STSE_ECC_KT_ED25519) {
