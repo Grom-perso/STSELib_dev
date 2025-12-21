@@ -137,6 +137,10 @@ stse_ReturnCode_t stsafea_query_symmetric_key_table(
         return (STSE_SERVICE_INVALID_PARAMETER);
     }
 
+    if (symmetric_key_slot_count > STSAFEA_MAX_KEY_SLOTS) {
+        return (STSE_SERVICE_INVALID_PARAMETER);
+    }
+
     PLAT_UI8 slot_count, i;
     PLAT_UI8 *current_record;
 
@@ -402,6 +406,10 @@ stse_ReturnCode_t stsafea_confirm_symmetric_key(
     }
 
     if ((pMac_confirmation_key == NULL) || (pKey_information_list == NULL) || (key_count == 0)) {
+        return (STSE_SERVICE_INVALID_PARAMETER);
+    }
+
+    if (key_count > STSAFEA_MAX_KEY_SLOTS) {
         return (STSE_SERVICE_INVALID_PARAMETER);
     }
 

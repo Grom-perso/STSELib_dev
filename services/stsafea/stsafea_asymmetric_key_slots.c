@@ -68,6 +68,10 @@ stse_ReturnCode_t stsafea_query_private_key_table(
         return (STSE_SERVICE_INVALID_PARAMETER);
     }
 
+    if (private_key_slot_count > STSAFEA_MAX_KEY_SLOTS) {
+        return (STSE_SERVICE_INVALID_PARAMETER);
+    }
+
     PLAT_UI8 slot_count, i;
     PLAT_UI8 *current_record;
     PLAT_UI8 filler;

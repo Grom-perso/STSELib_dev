@@ -73,6 +73,9 @@ stse_ReturnCode_t stsafea_derive_keys(
     if (expand_flag && (pOkm_map == NULL || pOutput->derived_keys == NULL)) {
         return STSE_SERVICE_INVALID_PARAMETER;
     }
+    if (okm_count > STSAFEA_MAX_OKM_COUNT) {
+        return STSE_SERVICE_INVALID_PARAMETER;
+    }
 
     /* 2. Loop Arrays & Buffer Allocation */
     stse_frame_element_t eOkmDescLength[STSAFEA_MAX_OKM_COUNT], eOkmDestination[STSAFEA_MAX_OKM_COUNT];

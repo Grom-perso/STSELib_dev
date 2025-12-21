@@ -74,6 +74,10 @@ stse_ReturnCode_t stsafea_get_command_AC_table(stse_Handler_t *pSTSE,
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
 
+    if (total_command_count > STSAFEA_MAX_COMMAND_COUNT) {
+        return STSE_SERVICE_INVALID_PARAMETER;
+    }
+
     /*- Create CMD frame and populate elements */
     stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
@@ -129,6 +133,10 @@ stse_ReturnCode_t stsafea_perso_info_update(stse_Handler_t *pSTSE) {
     ret = stsafea_get_command_count(pSTSE, &total_command_count);
     if (ret != STSE_OK) {
         return ret;
+    }
+
+    if (total_command_count > STSAFEA_MAX_COMMAND_COUNT) {
+        return STSE_SERVICE_INVALID_PARAMETER;
     }
 
     stse_cmd_authorization_record_t record_table[STSAFEA_MAX_COMMAND_COUNT];

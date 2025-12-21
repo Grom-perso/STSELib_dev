@@ -87,6 +87,10 @@ stse_ReturnCode_t stsafea_get_data_partitions_configuration(stse_Handler_t *pSTS
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
 
+    if (total_partitions_count > STSAFEA_MAX_DATA_PARTITIONS) {
+        return STSE_SERVICE_INVALID_PARAMETER;
+    }
+
     /*- Create CMD frame and populate elements */
     stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
