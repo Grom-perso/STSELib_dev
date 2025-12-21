@@ -66,12 +66,16 @@ stse_ReturnCode_t stsafea_get_command_AC_table(stse_Handler_t *pSTSE,
     PLAT_UI8 cmd_header = STSAFEA_CMD_QUERY;
     PLAT_UI8 tag = STSAFEA_SUBJECT_TAG_COMMAND_AUTHORIZATION_CONFIG;
     PLAT_UI8 rsp_header = 0;
-    PLAT_UI8 raw_data[total_command_count * sizeof(stse_cmd_authorization_record_t)];
+    PLAT_UI8 raw_data[STSAFEA_MAX_COMMAND_COUNT * sizeof(stse_cmd_authorization_record_t)];
     PLAT_UI8 record_index = 0;
     PLAT_UI8 record_array_pos = 0;
 
     if (pSTSE == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+
+    if (total_command_count > STSAFEA_MAX_COMMAND_COUNT) {
+        return STSE_SERVICE_INVALID_PARAMETER;
     }
 
     /*- Create CMD frame and populate elements */
@@ -131,7 +135,11 @@ stse_ReturnCode_t stsafea_perso_info_update(stse_Handler_t *pSTSE) {
         return ret;
     }
 
-    stse_cmd_authorization_record_t record_table[total_command_count];
+    if (total_command_count > STSAFEA_MAX_COMMAND_COUNT) {
+        return STSE_SERVICE_INVALID_PARAMETER;
+    }
+
+    stse_cmd_authorization_record_t record_table[STSAFEA_MAX_COMMAND_COUNT];
 
     ret = stsafea_get_command_AC_table(pSTSE,
                                        total_command_count,

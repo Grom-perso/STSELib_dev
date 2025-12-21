@@ -68,6 +68,10 @@ stse_ReturnCode_t stsafea_query_private_key_table(
         return (STSE_SERVICE_INVALID_PARAMETER);
     }
 
+    if (private_key_slot_count > STSAFEA_MAX_KEY_SLOTS) {
+        return (STSE_SERVICE_INVALID_PARAMETER);
+    }
+
     PLAT_UI8 slot_count, i;
     PLAT_UI8 *current_record;
     PLAT_UI8 filler;
@@ -76,7 +80,7 @@ stse_ReturnCode_t stsafea_query_private_key_table(
     PLAT_UI8 subject_tag = STSAFEA_SUBJECT_TAG_PRIVATE_KEY_TABLE;
     PLAT_UI8 rsp_header;
     PLAT_UI16 raw_table_length = private_key_slot_count * sizeof(stsafea_private_key_slot_information_t);
-    PLAT_UI8 pTable_raw[raw_table_length];
+    PLAT_UI8 pTable_raw[STSAFEA_MAX_KEY_SLOTS * sizeof(stsafea_private_key_slot_information_t)];
 
     stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
@@ -228,7 +232,8 @@ stse_ReturnCode_t stsafea_generate_ECDHE_key_pair(
     PLAT_UI8 cmd_header[STSAFEA_EXT_HEADER_SIZE] = {STSAFEA_EXTENDED_COMMAND_PREFIX, STSAFEA_EXTENDED_CMD_GENERATE_ECDHE};
 
     PLAT_UI8 rsp_header;
-    PLAT_UI8 pCurve_id_rsp[stse_ecc_info_table[key_type].curve_id_total_length];
+    PLAT_UI8 pCurve_id_rsp[STSE_ECC_CURVE_ID_TOTAL_MAX_SIZE];
+    PLAT_UI16 curve_id_length = stse_ecc_info_table[key_type].curve_id_total_length;
     PLAT_UI8 point_representation_id = STSE_NIST_BRAINPOOL_POINT_REPRESENTATION_ID;
     stse_frame_element_allocate(ePoint_representation_id, 1, &point_representation_id);
 
@@ -245,13 +250,13 @@ stse_ReturnCode_t stsafea_generate_ECDHE_key_pair(
     stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eCurve_id_cmd,
-                                     stse_ecc_info_table[key_type].curve_id_total_length,
+                                     curve_id_length,
                                      (PLAT_UI8 *)&stse_ecc_info_table[key_type].curve_id);
 
     stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eCurve_id_rsp,
-                                     stse_ecc_info_table[key_type].curve_id_total_length,
+                                     curve_id_length,
                                      pCurve_id_rsp);
 
 #ifdef STSE_CONF_ECC_CURVE_25519

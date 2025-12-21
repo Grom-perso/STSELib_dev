@@ -137,13 +137,17 @@ stse_ReturnCode_t stsafea_query_symmetric_key_table(
         return (STSE_SERVICE_INVALID_PARAMETER);
     }
 
+    if (symmetric_key_slot_count > STSAFEA_MAX_KEY_SLOTS) {
+        return (STSE_SERVICE_INVALID_PARAMETER);
+    }
+
     PLAT_UI8 slot_count, i;
     PLAT_UI8 *current_record;
 
     PLAT_UI8 subject_tag = STSAFEA_SUBJECT_TAG_SYMMETRIC_KEY_TABLE;
     PLAT_UI8 rsp_header;
     PLAT_UI16 rsp_raw_length = symmetric_key_slot_count * sizeof(stsafea_symmetric_key_slot_information_t);
-    PLAT_UI8 pRsp_raw[rsp_raw_length];
+    PLAT_UI8 pRsp_raw[STSAFEA_MAX_KEY_SLOTS * sizeof(stsafea_symmetric_key_slot_information_t)];
 
     stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
@@ -405,8 +409,12 @@ stse_ReturnCode_t stsafea_confirm_symmetric_key(
         return (STSE_SERVICE_INVALID_PARAMETER);
     }
 
+    if (key_count > STSAFEA_MAX_KEY_SLOTS) {
+        return (STSE_SERVICE_INVALID_PARAMETER);
+    }
+
     PLAT_UI8 pConfirmation_mac[STSE_KEY_CONFIRMATION_MAC_SIZE];
-    stse_frame_element_t eKey_information_list[key_count];
+    stse_frame_element_t eKey_information_list[STSAFEA_MAX_KEY_SLOTS];
     PLAT_UI8 rsp_header;
 
     stse_frame_allocate(CmdFrame);

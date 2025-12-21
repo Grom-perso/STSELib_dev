@@ -51,6 +51,7 @@
 #define STSAFEA_MAXIMUM_CMD_RSP_LENGTH_A110 507U
 #define STSAFEA_MAXIMUM_CMD_RSP_LENGTH_A120 752U
 #define STSAFEA_MAXIMUM_CMD_RSP_LENGTH_A200 507U
+#define STSAFEA_MAX_COMMAND_COUNT 64U  /* Maximum number of commands in AC table */
 
 #define STSAFEA_PROT_Pos 5         /*!< STSAFE  Protected rsp mask */
 #define STSAFEA_PROT_Msk 0xC0U     /*!< STSAFE  Protected mask */

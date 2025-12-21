@@ -243,6 +243,7 @@ typedef enum stse_ac_change_right_t {
 #define STSE_NIST_BRAINPOOL_POINT_REPRESENTATION_ID_SIZE 1U
 #define STSE_ECC_CURVE_ID_LENGTH_SIZE STSE_ECC_GENERIC_LENGTH_SIZE
 #define STSE_ECC_CURVE_ID_VALUE_MAX_SIZE 9U
+#define STSE_ECC_CURVE_ID_TOTAL_MAX_SIZE (STSE_ECC_CURVE_ID_VALUE_MAX_SIZE + STSE_ECC_CURVE_ID_LENGTH_SIZE)
 
 /*  ---------------------------------------------------------------------------------------
  *
