@@ -4,11 +4,19 @@
   <img src="./../Pictures/STSELib.png" />
 </p>
 
+## Overview
+
 The STSELib middleware offers a comprehensive suite of high-level Application Programming Interface (API) functions for embedded system developers. This middleware abstracts the construction and sequencing of commands necessary to ensure the protection of peripherals, accessories, and consumables using secure authentication devices from STMicroelectronics.
 
-Thanks to its modular architecture, this middleware enables seamless integration of one or multiple secure authentication devices from STMicroelectronics within various host MCU/MPU ecosystems. The STSELib middleware consists of three software modules, as depicted in the figure below.
+Thanks to its modular architecture, this middleware enables seamless integration of one or multiple secure authentication devices from STMicroelectronics within various host MCU/MPU ecosystems.
+
+## Software Architecture
+
+The STSELib middleware consists of three software modules, as depicted in the figure below.
 
 ![STSELib_architecture](./../Pictures/STSELib_arch.png)
+
+### Software Layers
 
 Each layer provides a distinct level of system abstraction for the embedded system developer:
 
@@ -21,8 +29,14 @@ Each layer provides a distinct level of system abstraction for the embedded syst
 - **Core Layer**:
   This layer contains generic definitions for ST Secure Elements and functions for communicating with the target secure element.
 
-For more details on each layer, please refer to the "Modules Documentation" section of the documentation.
+## Additional Resources
 
+For more details on each layer, please refer to the following sections in the documentation:
+
+- Certificate Management Module
+- API Layer Documentation
+- Services Layer Documentation
+- Core Layer Documentation
 
 \subpage stse_certificate
 

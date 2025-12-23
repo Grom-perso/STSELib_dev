@@ -1,37 +1,37 @@
+# stse_platform_crc.c {#stse_platform_crc}
 
-# stse_platform_crc.c{#stse_platform_crc}
-
-The stse_platform_crc.c file provides CRC16 functions for the STSecureElement library, abstracting the platform-specific details of CRC16 calculations. By using these functions, developers can ensure consistent and reliable CRC16 operations across different hardware platforms.
-
+The `stse_platform_crc.c` file provides CRC16 functions for the STSecureElement library, abstracting the platform-specific details of CRC16 calculations. By using these functions, developers can ensure consistent and reliable CRC16 operations across different hardware platforms.
 
 ## stse_platform_crc16_init:
 
-- Purpose: Initializes the CRC16 calculation module.
-- Return Value: Returns STSE_OK to indicate successful initialization.
+- **Purpose**: Initializes the CRC16 calculation module.
+- **Return Value**: Returns `STSE_OK` to indicate successful initialization.
 
-<b> Implementation directives :</b> This abstaction function should implement or call a platform function/driver that perform CRC16 calculation process.
+**Implementation directives**: This abstraction function should implement or call a platform function/driver that performs CRC16 calculation process.
 
 ## stse_platform_Crc16_Calculate:
 
-- Purpose: Calculates the CRC16 checksum for the given buffer.
-- Parameters:
-  - pbuffer: Pointer to the buffer.
-  - length: Length of the buffer.
-- Return Value: Returns the calculated CRC16 checksum.
+- **Purpose**: Calculates the CRC16 checksum for the given buffer.
+- **Parameters**:
+  - `pbuffer`: Pointer to the buffer.
+  - `length`: Length of the buffer.
+- **Return Value**: Returns the calculated CRC16 checksum.
 
-<b> Implementation directives :</b> This abstaction function should implement or call a platform function/driver that perform CRC16 calculation process.
+**Implementation directives**: This abstraction function should implement or call a platform function/driver that performs CRC16 calculation process.
 
 ## stse_platform_Crc16_Accumulate:
 
-- Purpose: Accumulates the CRC16 checksum for the given buffer.
-- Parameters:
-  - pbuffer: Pointer to the buffer.
-  - length: Length of the buffer.
-- Return Value: Returns the accumulated CRC16 checksum.
+- **Purpose**: Accumulates the CRC16 checksum for the given buffer.
+- **Parameters**:
+  - `pbuffer`: Pointer to the buffer.
+  - `length`: Length of the buffer.
+- **Return Value**: Returns the accumulated CRC16 checksum.
 
-<b> Implementation directives :</b> This abstaction function should implement or call a platform function/driver that perform CRC16 acumulate process.
+**Implementation directives**: This abstraction function should implement or call a platform function/driver that performs the CRC16 accumulate process.
 
-Please find below an extract
+## Implementation Example:
+
+Please find below an example of the `stse_platform_crc` implementation:
 
 ```c
 /******************************************************************************
