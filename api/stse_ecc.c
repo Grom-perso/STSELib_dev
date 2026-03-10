@@ -25,7 +25,8 @@ stse_return_code_t stse_ecc_verify_signature(
     PLAT_UI8 *p_message,
     PLAT_UI16 message_length,
     PLAT_UI8 eddsa_variant,
-    PLAT_UI8 *p_signature_validity) {
+    PLAT_UI8 *pSignature_validity) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
 
     /* - Check stsafe handler initialization */
@@ -40,13 +41,16 @@ stse_return_code_t stse_ecc_verify_signature(
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    if (p_public_key == NULL || p_signature == NULL || p_message == NULL || p_signature_validity == NULL) {
-        return (STSE_SERVICE_INVALID_PARAMETER);
+    if (p_public_key == NULL || p_signature == NULL || p_message == NULL || pSignature_validity == NULL) {
+        return (STSE_API_INVALID_PARAMETER);
     }
 
-    ret = stsafea_ecc_verify_signature(p_stse, key_type, p_public_key, p_signature, p_message, message_length, eddsa_variant, p_signature_validity);
+    ret = stsafea_ecc_verify_signature(p_stse, key_type, p_public_key, p_signature, p_message, message_length, eddsa_variant, pSignature_validity);
 
     return ret;
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
 stse_return_code_t stse_ecc_generate_signature(
@@ -64,7 +68,7 @@ stse_return_code_t stse_ecc_generate_signature(
     }
 
     if (p_message == NULL || p_signature == NULL) {
-        return (STSE_SERVICE_INVALID_PARAMETER);
+        return (STSE_API_INVALID_PARAMETER);
     }
 
     switch (p_stse->device_type) {
@@ -93,7 +97,8 @@ stse_return_code_t stse_ecc_establish_shared_secret(
     PLAT_UI8 private_key_slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key,
-    PLAT_UI8 *p_shared_secret) {
+    PLAT_UI8 *pShared_secret) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
 
     /* - Check stsafe handler initialization */
@@ -108,25 +113,25 @@ stse_return_code_t stse_ecc_establish_shared_secret(
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    if (p_public_key == NULL || p_shared_secret == NULL
-#ifdef STSE_CONF_ECC_CURVE_25519
-        || key_type == STSE_ECC_KT_CURVE25519
-#endif /* STSE_CONF_ECC_CURVE_25519 */
-    ) {
-        return (STSE_SERVICE_INVALID_PARAMETER);
+    if (p_public_key == NULL || pShared_secret == NULL) {
+        return (STSE_API_INVALID_PARAMETER);
     }
 
-    ret = stsafea_ecc_establish_shared_secret(p_stse, private_key_slot_number, key_type, p_public_key, p_shared_secret);
+    ret = stsafea_ecc_establish_shared_secret(p_stse, private_key_slot_number, key_type, p_public_key, pShared_secret);
 
     return ret;
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
 stse_return_code_t stse_ecc_decompress_public_key(
     stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 point_representation_id,
-    PLAT_UI8 *p_public_key_X,
-    PLAT_UI8 *p_public_key_Y) {
+    PLAT_UI8 *pPublic_key_X,
+    PLAT_UI8 *pPublic_key_Y) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
 
     /* - Check stsafe handler initialization */
@@ -141,18 +146,14 @@ stse_return_code_t stse_ecc_decompress_public_key(
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    if (p_public_key_X == NULL || p_public_key_Y == NULL
-#ifdef STSE_CONF_ECC_CURVE_25519
-        || key_type == STSE_ECC_KT_CURVE25519
-#endif /* STSE_CONF_ECC_CURVE_25519 */
-#ifdef STSE_CONF_ECC_EDWARD_25519
-        || key_type == STSE_ECC_KT_ED25519
-#endif /* STSE_CONF_ECC_EDWARD_25519 */
-    ) {
-        return (STSE_SERVICE_INVALID_PARAMETER);
+    if (pPublic_key_X == NULL || pPublic_key_Y == NULL) {
+        return (STSE_API_INVALID_PARAMETER);
     }
 
-    ret = stsafea_ecc_decompress_public_key(p_stse, key_type, point_representation_id, p_public_key_X, p_public_key_Y);
+    ret = stsafea_ecc_decompress_public_key(p_stse, key_type, point_representation_id, pPublic_key_X, pPublic_key_Y);
 
     return ret;
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }

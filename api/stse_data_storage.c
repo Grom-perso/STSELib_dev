@@ -270,7 +270,7 @@ stse_return_code_t stse_data_storage_read_counter_zone(
     PLAT_UI8 *p_buffer,
     PLAT_UI16 length,
     PLAT_UI16 chunk_size,
-    PLAT_UI32 *p_counter_value,
+    PLAT_UI32 *pCounter_value,
     stse_cmd_protection_t protection) {
     stse_return_code_t ret = STSE_API_INVALID_PARAMETER;
     PLAT_UI16 remaning_length = length;
@@ -307,7 +307,7 @@ stse_return_code_t stse_data_storage_read_counter_zone(
                 chunk_offset,
                 p_buffer + (chunk_offset)-offset,
                 chunk_length,
-                p_counter_value,
+                pCounter_value,
                 protection);
             break;
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
@@ -323,7 +323,7 @@ stse_return_code_t stse_data_storage_read_counter_zone(
                 chunk_offset,
                 p_buffer + (chunk_offset)-offset,
                 chunk_length,
-                p_counter_value,
+                pCounter_value,
                 protection);
             break;
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */
@@ -345,11 +345,12 @@ stse_return_code_t stse_data_storage_change_read_access_condition(
     stse_zone_ac_t ac,
     stse_ac_change_right_t ac_change_right,
     stse_cmd_protection_t protection) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     volatile stse_return_code_t ret = STSE_API_INVALID_PARAMETER;
 
     stsafea_read_option_t options;
 
-    options.change_ac_indicator = STSE_AC_IGNORE;
+    options.change_ac_indicator = STSE_AC_CHANGE;
     options.filler = 0;
     options.new_read_ac = ac;
     options.new_read_ac_change_right = ac_change_right;
@@ -366,6 +367,9 @@ stse_return_code_t stse_data_storage_change_read_access_condition(
 
     /* - Return STSE Status code */
     return ret;
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
 stse_return_code_t stse_data_storage_change_update_access_condition(stse_handler_t *p_stse,
@@ -377,11 +381,12 @@ stse_return_code_t stse_data_storage_change_update_access_condition(stse_handler
                                                                    PLAT_UI16 length,
                                                                    stse_zone_update_atomicity_t atomicity,
                                                                    stse_cmd_protection_t protection) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     volatile stse_return_code_t ret = STSE_API_INVALID_PARAMETER;
     stsafea_update_option_t options;
 
     /*- Prepare update options */
-    options.change_ac_indicator = STSE_AC_IGNORE;
+    options.change_ac_indicator = STSE_AC_CHANGE;
     options.filler = 0;
     options.new_update_ac = ac;
     options.new_update_ac_change_right = ac_change_right;
@@ -399,6 +404,9 @@ stse_return_code_t stse_data_storage_change_update_access_condition(stse_handler
 
     /* - Return STSE Status code */
     return ret;
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
 stse_return_code_t stse_data_storage_change_decrement_access_condition(stse_handler_t *p_stse,
@@ -411,9 +419,10 @@ stse_return_code_t stse_data_storage_change_decrement_access_condition(stse_hand
                                                                       PLAT_UI16 length,
                                                                       PLAT_UI32 *new_counter_value,
                                                                       stse_cmd_protection_t protection) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     stsafea_decrement_option_t options;
 
-    options.change_ac_indicator = STSE_AC_IGNORE;
+    options.change_ac_indicator = STSE_AC_CHANGE;
     options.filler = 0;
     options.new_decrement_ac = ac;
     options.new_decrement_ac_change_right = ac_change_right;
@@ -432,4 +441,7 @@ stse_return_code_t stse_data_storage_change_decrement_access_condition(stse_hand
                                           length,
                                           new_counter_value,
                                           protection);
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }

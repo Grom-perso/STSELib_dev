@@ -152,9 +152,9 @@ stse_return_code_t stsafea_decrement_counter_zone(stse_handler_t *p_stse,
  * \param[in] 	zone_index			Zone index to read
  * \param[in] 	read_ac				Read access condition
  * \param[in] 	read_offset			Read offset
- * \param[out] 	p_read_buffer			Pointer to read buffer
+ * \param[out] 	pReadBuffer			Pointer to read buffer
  * \param[in] 	read_length			Read length
- * \param[out] 	p_counter_value		Pointer to store counter value
+ * \param[out] 	pCounter_value		Pointer to store counter value
  * \param[in] 	protection			Command protection type
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
@@ -162,9 +162,9 @@ stse_return_code_t stsafea_read_counter_zone(stse_handler_t *p_stse,
                                             PLAT_UI32 zone_index,
                                             stsafea_read_option_t read_ac,
                                             PLAT_UI16 read_offset,
-                                            PLAT_UI8 *p_read_buffer,
+                                            PLAT_UI8 *pReadBuffer,
                                             PLAT_UI16 read_length,
-                                            PLAT_UI32 *p_counter_value,
+                                            PLAT_UI32 *pCounter_value,
                                             stse_cmd_protection_t protection);
 
 /**
@@ -174,7 +174,7 @@ stse_return_code_t stsafea_read_counter_zone(stse_handler_t *p_stse,
  * \param[in] 	zone_index		Zone index to read
  * \param[in] 	read_ac			Read access condition
  * \param[in] 	read_offset		Read offset
- * \param[out] 	p_read_buffer		Pointer to read buffer
+ * \param[out] 	pReadBuffer		Pointer to read buffer
  * \param[in] 	read_length		Read length
  * \param[in] 	protection		Command protection type
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
@@ -183,7 +183,7 @@ stse_return_code_t stsafea_read_data_zone(stse_handler_t *p_stse,
                                          PLAT_UI32 zone_index,
                                          stsafea_read_option_t read_ac,
                                          PLAT_UI16 read_offset,
-                                         PLAT_UI8 *p_read_buffer,
+                                         PLAT_UI8 *pReadBuffer,
                                          PLAT_UI16 read_length,
                                          stse_cmd_protection_t protection);
 

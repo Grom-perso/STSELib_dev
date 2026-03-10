@@ -21,13 +21,17 @@
  *  @{
  */
 
-#ifndef STSAFEL_FRAME_H
-#define STSAFEL_FRAME_H
+#ifndef STSAFEL_FRAME_TRANSFER_H
+#define STSAFEL_FRAME_TRANSFER_H
 
 #include "core/stse_device.h"
 #include "core/stse_platform.h"
 #include "core/stse_return_codes.h"
 #include "core/stse_util.h"
+
+#define STSAFEL_PRODUCT_COUNT 1U
+
+extern const PLAT_UI16 stsafel_maximum_frame_length[STSAFEL_PRODUCT_COUNT];
 
 /**
  * \brief 			Transmit frame from target STSAFE-Lxxx
@@ -77,4 +81,4 @@ stse_return_code_t stsafel_frame_transfer(stse_handler_t *p_stse,
                                          stse_frame_t *p_rsp_frame);
 
 /*! @}*/
-#endif /* STSAFEL_FRAME_H */
+#endif /* STSAFEL_FRAME_TRANSFER_H */

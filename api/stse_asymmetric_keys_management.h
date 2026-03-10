@@ -37,21 +37,20 @@
  * \brief 		Get ECC key slots count
  * \details 	This API query STSE and return the number of slots in the private key table
  * \param[in] 	p_stse 						Pointer to STSE Handler
- * \param[out] 	p_private_key_slot_count 	ECC key slots count
+ * \param[out] 	pPrivate_key_slot_count 	ECC key slots count
  * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_get_ecc_key_slots_count.dox
  */
 stse_return_code_t stse_get_ecc_key_slots_count(
     stse_handler_t *p_stse,
-    PLAT_UI8 *p_private_key_slot_count);
+    PLAT_UI8 *pPrivate_key_slot_count);
 
 /**
  * \brief 		Get ECC key table informations
  * \details 	This API query STSE and return ecc key informations list for all key slots in the table
  * \param[in] 	p_stse 						Pointer to STSE Handler
  * \param[in] 	private_key_slot_count 		Expected slot count in the table (length of private_key_table_info)
- * \param[out] 	p_change_right 				Private key table information change right
- * \param[out] 	p_global_usage_limit 		Private key table information global usage limit
+ * \param[out] 	pGlobal_usage_limit 		Private key table information global usage limit
  * \param[out] 	private_key_table_info 		Key slot informations table
  * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_get_ecc_key_table_info.dox
@@ -59,8 +58,7 @@ stse_return_code_t stse_get_ecc_key_slots_count(
 stse_return_code_t stse_get_ecc_key_table_info(
     stse_handler_t *p_stse,
     PLAT_UI8 private_key_slot_count,
-    PLAT_UI8 *p_change_right,
-    PLAT_UI16 *p_global_usage_limit,
+    PLAT_UI16 *pGlobal_usage_limit,
     stsafea_private_key_slot_information_t *private_key_table_info);
 
 /**
@@ -68,8 +66,7 @@ stse_return_code_t stse_get_ecc_key_table_info(
  * \details 	This API query STSE and return ecc key informations for a given key slot
  * \param[in] 	p_stse 						Pointer to STSE Handler
  * \param[in] 	private_key_slot_number 	Slot number to query
- * \param[out] 	p_change_right 				Private key table information change right
- * \param[out] 	p_global_usage_limit 		Private key table information global usage limit
+ * \param[out] 	pGlobal_usage_limit 		Private key table information global usage limit
  * \param[out] 	private_key_slot_info 		Key slot informations
  * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_get_ecc_key_slot_info.dox
@@ -77,8 +74,7 @@ stse_return_code_t stse_get_ecc_key_table_info(
 stse_return_code_t stse_get_ecc_key_slot_info(
     stse_handler_t *p_stse,
     PLAT_UI8 private_key_slot_number,
-    PLAT_UI8 *p_change_right,
-    PLAT_UI16 *p_global_usage_limit,
+    PLAT_UI16 *pGlobal_usage_limit,
     stsafea_private_key_slot_information_t *private_key_slot_info);
 
 /**
@@ -88,9 +84,9 @@ stse_return_code_t stse_get_ecc_key_slot_info(
  * \param[in] 	key_type 		Key type to generate
  * \param[out] 	p_public_key 	Public key of the generated key pair
  * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
- * \details 	\include{doc} stse_generate_ecdhe_key_pair.dox
+ * \details 	\include{doc} stse_generate_ECDHE_key_pair.dox
  */
-stse_return_code_t stse_generate_ecdhe_key_pair(
+stse_return_code_t stse_generate_ECDHE_key_pair(
     stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key);
@@ -137,7 +133,7 @@ stse_return_code_t stse_write_generic_ecc_public_key(
  * \param[in] 	p_private_key 		Private key buffer used for the signature
  * \param[in] 	hash_algo			Hashing algorithm used for the signature
  * \param[in] 	payload_length 		Payload length to be signed
- * \param[in] 	p_payload	 		Payload buffer to be signed
+ * \param[in] 	pPayload	 		Payload buffer to be signed
  * \param[out] 	p_signature			Pointer to buffer containing signature
  * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stse_write_generic_ecc_public_key.dox
@@ -149,7 +145,7 @@ stse_return_code_t stse_sign_for_generic_public_key_slot(
     PLAT_UI8 *p_private_key,
     stse_hash_algorithm_t hash_algo,
     PLAT_UI16 payload_length,
-    PLAT_UI8 *p_payload,
+    PLAT_UI8 *pPayload,
     PLAT_UI8 *p_signature);
 
 /** \}*/

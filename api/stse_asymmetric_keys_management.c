@@ -19,34 +19,34 @@
 
 #include "api/stse_asymmetric_keys_management.h"
 
-/* Static functions declaration ----------------------------------------------*/
-
-/* Exported functions --------------------------------------------------------*/
-
 stse_return_code_t stse_get_ecc_key_slots_count(
     stse_handler_t *p_stse,
-    PLAT_UI8 *p_private_key_slot_count) {
+    PLAT_UI8 *pPrivate_key_slot_count) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
 
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    if (p_private_key_slot_count == NULL) {
+    if (pPrivate_key_slot_count == NULL) {
         return (STSE_API_INVALID_PARAMETER);
     }
 
-    ret = stsafea_query_private_key_slots_count(p_stse, p_private_key_slot_count);
+    ret = stsafea_query_private_key_slots_count(p_stse, pPrivate_key_slot_count);
 
     return ret;
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
 stse_return_code_t stse_get_ecc_key_table_info(
     stse_handler_t *p_stse,
     PLAT_UI8 private_key_slot_count,
-    PLAT_UI8 *p_change_right,
-    PLAT_UI16 *p_global_usage_limit,
+    PLAT_UI16 *pGlobal_usage_limit,
     stsafea_private_key_slot_information_t *private_key_table_info) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
 
     if (p_stse == NULL) {
@@ -57,17 +57,20 @@ stse_return_code_t stse_get_ecc_key_table_info(
         return (STSE_API_INVALID_PARAMETER);
     }
 
-    ret = stsafea_query_private_key_table(p_stse, private_key_slot_count, p_change_right, p_global_usage_limit, private_key_table_info);
+    ret = stsafea_query_private_key_table(p_stse, private_key_slot_count, pGlobal_usage_limit, private_key_table_info);
 
     return ret;
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
 stse_return_code_t stse_get_ecc_key_slot_info(
     stse_handler_t *p_stse,
     PLAT_UI8 private_key_slot_number,
-    PLAT_UI8 *p_change_right,
-    PLAT_UI16 *p_global_usage_limit,
+    PLAT_UI16 *pGlobal_usage_limit,
     stsafea_private_key_slot_information_t *private_key_slot_info) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
 
     if (p_stse == NULL) {
@@ -85,7 +88,7 @@ stse_return_code_t stse_get_ecc_key_slot_info(
 
     stsafea_private_key_slot_information_t private_key_table_info[private_key_slot_count];
 
-    ret = stsafea_query_private_key_table(p_stse, private_key_slot_count, p_change_right, p_global_usage_limit, private_key_table_info);
+    ret = stsafea_query_private_key_table(p_stse, private_key_slot_count, pGlobal_usage_limit, private_key_table_info);
 
     if (ret != STSE_OK) {
         return (ret);
@@ -103,12 +106,16 @@ stse_return_code_t stse_get_ecc_key_slot_info(
     }
 
     return ret;
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
-stse_return_code_t stse_generate_ecdhe_key_pair(
+stse_return_code_t stse_generate_ECDHE_key_pair(
     stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
 
     if (p_stse == NULL) {
@@ -119,9 +126,12 @@ stse_return_code_t stse_generate_ecdhe_key_pair(
         return (STSE_API_INVALID_PARAMETER);
     }
 
-    ret = stsafea_generate_ecdhe_key_pair(p_stse, key_type, p_public_key);
+    ret = stsafea_generate_ECDHE_key_pair(p_stse, key_type, p_public_key);
 
     return ret;
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
 stse_return_code_t stse_generate_ecc_key_pair(
@@ -130,6 +140,7 @@ stse_return_code_t stse_generate_ecc_key_pair(
     stse_ecc_key_type_t key_type,
     PLAT_UI16 usage_limit,
     PLAT_UI8 *p_public_key) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
 
     if (p_stse == NULL) {
@@ -143,6 +154,9 @@ stse_return_code_t stse_generate_ecc_key_pair(
     ret = stsafea_generate_ecc_key_pair(p_stse, slot_number, key_type, usage_limit, p_public_key);
 
     return ret;
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
 stse_return_code_t stse_write_generic_ecc_public_key(
@@ -150,6 +164,7 @@ stse_return_code_t stse_write_generic_ecc_public_key(
     PLAT_UI8 slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
 
     if (p_stse == NULL) {
@@ -163,6 +178,9 @@ stse_return_code_t stse_write_generic_ecc_public_key(
     ret = stsafea_write_generic_ecc_public_key(p_stse, slot_number, key_type, p_public_key);
 
     return ret;
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
 stse_return_code_t stse_sign_for_generic_public_key_slot(
@@ -171,7 +189,7 @@ stse_return_code_t stse_sign_for_generic_public_key_slot(
     PLAT_UI8 *p_private_key,
     stse_hash_algorithm_t hash_algo,
     PLAT_UI16 payload_length,
-    PLAT_UI8 *p_payload,
+    PLAT_UI8 *pPayload,
     PLAT_UI8 *p_signature) {
     (void)p_stse;
 #if defined(STSE_CONF_USE_HOST_KEY_PROVISIONING_WRAPPED_AUTHENTICATED) || \
@@ -182,9 +200,9 @@ stse_return_code_t stse_sign_for_generic_public_key_slot(
     PLAT_UI16 hash_length = stsafea_hash_info_table[hash_algo].length;
     PLAT_UI8 hash_data[hash_length];
 
-    if (p_private_key == NULL || p_payload == NULL || p_signature == NULL ||
+    if (p_private_key == NULL || pPayload == NULL || p_signature == NULL ||
         private_key_type >= STSE_ECC_KT_INVALID || hash_algo >= STSE_SHA_INVALID) {
-        return STSE_SERVICE_INVALID_PARAMETER;
+        return STSE_API_INVALID_PARAMETER;
     }
 
 #ifdef STSE_CONF_ECC_EDWARD_25519
@@ -193,7 +211,7 @@ stse_return_code_t stse_sign_for_generic_public_key_slot(
         /* - Hash the payload */
         ret = stse_platform_hash_compute(
             hash_algo,
-            p_payload, payload_length,
+            pPayload, payload_length,
             hash_data, &hash_length);
 
         if (ret != STSE_OK) {
@@ -208,7 +226,7 @@ stse_return_code_t stse_sign_for_generic_public_key_slot(
         private_key_type,
         p_private_key,
 #ifdef STSE_CONF_ECC_EDWARD_25519
-        (private_key_type == STSE_ECC_KT_ED25519) ? p_payload : hash_data,
+        (private_key_type == STSE_ECC_KT_ED25519) ? pPayload : hash_data,
         (private_key_type == STSE_ECC_KT_ED25519) ? payload_length : hash_length,
 #else
         hash_data,

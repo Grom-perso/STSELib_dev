@@ -56,7 +56,7 @@ typedef struct stsafea_private_key_operation_mode_t {
     PLAT_UI8 sig_gen_over_external_data : STSE_1BIT_LEN;          /*!< sig_gen_over_external_data*/
     PLAT_UI8 sig_gen_over_internal_external_data : STSE_1BIT_LEN; /*!< sig_gen_over_internal_external_data*/
     PLAT_UI8 generate_key_AC : STSE_2BIT_LEN;                     /*!< generate_key_AC*/
-    PLAT_UI8 eddsa_variant : STSE_2BIT_LEN;                       /*!< eddsa_variant*/
+    PLAT_UI8 EdDSA_variant : STSE_2BIT_LEN;                       /*!< EdDSA_variant*/
 } stsafea_private_key_operation_mode_t;
 
 /*!
@@ -74,28 +74,26 @@ typedef struct stsafea_private_key_slot_information_t {
  * \brief 		Get private key slot count
  * \details 	This service format and send the get private key slot count command
  * \param[in] 	p_stse 						Pointer to STSE Handler
- * \param[out] 	p_private_key_slot_count 	Target STSAFE-A total Private key slot count
+ * \param[out] 	pPrivate_key_slot_count 	Target STSAFE-A total Private key slot count
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
 stse_return_code_t stsafea_query_private_key_slots_count(
     stse_handler_t *p_stse,
-    PLAT_UI8 *p_private_key_slot_count);
+    PLAT_UI8 *pPrivate_key_slot_count);
 
 /**
  * \brief 		Query private key table information
  * \details 	This service formats and sends the query private key table command
  * \param[in] 	p_stse 					Pointer to STSE Handler
  * \param[in] 	private_key_slot_count	Number of private key slots
- * \param[out] 	p_change_right			Pointer to change right value
- * \param[out] 	p_global_usage_limit		Pointer to global usage limit value
+ * \param[out] 	pGlobal_usage_limit		Pointer to global usage limit value
  * \param[out] 	private_key_table_info	Pointer to private key table information structure
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
 stse_return_code_t stsafea_query_private_key_table(
     stse_handler_t *p_stse,
     PLAT_UI8 private_key_slot_count,
-    PLAT_UI8 *p_change_right,
-    PLAT_UI16 *p_global_usage_limit,
+    PLAT_UI16 *pGlobal_usage_limit,
     stsafea_private_key_slot_information_t *private_key_table_info);
 
 /**
@@ -123,7 +121,7 @@ stse_return_code_t stsafea_generate_ecc_key_pair(
  * \param[out] 	p_public_key 				generated ECDHE public key
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
-stse_return_code_t stsafea_generate_ecdhe_key_pair(
+stse_return_code_t stsafea_generate_ECDHE_key_pair(
     stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key);

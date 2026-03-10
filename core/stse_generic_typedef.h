@@ -214,10 +214,10 @@ typedef enum stse_zone_update_atomicity_t {
  * \brief STSE data storage access condition enumeration
  */
 typedef enum stse_zone_ac_t {
-    STSE_AC_ALWAYS = 0, /*!< Zone/counter access always granted */
-    STSE_AC_HOST,       /*!< Zone/counter access granted on Host C-MAC validation */
-    STSE_AC_AUTH,       /*!< Zone/counter access granted on Auth C-MAC validation */
-    STSE_AC_NEVER = 7   /*!< Zone/counter access never granted */
+    STSE_AC_ALWAYS = 0,        /*!< Zone/counter access always granted */
+    STSE_AC_HOST,              /*!< Zone/counter access granted on Host C-MAC validation */
+    STSE_AC_AUTH_AND_HOST = 6, /*!< Zone/counter access granted on true Authentic entity status (verify entity signature) + Host C-MAC validation */
+    STSE_AC_NEVER = 7          /*!< Zone/counter access never granted */
 } stse_zone_ac_t;
 
 /**
@@ -572,14 +572,14 @@ extern const stse_ecc_info_t stse_ecc_info_table[];
  * \brief 		Get ECC key type from curve identifier
  * \details 	This function resolves the ECC key type from a given curve identifier value
  * \param[in]	curve_id_length		Length of the curve identifier
- * \param[in]	p_curve_id_value		Pointer to the curve identifier value
- * \param[out]	p_key_type			Pointer to store the resolved ECC key type
+ * \param[in]	pCurve_id_value		Pointer to the curve identifier value
+ * \param[out]	pKey_type			Pointer to store the resolved ECC key type
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
 stse_return_code_t stse_get_ecc_key_type_from_curve_id(
     PLAT_UI8 curve_id_length,
-    const PLAT_UI8 *p_curve_id_value,
-    stse_ecc_key_type_t *p_key_type);
+    const PLAT_UI8 *pCurve_id_value,
+    stse_ecc_key_type_t *pKey_type);
 
 #endif
 

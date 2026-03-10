@@ -23,14 +23,7 @@
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
-const PLAT_UI16 stsafea_maximum_command_length[4] = {
-    STSAFEA_MAXIMUM_CMD_RSP_LENGTH_A100,
-    STSAFEA_MAXIMUM_CMD_RSP_LENGTH_A110,
-    STSAFEA_MAXIMUM_CMD_RSP_LENGTH_A120,
-    STSAFEA_MAXIMUM_CMD_RSP_LENGTH_A200,
-};
-
-stse_return_code_t stsafea_get_command_count(stse_handler_t *p_stse, PLAT_UI8 *p_command_count) {
+stse_return_code_t stsafea_get_command_count(stse_handler_t *p_stse, PLAT_UI8 *pCommand_count) {
     PLAT_UI8 cmd_header = STSAFEA_CMD_QUERY;
     PLAT_UI8 tag = STSAFEA_SUBJECT_TAG_COMMAND_AUTHORIZATION_CONFIG;
     PLAT_UI8 rsp_header;
@@ -41,26 +34,26 @@ stse_return_code_t stsafea_get_command_count(stse_handler_t *p_stse, PLAT_UI8 *p
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(cmd_frame);
-    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, 1, &cmd_header);
-    stse_frame_element_allocate_push(&cmd_frame, eTag, 1, &tag);
+    stse_frame_allocate(CmdFrame);
+    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
+    stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &tag);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(rsp_frame);
-    stse_frame_element_allocate_push(&rsp_frame, ersp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eCR, 1, &table_cr);
-    stse_frame_element_allocate_push(&rsp_frame, ecommand_count, 1, (PLAT_UI8 *)p_command_count);
+    stse_frame_allocate(RspFrame);
+    stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
+    stse_frame_element_allocate_push(&RspFrame, eCR, 1, &table_cr);
+    stse_frame_element_allocate_push(&RspFrame, eCommand_count, 1, (PLAT_UI8 *)pCommand_count);
 
     /*- Perform Transfer*/
     return stsafea_frame_raw_transfer(p_stse,
-                                      &cmd_frame,
-                                      &rsp_frame,
+                                      &CmdFrame,
+                                      &RspFrame,
                                       stsafea_cmd_timings[p_stse->device_type][cmd_header]);
 }
 
-stse_return_code_t stsafea_get_command_ac_table(stse_handler_t *p_stse,
+stse_return_code_t stsafea_get_command_AC_table(stse_handler_t *p_stse,
                                                PLAT_UI8 total_command_count,
-                                               stse_cmd_authorization_CR_t *p_change_rights,
+                                               stse_cmd_authorization_CR_t *pChange_rights,
                                                stse_cmd_authorization_record_t *p_record_table) {
     stse_return_code_t ret;
     PLAT_UI8 cmd_header = STSAFEA_CMD_QUERY;
@@ -75,21 +68,21 @@ stse_return_code_t stsafea_get_command_ac_table(stse_handler_t *p_stse,
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(cmd_frame);
-    stse_frame_element_allocate_push(&cmd_frame, ecmd_header, 1, &cmd_header);
-    stse_frame_element_allocate_push(&cmd_frame, eTag, 1, &tag);
+    stse_frame_allocate(CmdFrame);
+    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
+    stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &tag);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(rsp_frame);
-    stse_frame_element_allocate_push(&rsp_frame, ersp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eCR, sizeof(stse_cmd_authorization_CR_t), (PLAT_UI8 *)p_change_rights);
-    stse_frame_element_allocate_push(&rsp_frame, eRecordCount, 1, &record_index);
-    stse_frame_element_allocate_push(&rsp_frame, eRecordTable, total_command_count * sizeof(stse_cmd_authorization_record_t), raw_data);
+    stse_frame_allocate(RspFrame);
+    stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
+    stse_frame_element_allocate_push(&RspFrame, eCR, sizeof(stse_cmd_authorization_CR_t), (PLAT_UI8 *)pChange_rights);
+    stse_frame_element_allocate_push(&RspFrame, eRecordCount, 1, &record_index);
+    stse_frame_element_allocate_push(&RspFrame, eRecordTable, total_command_count * sizeof(stse_cmd_authorization_record_t), raw_data);
 
     /*- Perform Transfer*/
     ret = stsafea_frame_raw_transfer(p_stse,
-                                     &cmd_frame,
-                                     &rsp_frame,
+                                     &CmdFrame,
+                                     &RspFrame,
                                      stsafea_cmd_timings[p_stse->device_type][cmd_header]);
     if (ret != STSE_OK) {
         return ret;
@@ -123,8 +116,8 @@ stse_return_code_t stsafea_perso_info_update(stse_handler_t *p_stse) {
     p_stse->perso_info.rsp_encryption_status = 0;
     p_stse->perso_info.ext_cmd_encryption_status = 0;
     p_stse->perso_info.ext_rsp_encryption_status = 0;
-    p_stse->perso_info.cmd_ac_status = 0x5555555555555555;
-    p_stse->perso_info.ext_cmd_ac_status = 0x5555555555555555;
+    p_stse->perso_info.cmd_AC_status = 0x5555555555555555;
+    p_stse->perso_info.ext_cmd_AC_status = 0x5555555555555555;
 
     ret = stsafea_get_command_count(p_stse, &total_command_count);
     if (ret != STSE_OK) {
@@ -133,7 +126,7 @@ stse_return_code_t stsafea_perso_info_update(stse_handler_t *p_stse) {
 
     stse_cmd_authorization_record_t record_table[total_command_count];
 
-    ret = stsafea_get_command_ac_table(p_stse,
+    ret = stsafea_get_command_AC_table(p_stse,
                                        total_command_count,
                                        &change_rights,
                                        record_table);
@@ -156,40 +149,40 @@ stse_return_code_t stsafea_perso_info_update(stse_handler_t *p_stse) {
     return STSE_OK;
 }
 
-void stsafea_perso_info_get_cmd_AC(stse_perso_info_t *p_perso, PLAT_UI8 command_code, stse_cmd_access_conditions_t *p_protection) {
-    *p_protection = (stse_cmd_access_conditions_t)((p_perso->cmd_ac_status >> (command_code + command_code)) & 0x03);
+void stsafea_perso_info_get_cmd_AC(stse_perso_info_t *p_perso, PLAT_UI8 command_code, stse_cmd_access_conditions_t *pProtection) {
+    *pProtection = (stse_cmd_access_conditions_t)((p_perso->cmd_AC_status >> (command_code + command_code)) & 0x03);
 }
 
-void stsafea_perso_info_get_ext_cmd_AC(stse_perso_info_t *p_perso, PLAT_UI8 command_code, stse_cmd_access_conditions_t *p_protection) {
-    *p_protection = (stse_cmd_access_conditions_t)((p_perso->ext_cmd_ac_status >> (command_code + command_code)) & 0x03);
+void stsafea_perso_info_get_ext_cmd_AC(stse_perso_info_t *p_perso, PLAT_UI8 command_code, stse_cmd_access_conditions_t *pProtection) {
+    *pProtection = (stse_cmd_access_conditions_t)((p_perso->ext_cmd_AC_status >> (command_code + command_code)) & 0x03);
 }
 
-void stsafea_perso_info_get_cmd_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *p_enc_flag) {
-    *p_enc_flag = ((p_perso->cmd_encryption_status >> command_code) & 0x01);
+void stsafea_perso_info_get_cmd_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *pEnc_flag) {
+    *pEnc_flag = ((p_perso->cmd_encryption_status >> command_code) & 0x01);
 }
 
-void stsafea_perso_info_get_rsp_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *p_enc_flag) {
-    *p_enc_flag = ((p_perso->rsp_encryption_status >> command_code) & 0x01);
+void stsafea_perso_info_get_rsp_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *pEnc_flag) {
+    *pEnc_flag = ((p_perso->rsp_encryption_status >> command_code) & 0x01);
 }
 
-void stsafea_perso_info_get_ext_cmd_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *p_enc_flag) {
-    *p_enc_flag = ((p_perso->ext_cmd_encryption_status >> command_code) & 0x01);
+void stsafea_perso_info_get_ext_cmd_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *pEnc_flag) {
+    *pEnc_flag = ((p_perso->ext_cmd_encryption_status >> command_code) & 0x01);
 }
 
-void stsafea_perso_info_get_ext_rsp_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *p_enc_flag) {
-    *p_enc_flag = ((p_perso->ext_rsp_encryption_status >> command_code) & 0x01);
+void stsafea_perso_info_get_ext_rsp_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *pEnc_flag) {
+    *pEnc_flag = ((p_perso->ext_rsp_encryption_status >> command_code) & 0x01);
 }
 
 void stsafea_perso_info_set_cmd_AC(stse_perso_info_t *p_perso, PLAT_UI8 command_code, stse_cmd_access_conditions_t protection) {
     PLAT_UI8 offset = command_code + command_code;
-    p_perso->cmd_ac_status &= (PLAT_UI64) ~(((PLAT_UI64)0x03) << offset);
-    p_perso->cmd_ac_status |= (PLAT_UI64)((PLAT_UI64)protection << offset);
+    p_perso->cmd_AC_status &= (PLAT_UI64) ~(((PLAT_UI64)0x03) << offset);
+    p_perso->cmd_AC_status |= (PLAT_UI64)((PLAT_UI64)protection << offset);
 }
 
 void stsafea_perso_info_set_ext_cmd_AC(stse_perso_info_t *p_perso, PLAT_UI8 command_code, stse_cmd_access_conditions_t protection) {
     PLAT_UI8 offset = command_code + command_code;
-    p_perso->ext_cmd_ac_status &= (PLAT_UI64) ~(((PLAT_UI64)0x03) << offset);
-    p_perso->ext_cmd_ac_status |= (PLAT_UI64)((PLAT_UI64)protection << offset);
+    p_perso->ext_cmd_AC_status &= (PLAT_UI64) ~(((PLAT_UI64)0x03) << offset);
+    p_perso->ext_cmd_AC_status |= (PLAT_UI64)((PLAT_UI64)protection << offset);
 }
 
 void stsafea_perso_info_set_cmd_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 enc_flag) {

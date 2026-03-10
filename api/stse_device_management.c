@@ -58,7 +58,7 @@ stse_return_code_t stse_init(stse_handler_t *p_stse) {
 #endif /* STSE_CONF_USE_ST1WIRE */
 
     default:
-        return (STSE_CORE_INVALID_PARAMETER);
+        return (STSE_API_INVALID_PARAMETER);
     }
 
     if (ret != STSE_OK) {
@@ -91,7 +91,7 @@ stse_return_code_t stse_init(stse_handler_t *p_stse) {
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
     if (p_stse->device_type != STSAFE_L010) {
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
-        stse_platform_delay_ms(stsafea_boot_time[p_stse->device_type]);
+        stse_platform_Delay_ms(stsafea_boot_time[p_stse->device_type]);
 
 #ifndef STSE_CONF_USE_STATIC_PERSONALIZATION_INFORMATIONS
         ret = stsafea_perso_info_update(p_stse);
@@ -149,7 +149,23 @@ stse_return_code_t stse_device_power_on(stse_handler_t *p_stse) {
     p_stse->io.power_line_on(p_stse->io.bus_id, p_stse->io.devaddr);
 
     /* - Wait for device to boot (tboot) */
-    stse_platform_delay_ms(stsafea_boot_time[p_stse->device_type]);
+    switch (p_stse->device_type) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
+    case STSAFE_A100:
+    case STSAFE_A110:
+    case STSAFE_A120:
+    case STSAFE_A200:
+        stse_platform_Delay_ms(stsafea_boot_time[p_stse->device_type]);
+        break;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
+#ifdef STSE_CONF_STSAFE_L_SUPPORT
+    case STSAFE_L010:
+        stse_platform_Delay_ms(stsafel_boot_time[p_stse->device_type]);
+        break;
+#endif /* STSE_CONF_STSAFE_L_SUPPORT */
+    default:
+        return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+    }
     return (STSE_OK);
 }
 
@@ -169,7 +185,7 @@ stse_return_code_t stse_device_power_off(stse_handler_t *p_stse) {
     return (STSE_OK);
 }
 
-stse_return_code_t stse_device_echo(stse_handler_t *p_stse, PLAT_UI8 *p_in, PLAT_UI8 *p_out, PLAT_UI16 size) {
+stse_return_code_t stse_device_echo(stse_handler_t *p_stse, PLAT_UI8 *pIn, PLAT_UI8 *pOut, PLAT_UI16 size) {
     /* - Check STSAFE handler initialization */
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
@@ -178,21 +194,22 @@ stse_return_code_t stse_device_echo(stse_handler_t *p_stse, PLAT_UI8 *p_in, PLAT
     switch (p_stse->device_type) {
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
     case STSAFE_L010:
-        return stsafel_echo(p_stse, p_in, p_out, size);
+        return stsafel_echo(p_stse, pIn, pOut, size);
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
     case STSAFE_A100:
     case STSAFE_A110:
     case STSAFE_A120:
     case STSAFE_A200:
-        return stsafea_echo(p_stse, p_in, p_out, size);
+        return stsafea_echo(p_stse, pIn, pOut, size);
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */
     default:
         return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
     }
 }
 
-stse_return_code_t stse_device_lock(stse_handler_t *p_stse, PLAT_UI8 *p_password, PLAT_UI8 password_length) {
+stse_return_code_t stse_device_lock(stse_handler_t *p_stse, PLAT_UI8 *pPassword, PLAT_UI8 password_length) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
     PLAT_UI8 password_verification_status = 0;
 
@@ -207,13 +224,13 @@ stse_return_code_t stse_device_lock(stse_handler_t *p_stse, PLAT_UI8 *p_password
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    if (p_password == NULL || password_length != STSAFEA_PASSWORD_LENGTH) {
+    if (pPassword == NULL || password_length != STSAFEA_PASSWORD_LENGTH) {
         return STSE_API_INVALID_PARAMETER;
     }
 
     /*- Password submission */
     ret = stsafea_verify_password(p_stse,
-                                  p_password,
+                                  pPassword,
                                   password_length,
                                   &password_verification_status,
                                   NULL);
@@ -230,9 +247,13 @@ stse_return_code_t stse_device_lock(stse_handler_t *p_stse, PLAT_UI8 *p_password
     ret = stsafea_put_life_cyle_state(p_stse, STSAFEA_LCS_OPERATIONAL_AND_LOCKED);
 
     return ret;
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
-stse_return_code_t stse_device_unlock(stse_handler_t *p_stse, PLAT_UI8 *p_password, PLAT_UI8 password_length) {
+stse_return_code_t stse_device_unlock(stse_handler_t *p_stse, PLAT_UI8 *pPassword, PLAT_UI8 password_length) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
     PLAT_UI8 password_verification_status = 0;
     PLAT_UI8 remaining_tries;
@@ -248,13 +269,13 @@ stse_return_code_t stse_device_unlock(stse_handler_t *p_stse, PLAT_UI8 *p_passwo
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    if (p_password == NULL || password_length != STSAFEA_PASSWORD_LENGTH) {
+    if (pPassword == NULL || password_length != STSAFEA_PASSWORD_LENGTH) {
         return STSE_API_INVALID_PARAMETER;
     }
 
     /*- Password submission */
     ret = stsafea_verify_password(p_stse,
-                                  p_password,
+                                  pPassword,
                                   password_length,
                                   &password_verification_status,
                                   &remaining_tries);
@@ -271,6 +292,9 @@ stse_return_code_t stse_device_unlock(stse_handler_t *p_stse, PLAT_UI8 *p_passwo
     ret = stsafea_put_life_cyle_state(p_stse, STSAFEA_LCS_OPERATIONAL);
 
     return ret;
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
 stse_return_code_t stse_device_reset(stse_handler_t *p_stse) {
@@ -302,7 +326,8 @@ stse_return_code_t stse_device_reset(stse_handler_t *p_stse) {
     return ret;
 }
 
-stse_return_code_t stse_device_get_command_count(stse_handler_t *p_stse, PLAT_UI8 *p_record_count) {
+stse_return_code_t stse_device_get_command_count(stse_handler_t *p_stse, PLAT_UI8 *pRecord_count) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     /* - Check STSAFE handler initialization */
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
@@ -314,13 +339,17 @@ stse_return_code_t stse_device_get_command_count(stse_handler_t *p_stse, PLAT_UI
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    return stsafea_get_command_count(p_stse, p_record_count);
+    return stsafea_get_command_count(p_stse, pRecord_count);
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
 stse_return_code_t stse_device_get_command_AC_records(stse_handler_t *p_stse,
                                                      PLAT_UI8 record_count,
-                                                     stse_cmd_authorization_CR_t *p_change_rights,
+                                                     stse_cmd_authorization_CR_t *pChange_rights,
                                                      stse_cmd_authorization_record_t *p_record_table) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     /* - Check STSAFE handler initialization */
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
@@ -332,11 +361,15 @@ stse_return_code_t stse_device_get_command_AC_records(stse_handler_t *p_stse,
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    return stsafea_get_command_ac_table(p_stse, record_count, p_change_rights, p_record_table);
+    return stsafea_get_command_AC_table(p_stse, record_count, pChange_rights, p_record_table);
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
 stse_return_code_t stse_device_get_life_cycle_state(stse_handler_t *p_stse,
-                                                   stsafea_life_cycle_state_t *p_life_cycle_state) {
+                                                   stsafea_life_cycle_state_t *pLife_cycle_state) {
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
     /* - Check STSAFE handler initialization */
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
@@ -348,7 +381,10 @@ stse_return_code_t stse_device_get_life_cycle_state(stse_handler_t *p_stse,
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    return stsafea_query_life_cycle_state(p_stse, p_life_cycle_state);
+    return stsafea_query_life_cycle_state(p_stse, pLife_cycle_state);
+#else
+    return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
 stse_return_code_t stse_put_i2c_parameters(
@@ -361,11 +397,11 @@ stse_return_code_t stse_put_i2c_parameters(
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
     if (p_stse == NULL) {
-        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+        return STSE_API_HANDLER_NOT_INITIALISED;
     }
 
     if (i2c_address > I2C_ADDR_MAX || idle_bus_time_to_standby > IDLE_BUS_DELAY_MAX) {
-        return STSE_SERVICE_INVALID_PARAMETER;
+        return STSE_API_INVALID_PARAMETER;
     }
 
     /*Create new I2C parameters structure */
