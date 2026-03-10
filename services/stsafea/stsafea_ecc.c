@@ -51,7 +51,7 @@ stse_ReturnCode_t stsafea_start_volatile_KEK_session(
     stse_frame_element_allocate(ePublic_key_first_element, 0, NULL);
     stse_frame_element_allocate(ePublic_key_second_element, 0, NULL);
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
 
     stse_frame_element_allocate_push(&CmdFrame, eCurve_id,
@@ -80,7 +80,7 @@ stse_ReturnCode_t stsafea_start_volatile_KEK_session(
 
     stse_frame_element_allocate_push(&CmdFrame, eAlgorithm_id, 1, &algorithm_id);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /* - Perform Transfer*/
@@ -138,7 +138,7 @@ stse_ReturnCode_t stsafea_start_volatile_KEK_session_authenticated(
     PLAT_UI8 rsp_header = 0;
 
     /* FRAME : . */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
 
     /* FRAME : [HEADER] [EXT HEADER] */
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
@@ -194,7 +194,7 @@ stse_ReturnCode_t stsafea_start_volatile_KEK_session_authenticated(
     stse_frame_element_allocate_push(&CmdFrame, eSignature_S_length, STSE_ECC_GENERIC_LENGTH_SIZE, pSignature_length_element);
     stse_frame_element_allocate_push(&CmdFrame, eSignature_S, signature_R_S_length, pSignature + signature_R_S_length);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
 
     /* - Perform Transfer*/
@@ -214,10 +214,10 @@ stse_ReturnCode_t stsafea_stop_volatile_KEK_session(
 
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /* - Perform Transfer*/
@@ -277,7 +277,7 @@ stse_ReturnCode_t stsafea_ecc_verify_signature(
 
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSubject, 1, &subject);
     stse_frame_element_allocate_push(&CmdFrame, eCurve_id,
@@ -323,7 +323,7 @@ stse_ReturnCode_t stsafea_ecc_verify_signature(
     stse_frame_element_allocate_push(&CmdFrame, eMessage, message_length, pMessage);
     stse_frame_element_swap_byte_order(&eMessage_length);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eSignature_validity, 1, pSignature_validity);
 
@@ -364,14 +364,14 @@ stse_ReturnCode_t stsafea_ecc_generate_signature(
         return (STSE_SERVICE_INVALID_PARAMETER);
     }
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, STSAFEA_SLOT_NUMBER_ID_SIZE, &slot_number);
     stse_frame_element_allocate_push(&CmdFrame, eMessage_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&message_length);
     stse_frame_element_allocate_push(&CmdFrame, eMessage, message_length, pMessage);
     stse_frame_element_swap_byte_order(&eMessage_length);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eSignature_R_length, STSE_ECC_GENERIC_LENGTH_SIZE, pSignature_length_element);
     stse_frame_element_allocate_push(&RspFrame, eSignature_R, (stse_ecc_info_table[key_type].signature_size >> 1), pSignature);
@@ -419,7 +419,7 @@ stse_ReturnCode_t stsafea_ecc_establish_shared_secret(
         UI16_B0(stse_ecc_info_table[key_type].shared_secret_size),
     };
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, ePrivate_key_slot_number, STSAFEA_SLOT_NUMBER_ID_SIZE, &private_key_slot_number);
 
@@ -453,7 +453,7 @@ stse_ReturnCode_t stsafea_ecc_establish_shared_secret(
         stse_frame_push_element(&CmdFrame, &ePublic_key_second_element);
     }
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eShared_secret_length, STSE_ECC_GENERIC_LENGTH_SIZE, pShared_secret_length);
     stse_frame_element_allocate_push(&RspFrame, eShared_secret, stse_ecc_info_table[key_type].shared_secret_size, pShared_secret);
@@ -483,14 +483,14 @@ stse_ReturnCode_t stsafea_ecc_decompress_public_key(
 
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eCurve_ID,
                                      stse_ecc_info_table[key_type].curve_id_total_length, (PLAT_UI8 *)&stse_ecc_info_table[key_type].curve_id);
     stse_frame_element_allocate_push(&CmdFrame, ePoint_representation_id, 1, &point_representation_id);
     stse_frame_element_allocate_push(&CmdFrame, ePublic_key_X_coordinate, stse_ecc_info_table[key_type].coordinate_or_key_size, pPublic_key_X);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, ePublic_key_Y_coordinate, stse_ecc_info_table[key_type].coordinate_or_key_size, pPublic_key_Y);
 

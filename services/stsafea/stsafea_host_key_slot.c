@@ -42,11 +42,11 @@ stse_ReturnCode_t stsafea_query_host_key_provisioning_ctrl_fields(
     PLAT_UI8 subject_tag = STSAFEA_SUBJECT_TAG_HOST_KEY_SLOT_PROVISIONING_CONTROL_FIELDS;
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSubject_tag, 1, &subject_tag);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eCtrl_fields, sizeof(stsafea_host_key_provisioning_ctrl_fields_t), (PLAT_UI8 *)pCtrl_fields);
 
@@ -74,12 +74,12 @@ stse_ReturnCode_t stsafea_put_host_key_provisioning_ctrl_fields(
     PLAT_UI8 subject_tag = STSAFEA_SUBJECT_TAG_HOST_KEY_SLOT_PROVISIONING_CONTROL_FIELDS;
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSubject_tag, 1, &subject_tag);
     stse_frame_element_allocate_push(&CmdFrame, eCtrl_fields, sizeof(stsafea_host_key_provisioning_ctrl_fields_t), (PLAT_UI8 *)pCtrl_fields);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/
@@ -106,11 +106,11 @@ stse_ReturnCode_t stsafea_query_host_key(
     PLAT_UI8 subject_tag = STSAFEA_SUBJECT_TAG_HOST_KEY_SLOT_V1;
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSubject_tag, 1, &subject_tag);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eHost_key_slot, sizeof(stsafea_host_key_slot_t), (PLAT_UI8 *)pHost_key_slot);
 
@@ -138,11 +138,11 @@ stse_ReturnCode_t stsafea_query_host_key_v2(
     PLAT_UI8 subject_tag = STSAFEA_SUBJECT_TAG_HOST_KEY_SLOT_V2;
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSubject_tag, 1, &subject_tag);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eHost_key_slot, sizeof(stsafea_host_key_slot_v2_t), (PLAT_UI8 *)pHost_key_slot_v2);
 
@@ -171,12 +171,12 @@ stse_ReturnCode_t stsafea_put_attribute_host_key(
     PLAT_UI8 subject_tag = STSAFEA_SUBJECT_TAG_HOST_KEY_SLOT_V1;
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSubject_tag, 1, &subject_tag);
     stse_frame_element_allocate_push(&CmdFrame, eHost_keys, sizeof(stsafea_aes_128_host_keys_t), (PLAT_UI8 *)host_keys);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/
@@ -206,13 +206,13 @@ stse_ReturnCode_t stsafea_host_key_provisioning(
     PLAT_UI8 pPadding[3] = {0};
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, ePadding, 3, pPadding);
     stse_frame_element_allocate_push(&CmdFrame, eKey_type, 1, (PLAT_UI8 *)&key_type);
     stse_frame_element_allocate_push(&CmdFrame, eHost_keys, host_keys_length, (PLAT_UI8 *)host_keys);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/
@@ -240,11 +240,11 @@ stse_ReturnCode_t stsafea_host_key_provisioning_wrapped(
 
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eHost_keys, host_keys_envelope_length, (PLAT_UI8 *)pHost_key_envelope);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/
@@ -283,7 +283,7 @@ stse_ReturnCode_t stsafea_establish_host_key(
     stse_frame_element_allocate(ePublic_key_second_element, stse_ecc_info_table[host_ecdh_public_key_type].coordinate_or_key_size, NULL);
 
     /* command frame */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
 
     stse_frame_element_allocate_push(&CmdFrame, eCurve_id, stse_ecc_info_table[host_ecdh_public_key_type].curve_id_total_length, (PLAT_UI8 *)&stse_ecc_info_table[host_ecdh_public_key_type].curve_id);
@@ -312,7 +312,7 @@ stse_ReturnCode_t stsafea_establish_host_key(
 
     /* response frame */
     PLAT_UI8 rsp_header;
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/
@@ -357,7 +357,7 @@ stse_ReturnCode_t stsafea_establish_host_key_authenticated(
     stse_frame_element_allocate(ePublic_key_second_element, stse_ecc_info_table[host_ecdh_public_key_type].coordinate_or_key_size, NULL);
 
     /* command frame */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
 
     /* Host ECDH curve ID of public key */
@@ -423,7 +423,7 @@ stse_ReturnCode_t stsafea_establish_host_key_authenticated(
 
     /* response frame */
     PLAT_UI8 rsp_header;
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/

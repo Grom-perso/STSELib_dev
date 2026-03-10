@@ -94,7 +94,7 @@ extern PLAT_UI8 stse_rsp_frame_element_count;
 /**
  * \brief Allocate a command frame using the global command frame element array
  */
-#define stse_frame_allocate(frame) \
+#define stse_cmd_frame_allocate(frame) \
     stse_cmd_frame_element_count = 0; \
     stse_frame_t frame = {0, 0, STSE_CONF_CMD_FRAME_MAX_ELEMENTS, stse_cmd_frame_elements};
 

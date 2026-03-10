@@ -35,22 +35,20 @@ stse_ReturnCode_t stsafel_ecc_generate_signature(
     if (pSTSE == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
-#ifdef STSE_CONF_ECC_EDWARD_25519
-    if ((key_type != STSE_ECC_KT_ED25519) ||
-        (challenge_length != STSAFEL_ECC_SIGNATURE_CHALLENGE_LENGTH) ||
+    if ((challenge_length != STSAFEL_ECC_SIGNATURE_CHALLENGE_LENGTH) ||
         (pChallenge == NULL) ||
         (pSignature == NULL)) {
         return STSE_SERVICE_INVALID_PARAMETER;
     }
-#endif
+
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eChallenge, challenge_length, pChallenge);
     stse_frame_element_allocate_push(&CmdFrame, eInternal_data_subject, 1, &internal_data_subject);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEL_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eSignature, stse_ecc_info_table[key_type].signature_size, pSignature);
 

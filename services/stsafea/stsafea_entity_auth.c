@@ -37,11 +37,11 @@ stse_ReturnCode_t stsafea_generate_challenge(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eChallenge, STSE_EDDSA_CHALLENGE_SIZE, pChallenge);
 
@@ -72,7 +72,7 @@ stse_ReturnCode_t stsafea_verify_entity_signature(
     PLAT_UI8 filler = 0x00;
     stse_frame_element_allocate(eFiller, 1, &filler);
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_push_element(&CmdFrame, &eFiller);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, STSAFEA_SLOT_NUMBER_ID_SIZE, &slot_number);
@@ -89,7 +89,7 @@ stse_ReturnCode_t stsafea_verify_entity_signature(
     stse_frame_element_allocate_push(&CmdFrame, eSignature_S, (stse_ecc_info_table[key_type].signature_size >> 1), pSignature + (stse_ecc_info_table[key_type].signature_size >> 1));
 
     PLAT_UI8 rsp_header;
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eSignature_validity, 1, pSignature_validity);
 

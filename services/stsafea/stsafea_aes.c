@@ -44,14 +44,14 @@ stse_ReturnCode_t stsafea_aes_ecb_encrypt(
     }
 
     /* - Prepare CMD Frame : [HEADER] [CMD DISTINGUISHER] [SLOT] [MESSAGE]  */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSub_command_distinguisher, 1, &sub_command_distinguisher);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &slot_number);
     stse_frame_element_allocate_push(&CmdFrame, ePlaintext_message, message_length, pPlaintext_message);
 
     /* - Prepare RSP Frame : [HEADER] [ENCRYPTED MESSAGE]  */
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eEncrypted_message, message_length, pEncrypted_message);
 
@@ -89,14 +89,14 @@ stse_ReturnCode_t stsafea_aes_ecb_decrypt(
     }
 
     /* - Prepare CMD Frame : [HEADER] [CMD DISTINGUISHER] [SLOT] [ENCRYPTED MESSAGE]  */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSub_command_distinguisher, 1, &sub_command_distinguisher);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &slot_number);
     stse_frame_element_allocate_push(&CmdFrame, eEncrypted_message, message_length, pEncrypted_message);
 
     /* - Prepare RSP Frame : [HEADER] [PLAIN TEXT MESSAGE]  */
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, ePlaintext_message, message_length, pPlaintext_message);
 
@@ -155,7 +155,7 @@ stse_ReturnCode_t stsafea_aes_ccm_encrypt(
 
     /* - Prepare CMD Frame : [HEADER] [CMD DISTINGUISHER] [SLOT] [ASSOCIATED DATA LENGHT] ...
 	 *                       ... [ASSOCIATED DATA MESSAGE] [MESSAGE LENGHT] [MESSAGE] */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSub_command_distinguisher, 1, &sub_command_distinguisher);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &slot_number);
@@ -172,7 +172,7 @@ stse_ReturnCode_t stsafea_aes_ccm_encrypt(
     }
 
     /* - Prepare RSP Frame : [HEADER] [ENCRYPTED MESSAGE] [TAG LENGTH] [COUNTER PRES.] [COUNTER VAL] */
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eEncrypted_message, message_length, pEncrypted_message);
     stse_frame_element_allocate_push(&RspFrame, eAuthentication_tag, authentication_tag_length, pEncrypted_authentication_tag);
@@ -228,7 +228,7 @@ stse_ReturnCode_t stsafea_aes_ccm_encrypt_start(
     }
 
     /* - Prepare CMD Frame */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &slot_number);
     stse_frame_element_allocate_push(&CmdFrame, eNonce_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&Nonce_length);
@@ -241,7 +241,7 @@ stse_ReturnCode_t stsafea_aes_ccm_encrypt_start(
     stse_frame_element_allocate_push(&CmdFrame, ePlaintext_message, message_chunk_length, pPlaintext_message_chunk);
 
     /* - Prepare RSP Frame */
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eEncrypted_message, message_chunk_length, pEncrypted_message_chunk);
     stse_frame_element_allocate_push(&RspFrame, eCounter_presence, 1, pCounter_presence);
@@ -336,7 +336,7 @@ stse_ReturnCode_t stsafea_aes_ccm_decrypt(
 
     /* - Prepare CMD Frame : [HEADER] [CMD DISTINGUISHER] [SLOT] [NONCE] [ASSOCIATED DATA LENGHT] ...
 	 *                       ... [ASSOCIATED DATA] [MESSAGE LENGHT] [ENCRYPTED MESSAGE] [TAG] */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSub_command_distinguisher, 1, &sub_command_distinguisher);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &slot_number);
@@ -348,7 +348,7 @@ stse_ReturnCode_t stsafea_aes_ccm_decrypt(
     stse_frame_element_allocate_push(&CmdFrame, eAuthentication_tag, authentication_tag_length, pEncrypted_authentication_tag);
 
     /* - Prepare RSP Frame : [HEADER] [VERIFICATION RESULT] [PLAIN TEXT MESSAGE] */
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eVerification_result, 1, pVerification_result);
     stse_frame_element_allocate_push(&RspFrame, ePlaintext_message, message_length, pPlaintext_message);
@@ -386,7 +386,7 @@ stse_ReturnCode_t stsafea_aes_ccm_decrypt_start(
     }
 
     /* - Prepare CMD Frame */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &slot_number);
     stse_frame_element_allocate_push(&CmdFrame, eNonce_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&Nonce_length);
@@ -399,7 +399,7 @@ stse_ReturnCode_t stsafea_aes_ccm_decrypt_start(
     stse_frame_element_allocate_push(&CmdFrame, eEncrypted_message, message_chunk_length, pEncrypted_message_chunk);
 
     /* - Prepare RSP Frame */
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, ePlaintext_message, message_chunk_length, pPlaintext_message_chunk);
 
@@ -478,7 +478,7 @@ stse_ReturnCode_t stsafea_aes_gcm_encrypt(
 
     /* - Prepare CMD Frame : [HEADER] [CMD DISTINGUISHER] [SLOT] [ASSOCIATED DATA LENGHT] ...
 	 *                       ... [ASSOCIATED DATA MESSAGE] [MESSAGE LENGHT] [MESSAGE] */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSub_command_distinguisher, 1, &sub_command_distinguisher);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &slot_number);
@@ -490,7 +490,7 @@ stse_ReturnCode_t stsafea_aes_gcm_encrypt(
     stse_frame_element_allocate_push(&CmdFrame, ePlaintext_message, message_length, pPlaintext_message);
 
     /* - Prepare RSP Frame : [HEADER] [ENCRYPTED MESSAGE] [TAG LENGTH] */
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eEncrypted_message, message_length, pEncrypted_message);
     stse_frame_element_allocate_push(&RspFrame, eAuthentication_tag, authentication_tag_length, pAuthentication_tag);
@@ -528,7 +528,7 @@ stse_ReturnCode_t stsafea_aes_gcm_encrypt_start(
     }
 
     /* - Prepare CMD Frame */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &slot_number);
     stse_frame_element_allocate_push(&CmdFrame, eIV_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&IV_length);
@@ -539,7 +539,7 @@ stse_ReturnCode_t stsafea_aes_gcm_encrypt_start(
     stse_frame_element_allocate_push(&CmdFrame, ePlaintext_message, message_chunk_length, pPlaintext_message_chunk);
 
     /* - Prepare RSP Frame */
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eEncrypted_message, message_chunk_length, pEncrypted_message_chunk);
 
@@ -573,7 +573,7 @@ stse_ReturnCode_t stsafea_aes_gcm_encrypt_process(
     }
 
     /* - Prepare CMD Frame */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eAssociated_data_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&associated_data_chunk_length);
     stse_frame_element_allocate_push(&CmdFrame, eAssociated_data, associated_data_chunk_length, pAssociated_data_chunk);
@@ -581,7 +581,7 @@ stse_ReturnCode_t stsafea_aes_gcm_encrypt_process(
     stse_frame_element_allocate_push(&CmdFrame, ePlaintext_message, message_chunk_length, pPlaintext_message_chunk);
 
     /* - Prepare RSP Frame */
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eEncrypted_message, message_chunk_length, pEncrypted_message_chunk);
     stse_frame_element_swap_byte_order(&eAssociated_data_length);
@@ -615,7 +615,7 @@ stse_ReturnCode_t stsafea_aes_gcm_encrypt_finish(
     }
 
     /* - Prepare CMD Frame */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eAssociated_data_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&associated_data_chunk_length);
     stse_frame_element_allocate_push(&CmdFrame, eAssociated_data, associated_data_chunk_length, pAssociated_data_chunk);
@@ -623,7 +623,7 @@ stse_ReturnCode_t stsafea_aes_gcm_encrypt_finish(
     stse_frame_element_allocate_push(&CmdFrame, ePlaintext_message, message_chunk_length, pPlaintext_message_chunk);
 
     /* - Prepare RSP Frame */
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eEncrypted_message, message_chunk_length, pEncrypted_message_chunk);
     stse_frame_element_allocate_push(&RspFrame, eAuthentication_tag, authentication_tag_length, pAuthentication_tag);
@@ -665,7 +665,7 @@ stse_ReturnCode_t stsafea_aes_gcm_decrypt(
 
     /* - Prepare CMD Frame : [HEADER] [CMD DISTINGUISHER] [SLOT] [IV] [ASSOCIATED DATA LENGHT] ...
 	 *                       ... [ASSOCIATED DATA] [MESSAGE LENGHT] [ENCRYPTED MESSAGE] [TAG] */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSub_command_distinguisher, 1, &sub_command_distinguisher);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &slot_number);
@@ -678,7 +678,7 @@ stse_ReturnCode_t stsafea_aes_gcm_decrypt(
     stse_frame_element_allocate_push(&CmdFrame, eAuthentication_tag, authentication_tag_length, pAuthentication_tag);
 
     /* - Prepare RSP Frame : [HEADER] [VERIFICATION RESULT] [PLAIN TEXT MESSAGE] */
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eVerification_result, 1, pVerification_result);
     stse_frame_element_allocate_push(&RspFrame, ePlaintext_message, message_length, pPlaintext_message);
@@ -716,7 +716,7 @@ stse_ReturnCode_t stsafea_aes_gcm_decrypt_start(
     }
 
     /* - Prepare CMD Frame */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &slot_number);
     stse_frame_element_allocate_push(&CmdFrame, eIV_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&IV_length);
@@ -727,7 +727,7 @@ stse_ReturnCode_t stsafea_aes_gcm_decrypt_start(
     stse_frame_element_allocate_push(&CmdFrame, eEncrypted_message, message_chunk_length, pEncrypted_message_chunk);
 
     /* - Prepare RSP Frame */
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, ePlaintext_message, message_chunk_length, pPlaintext_message_chunk);
     stse_frame_element_swap_byte_order(&eIV_length);
@@ -760,7 +760,7 @@ stse_ReturnCode_t stsafea_aes_gcm_decrypt_process(
     }
 
     /* - Prepare CMD Frame */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eAssociated_data_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&associated_data_chunk_length);
     stse_frame_element_allocate_push(&CmdFrame, eAssociated_data, associated_data_chunk_length, pAssociated_data_chunk);
@@ -768,7 +768,7 @@ stse_ReturnCode_t stsafea_aes_gcm_decrypt_process(
     stse_frame_element_allocate_push(&CmdFrame, eEncrypted_message, message_chunk_length, pEncrypted_message_chunk);
 
     /* - Prepare RSP Frame */
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, ePlaintext_message, message_chunk_length, pPlaintext_message_chunk);
     stse_frame_element_swap_byte_order(&eAssociated_data_length);
@@ -803,7 +803,7 @@ stse_ReturnCode_t stsafea_aes_gcm_decrypt_finish(
     }
 
     /* - Prepare CMD Frame */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eAssociated_data_length, STSAFEA_GENERIC_LENGTH_SIZE, (PLAT_UI8 *)&associated_data_chunk_length);
     stse_frame_element_allocate_push(&CmdFrame, eAssociated_data, associated_data_chunk_length, pAssociated_data_chunk);
@@ -812,7 +812,7 @@ stse_ReturnCode_t stsafea_aes_gcm_decrypt_finish(
     stse_frame_element_allocate_push(&CmdFrame, eAuthentication_tag, authentication_tag_length, pAuthentication_tag);
 
     /* - Prepare RSP Frame */
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eVerification_result, 1, pVerification_result);
     stse_frame_element_allocate_push(&RspFrame, ePlaintext_message, message_chunk_length, pPlaintext_message_chunk);

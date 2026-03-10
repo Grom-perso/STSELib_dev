@@ -21,6 +21,10 @@
 
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
 
+const PLAT_UI16 stsafel_maximum_frame_length[STSAFEL_PRODUCT_COUNT] = {
+    STSAFEL_MAX_FRAME_LENGTH_L010, /*!< STSAFE-L Maximum command length (bytes) */
+};
+
 stse_ReturnCode_t stsafel_frame_transmit(stse_Handler_t *pSTSE, stse_frame_t *pFrame) {
     stse_ReturnCode_t ret = STSE_PLATFORM_BUS_ACK_ERROR;
     PLAT_UI16 retry_count = STSE_MAX_POLLING_RETRY;
@@ -31,11 +35,15 @@ stse_ReturnCode_t stsafel_frame_transmit(stse_Handler_t *pSTSE, stse_frame_t *pF
 
     /*- Verify Parameters */
     if ((pSTSE == NULL) || (pFrame == NULL)) {
-        return STSE_CORE_INVALID_PARAMETER;
+        return STSE_SERVICE_INVALID_PARAMETER;
     }
     /*- Verify Frame length */
     if (pFrame->element_count == 0) {
-        return STSE_CORE_INVALID_PARAMETER;
+        return STSE_SERVICE_INVALID_PARAMETER;
+    }
+    /*- Verify Frame overflow */
+    if (pFrame->length > stsafel_maximum_frame_length[pSTSE->device_type - STSAFE_L010]) {
+        return STSE_SERVICE_FRAME_SIZE_ERROR;
     }
     /*- Compute frame crc */
     ret = stse_frame_crc16_compute(pFrame, &crc_ret);
@@ -115,11 +123,11 @@ stse_ReturnCode_t stsafel_i2c_frame_receive(stse_Handler_t *pSTSE, stse_frame_t 
 
     /*- Verify Parameters */
     if ((pSTSE == NULL) || (pFrame == NULL)) {
-        return STSE_CORE_INVALID_PARAMETER;
+        return STSE_SERVICE_INVALID_PARAMETER;
     }
     /* - Verify Frame length */
     if (pFrame->element_count == 0) {
-        return (STSE_CORE_INVALID_PARAMETER);
+        return (STSE_SERVICE_INVALID_PARAMETER);
     }
 
     /* ======================================================= */
@@ -156,6 +164,11 @@ stse_ReturnCode_t stsafel_i2c_frame_receive(stse_Handler_t *pSTSE, stse_frame_t 
 
     /* - Store response Length */
     received_length = ((length_value[0] << 8) + length_value[1]) - STSE_FRAME_CRC_SIZE;
+
+    /*- Verify Frame overflow */
+    if (pFrame->length > stsafel_maximum_frame_length[pSTSE->device_type - STSAFE_L010]) {
+        return STSE_SERVICE_FRAME_SIZE_ERROR;
+    }
 
     /* ======================================================= */
     /* ====== Format the frame to handle CRC and filler ====== */
@@ -292,7 +305,7 @@ stse_ReturnCode_t stsafel_i2c_frame_receive(stse_Handler_t *pSTSE, stse_frame_t 
 
     /* - Verify CRC */
     if (computed_crc != *(PLAT_UI16 *)received_crc) {
-        return (STSE_CORE_FRAME_CRC_ERROR);
+        return (STSE_SERVICE_FRAME_CRC_ERROR);
     }
 
     pFirst_element = stse_frame_get_first_element(pFrame);
@@ -315,11 +328,11 @@ stse_ReturnCode_t stsafel_st1wire_frame_receive(stse_Handler_t *pSTSE, stse_fram
 
     /*- Verify Parameters */
     if ((pSTSE == NULL) || (pFrame == NULL)) {
-        return STSE_CORE_INVALID_PARAMETER;
+        return STSE_SERVICE_INVALID_PARAMETER;
     }
     /* - Verify Frame length */
     if (pFrame->element_count == 0) {
-        return (STSE_CORE_INVALID_PARAMETER);
+        return (STSE_SERVICE_INVALID_PARAMETER);
     }
 
     /* - Append CRC element to the RSP Frame (valid only in Receive Scope) */
@@ -419,7 +432,7 @@ stse_ReturnCode_t stsafel_st1wire_frame_receive(stse_Handler_t *pSTSE, stse_fram
 
     /* - Verify CRC */
     if (computed_crc != *(PLAT_UI16 *)received_crc) {
-        return (STSE_CORE_FRAME_CRC_ERROR);
+        return (STSE_SERVICE_FRAME_CRC_ERROR);
     }
 
     pFirst_element = stse_frame_get_first_element(pFrame);
@@ -433,7 +446,7 @@ stse_ReturnCode_t stsafel_frame_raw_transfer(stse_Handler_t *pSTSE,
                                              stse_frame_t *pCmdFrame,
                                              stse_frame_t *pRspFrame,
                                              PLAT_UI16 inter_frame_delay) {
-    stse_ReturnCode_t ret = STSE_CORE_INVALID_PARAMETER;
+    stse_ReturnCode_t ret = STSE_SERVICE_INVALID_PARAMETER;
 
 #ifdef STSE_USE_RSP_POLLING
     (void)inter_frame_delay;
@@ -473,7 +486,7 @@ stse_ReturnCode_t stsafel_frame_raw_transfer(stse_Handler_t *pSTSE,
 stse_ReturnCode_t stsafel_frame_transfer(stse_Handler_t *pSTSE,
                                          stse_frame_t *pCmdFrame,
                                          stse_frame_t *pRspFrame) {
-    stse_ReturnCode_t ret = STSE_CORE_INVALID_PARAMETER;
+    stse_ReturnCode_t ret = STSE_SERVICE_INVALID_PARAMETER;
     PLAT_UI8 cmd_header;
     stse_frame_element_t *pFirst_element;
 

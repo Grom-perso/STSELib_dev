@@ -42,12 +42,12 @@ stse_ReturnCode_t stsafea_query_symmetric_key_slot_provisioning_ctrl_fields(
         return (STSE_SERVICE_INVALID_PARAMETER);
     }
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSubject_tag, 1, &subject_tag);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &slot_number);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eCtrl_fields, sizeof(stsafea_symmetric_key_slot_provisioning_ctrl_fields_t), (PLAT_UI8 *)pCtrl_fields);
 
@@ -75,13 +75,13 @@ stse_ReturnCode_t stsafea_put_symmetric_key_slot_provisioning_ctrl_fields(
         return (STSE_SERVICE_INVALID_PARAMETER);
     }
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSubject_tag, 1, &subject_tag);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &slot_number);
     stse_frame_element_allocate_push(&CmdFrame, eCtrl_fields, sizeof(stsafea_symmetric_key_slot_provisioning_ctrl_fields_t), (PLAT_UI8 *)pCtrl_fields);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
 
     /*- Perform Transfer*/
@@ -106,11 +106,11 @@ stse_ReturnCode_t stsafea_query_symmetric_key_slots_count(stse_Handler_t *pSTSE,
     PLAT_UI8 subject_tag = STSAFEA_SUBJECT_TAG_SYMMETRIC_KEY_TABLE;
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSubject_tag, 1, &subject_tag);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eSymmetric_key_slot_count, 1, pSymmetric_key_slot_count);
 
@@ -145,11 +145,11 @@ stse_ReturnCode_t stsafea_query_symmetric_key_table(
     PLAT_UI16 rsp_raw_length = symmetric_key_slot_count * sizeof(stsafea_symmetric_key_slot_information_t);
     PLAT_UI8 pRsp_raw[rsp_raw_length];
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSubject_tag, 1, &subject_tag);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eRsp_raw, rsp_raw_length, pRsp_raw);
 
@@ -242,7 +242,7 @@ stse_ReturnCode_t stsafea_establish_symmetric_key(
     stse_frame_element_allocate(ePublic_key_first_element, 0, NULL);
     stse_frame_element_allocate(ePublic_key_second_element, 0, NULL);
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
 
     stse_frame_element_allocate_push(&CmdFrame, eCurve_id,
@@ -275,7 +275,7 @@ stse_ReturnCode_t stsafea_establish_symmetric_key(
 
     stse_frame_element_allocate_push(&CmdFrame, eAlgorithm_id, 1, &algorithm_id);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/
@@ -331,7 +331,7 @@ stse_ReturnCode_t stsafea_establish_symmetric_key_authenticated(
         UI16_B0(signature_R_S_length),
     };
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
 
     stse_frame_element_allocate_push(&CmdFrame, eCurve_id,
@@ -376,7 +376,7 @@ stse_ReturnCode_t stsafea_establish_symmetric_key_authenticated(
     stse_frame_element_allocate_push(&CmdFrame, eSignature_S_length, STSE_ECC_GENERIC_LENGTH_SIZE, pSignature_length_element);
     stse_frame_element_allocate_push(&CmdFrame, eSignature_S, signature_R_S_length, pSignature + signature_R_S_length);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/
@@ -409,7 +409,7 @@ stse_ReturnCode_t stsafea_confirm_symmetric_key(
     stse_frame_element_t eKey_information_list[key_count];
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eConfirmation_mac, STSE_KEY_CONFIRMATION_MAC_SIZE, pConfirmation_mac);
 
@@ -447,7 +447,7 @@ stse_ReturnCode_t stsafea_confirm_symmetric_key(
         return (ret);
     }
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/
@@ -486,10 +486,10 @@ stse_ReturnCode_t stsafea_write_symmetric_key_wrapped(
 
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSymmetric_key_envelope, symmetric_key_envelope_length, pSymmetric_key_envelope);
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/
@@ -533,11 +533,11 @@ stse_ReturnCode_t stsafea_write_symmetric_key_plaintext(
         return (STSE_SERVICE_INVALID_PARAMETER);
     }
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSymmetric_key_info, pSymmetric_key_info->info_length, (PLAT_UI8 *)&pSymmetric_key_info->lock_indicator);
     stse_frame_element_allocate_push(&CmdFrame, eSymmetric_key_value, key_value_length, pSymmetric_key_value);
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/
@@ -561,13 +561,13 @@ stse_ReturnCode_t stsafea_generate_wrap_unwrap_key(stse_Handler_t *pSTSE,
 
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &attribute_tag);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &wrap_key_slot);
     stse_frame_element_allocate_push(&CmdFrame, eKeyLEnght, 1, &key_length);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/
@@ -588,11 +588,11 @@ stse_ReturnCode_t stsafea_erase_symmetric_key_slot(
 
     PLAT_UI8 rsp_header;
 
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &symmetric_key_slot_number);
 
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/

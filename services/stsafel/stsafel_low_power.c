@@ -32,11 +32,11 @@ stse_ReturnCode_t stsafel_hibernate(stse_Handler_t *pSTSE) {
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
+    stse_cmd_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(RspFrame);
+    stse_rsp_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEL_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/
