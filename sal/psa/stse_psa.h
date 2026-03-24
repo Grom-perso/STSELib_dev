@@ -42,6 +42,18 @@ extern "C" {
  *            enabling integration of STSAFE secure elements into systems built
  *            on the PSA Crypto standard (e.g. Mbed TLS / TF-M).
  *
+ *            \b Supported PSA Crypto specification versions: \n
+ *            Select the target specification version by defining
+ *            \ref STSE_PSA_SPEC_VERSION before including this header, or in
+ *            the project build system.  The default is PSA 1.1.
+ *
+ *            | Define value | PSA Crypto version |
+ *            |:---:|:---|
+ *            | 11 | PSA Certified Crypto API 1.1 (default) |
+ *            | 12 | PSA Certified Crypto API 1.2 |
+ *            | 13 | PSA Certified Crypto API 1.3 |
+ *            | 14 | PSA Certified Crypto API 1.4 |
+ *
  *            \b Key-ID encoding convention:
  *            - Bits [7:0]  : STSE key slot number
  *            - Bits [15:8] : Key category (0 = symmetric AES, 1 = asymmetric ECC)
@@ -51,6 +63,16 @@ extern "C" {
  *            \ref STSE_PSA_KEY_ID_ASYM build compliant key IDs.
  *  @{
  */
+
+/* -------------------------------------------------------------------------- */
+/* Version selector                                                            */
+/* -------------------------------------------------------------------------- */
+
+/** \brief Target PSA Crypto specification version (11=1.1, 12=1.2, 13=1.3, 14=1.4).
+ *         Default is 11 (PSA Certified Crypto API 1.1). */
+#ifndef STSE_PSA_SPEC_VERSION
+#define STSE_PSA_SPEC_VERSION 11
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* Configuration                                                               */
@@ -77,7 +99,7 @@ typedef unsigned int   stse_psa_key_usage_t;/*!< PSA key usage flags */
 typedef unsigned short stse_psa_key_bits_t; /*!< PSA key size in bits */
 
 /* -------------------------------------------------------------------------- */
-/* PSA status codes (psa_status_t equivalents)                                */
+/* PSA 1.1 status codes (psa_status_t equivalents)                            */
 /* -------------------------------------------------------------------------- */
 
 #define STSE_PSA_SUCCESS                   ((stse_psa_status_t) 0)    /*!< Operation successful */
@@ -91,14 +113,37 @@ typedef unsigned short stse_psa_key_bits_t; /*!< PSA key size in bits */
 #define STSE_PSA_ERROR_COMMUNICATION_FAILURE ((stse_psa_status_t)-145)/*!< Communication error */
 #define STSE_PSA_ERROR_HARDWARE_FAILURE    ((stse_psa_status_t)-147)  /*!< Hardware failure */
 #define STSE_PSA_ERROR_INVALID_SIGNATURE   ((stse_psa_status_t)-149)  /*!< Signature verification failed */
+#define STSE_PSA_ERROR_INSUFFICIENT_ENTROPY ((stse_psa_status_t)-148) /*!< Insufficient entropy (RNG failure) */
 
 /* -------------------------------------------------------------------------- */
-/* PSA key type identifiers (psa_key_type_t equivalents)                      */
+/* PSA 1.2+ status codes                                                      */
+/* -------------------------------------------------------------------------- */
+
+#if (STSE_PSA_SPEC_VERSION >= 12)
+#define STSE_PSA_ERROR_ALREADY_EXISTS      ((stse_psa_status_t)-139)  /*!< Object with the same identifier already exists */
+#define STSE_PSA_ERROR_DOES_NOT_EXIST      ((stse_psa_status_t)-140)  /*!< Requested object does not exist */
+#define STSE_PSA_ERROR_INSUFFICIENT_STORAGE ((stse_psa_status_t)-142) /*!< Insufficient storage capacity */
+#define STSE_PSA_ERROR_STORAGE_FAILURE     ((stse_psa_status_t)-146)  /*!< Persistent storage failure */
+#endif /* STSE_PSA_SPEC_VERSION >= 12 */
+
+/* -------------------------------------------------------------------------- */
+/* PSA 1.3+ status codes                                                      */
+/* -------------------------------------------------------------------------- */
+
+#if (STSE_PSA_SPEC_VERSION >= 13)
+#define STSE_PSA_ERROR_CORRUPTION_DETECTED ((stse_psa_status_t)-151)  /*!< Corruption detected in cryptographic implementation */
+#define STSE_PSA_ERROR_DATA_CORRUPT        ((stse_psa_status_t)-152)  /*!< Stored data has been corrupted */
+#define STSE_PSA_ERROR_DATA_INVALID        ((stse_psa_status_t)-153)  /*!< Data read from storage is not valid */
+#endif /* STSE_PSA_SPEC_VERSION >= 13 */
+
+/* -------------------------------------------------------------------------- */
+/* PSA key type identifiers (psa_key_type_t equivalents) - all versions       */
 /* -------------------------------------------------------------------------- */
 
 /* Symmetric key types */
 #define STSE_PSA_KEY_TYPE_AES              ((stse_psa_key_type_t)0x2400U) /*!< AES key */
 #define STSE_PSA_KEY_TYPE_HMAC             ((stse_psa_key_type_t)0x1100U) /*!< HMAC key */
+#define STSE_PSA_KEY_TYPE_DERIVE           ((stse_psa_key_type_t)0x1200U) /*!< Raw derivation key material */
 
 /* ECC curve family identifiers */
 #define STSE_PSA_ECC_FAMILY_SECP_R1        ((PLAT_UI8)0x12U) /*!< NIST P-curves (P-256, P-384, P-521) */
@@ -115,16 +160,74 @@ typedef unsigned short stse_psa_key_bits_t; /*!< PSA key size in bits */
     ((stse_psa_key_type_t)(0x4100U | (PLAT_UI8)(curve)))
 
 /* -------------------------------------------------------------------------- */
-/* PSA algorithm identifiers (psa_algorithm_t equivalents)                    */
+/* PSA 1.4 post-quantum key type families                                     */
 /* -------------------------------------------------------------------------- */
 
-/* Hash algorithms */
+#if (STSE_PSA_SPEC_VERSION >= 14)
+
+/** \brief ML-KEM (FIPS 203) key type family parameter */
+#define STSE_PSA_KEM_FAMILY_ML_KEM         ((PLAT_UI8)0x01U) /*!< ML-KEM family */
+
+/** \brief ML-DSA (FIPS 204) key type family parameter */
+#define STSE_PSA_PQC_SIG_FAMILY_ML_DSA     ((PLAT_UI8)0x01U) /*!< ML-DSA family */
+
+/** \brief SLH-DSA (FIPS 205) key type family parameter */
+#define STSE_PSA_PQC_SIG_FAMILY_SLH_DSA    ((PLAT_UI8)0x02U) /*!< SLH-DSA family */
+
+/** \brief LMS key type family parameter */
+#define STSE_PSA_PQC_SIG_FAMILY_LMS        ((PLAT_UI8)0x03U) /*!< LMS family */
+
+/** \brief XMSS key type family parameter */
+#define STSE_PSA_PQC_SIG_FAMILY_XMSS       ((PLAT_UI8)0x04U) /*!< XMSS family */
+
+/** \brief Build an ML-KEM key-pair type identifier */
+#define STSE_PSA_KEY_TYPE_ML_KEM_KEY_PAIR  ((stse_psa_key_type_t)0x7301U) /*!< ML-KEM key pair */
+
+/** \brief Build an ML-KEM public-key type identifier */
+#define STSE_PSA_KEY_TYPE_ML_KEM_PUBLIC_KEY ((stse_psa_key_type_t)0x4301U) /*!< ML-KEM public key */
+
+/** \brief Build an ML-DSA key-pair type identifier */
+#define STSE_PSA_KEY_TYPE_ML_DSA_KEY_PAIR  ((stse_psa_key_type_t)0x7201U) /*!< ML-DSA key pair */
+
+/** \brief Build an ML-DSA public-key type identifier */
+#define STSE_PSA_KEY_TYPE_ML_DSA_PUBLIC_KEY ((stse_psa_key_type_t)0x4201U) /*!< ML-DSA public key */
+
+/** \brief Build an SLH-DSA key-pair type identifier */
+#define STSE_PSA_KEY_TYPE_SLH_DSA_KEY_PAIR  ((stse_psa_key_type_t)0x7202U) /*!< SLH-DSA key pair */
+
+/** \brief Build an SLH-DSA public-key type identifier */
+#define STSE_PSA_KEY_TYPE_SLH_DSA_PUBLIC_KEY ((stse_psa_key_type_t)0x4202U) /*!< SLH-DSA public key */
+
+/** \brief LMS key-pair type identifier */
+#define STSE_PSA_KEY_TYPE_LMS_KEY_PAIR     ((stse_psa_key_type_t)0x7203U)  /*!< LMS key pair */
+
+/** \brief LMS public-key type identifier */
+#define STSE_PSA_KEY_TYPE_LMS_PUBLIC_KEY   ((stse_psa_key_type_t)0x4203U)  /*!< LMS public key */
+
+/** \brief XMSS key-pair type identifier */
+#define STSE_PSA_KEY_TYPE_XMSS_KEY_PAIR    ((stse_psa_key_type_t)0x7204U)  /*!< XMSS key pair */
+
+/** \brief XMSS public-key type identifier */
+#define STSE_PSA_KEY_TYPE_XMSS_PUBLIC_KEY  ((stse_psa_key_type_t)0x4204U)  /*!< XMSS public key */
+
+#endif /* STSE_PSA_SPEC_VERSION >= 14 */
+
+/* -------------------------------------------------------------------------- */
+/* PSA algorithm identifiers (psa_algorithm_t equivalents) - all versions     */
+/* -------------------------------------------------------------------------- */
+
+/* Hash algorithms (PSA 1.1+) */
+#define STSE_PSA_ALG_SHA_1      ((stse_psa_algorithm_t)0x02000005U) /*!< SHA-1 (not recommended for new designs) */
+#define STSE_PSA_ALG_SHA_224    ((stse_psa_algorithm_t)0x02000008U) /*!< SHA-224 */
 #define STSE_PSA_ALG_SHA_256    ((stse_psa_algorithm_t)0x02000009U) /*!< SHA-256 */
 #define STSE_PSA_ALG_SHA_384    ((stse_psa_algorithm_t)0x0200000AU) /*!< SHA-384 */
 #define STSE_PSA_ALG_SHA_512    ((stse_psa_algorithm_t)0x0200000BU) /*!< SHA-512 */
-#define STSE_PSA_ALG_SHA3_256   ((stse_psa_algorithm_t)0x02000010U) /*!< SHA3-256 */
-#define STSE_PSA_ALG_SHA3_384   ((stse_psa_algorithm_t)0x02000011U) /*!< SHA3-384 */
-#define STSE_PSA_ALG_SHA3_512   ((stse_psa_algorithm_t)0x02000012U) /*!< SHA3-512 */
+#define STSE_PSA_ALG_SHA_512_224 ((stse_psa_algorithm_t)0x0200000CU)/*!< SHA-512/224 */
+#define STSE_PSA_ALG_SHA_512_256 ((stse_psa_algorithm_t)0x0200000DU)/*!< SHA-512/256 */
+#define STSE_PSA_ALG_SHA3_224   ((stse_psa_algorithm_t)0x02000010U) /*!< SHA3-224 */
+#define STSE_PSA_ALG_SHA3_256   ((stse_psa_algorithm_t)0x02000011U) /*!< SHA3-256 */
+#define STSE_PSA_ALG_SHA3_384   ((stse_psa_algorithm_t)0x02000012U) /*!< SHA3-384 */
+#define STSE_PSA_ALG_SHA3_512   ((stse_psa_algorithm_t)0x02000013U) /*!< SHA3-512 */
 
 /** \brief Build a PSA ECDSA algorithm identifier for a given hash algorithm */
 #define STSE_PSA_ALG_ECDSA(hash_alg) \
@@ -133,37 +236,150 @@ typedef unsigned short stse_psa_key_bits_t; /*!< PSA key size in bits */
 /** \brief ECDSA with pre-hashed input (hash algorithm not embedded in sign) */
 #define STSE_PSA_ALG_ECDSA_ANY          ((stse_psa_algorithm_t)0x06000600U)
 
-/* ECDH */
-#define STSE_PSA_ALG_ECDH               ((stse_psa_algorithm_t)0x09020000U) /*!< ECDH */
+/** \brief Deterministic ECDSA (RFC 6979) with a given hash algorithm */
+#define STSE_PSA_ALG_DETERMINISTIC_ECDSA(hash_alg) \
+    ((stse_psa_algorithm_t)(0x06000700U | ((hash_alg) & 0xFFU)))
 
-/* MAC algorithms */
+/* Pure EdDSA algorithms (PSA 1.1+) */
+#define STSE_PSA_ALG_PURE_EDDSA         ((stse_psa_algorithm_t)0x06000800U) /*!< Pure EdDSA (e.g., Ed25519) */
+#define STSE_PSA_ALG_ED25519PH          ((stse_psa_algorithm_t)0x0600090BU) /*!< Ed25519ph (pre-hash with SHA-512) */
+
+/* ECDH key agreement (PSA 1.1+) */
+#define STSE_PSA_ALG_ECDH               ((stse_psa_algorithm_t)0x09020000U) /*!< ECDH raw key agreement */
+
+/* MAC algorithms (PSA 1.1+) */
 #define STSE_PSA_ALG_CMAC               ((stse_psa_algorithm_t)0x03C00200U) /*!< AES-CMAC */
 
 /** \brief Build a PSA HMAC algorithm identifier for a given hash */
 #define STSE_PSA_ALG_HMAC(hash_alg) \
     ((stse_psa_algorithm_t)(0x03800000U | ((hash_alg) & 0xFFU)))
 
-/* AEAD algorithms */
+/** \brief Build a truncated MAC algorithm (outputs \p mac_length bytes) */
+#define STSE_PSA_ALG_TRUNCATED_MAC(mac_alg, mac_length) \
+    ((stse_psa_algorithm_t)(((mac_alg) & ~0x003F0000U) | (((PLAT_UI32)(mac_length)) << 16U)))
+
+/* AEAD algorithms (PSA 1.1+) */
 #define STSE_PSA_ALG_CCM                ((stse_psa_algorithm_t)0x05500300U) /*!< AES-CCM */
 #define STSE_PSA_ALG_GCM                ((stse_psa_algorithm_t)0x05500200U) /*!< AES-GCM */
+#define STSE_PSA_ALG_CHACHA20_POLY1305  ((stse_psa_algorithm_t)0x05100500U) /*!< ChaCha20-Poly1305 (stub) */
 
-/* Key derivation */
+/** \brief Build a truncated AEAD algorithm (tag length in bytes) */
+#define STSE_PSA_ALG_AEAD_WITH_SHORTENED_TAG(aead_alg, tag_length) \
+    ((stse_psa_algorithm_t)(((aead_alg) & ~0x003F0000U) | (((PLAT_UI32)(tag_length)) << 16U)))
+
+/* Key derivation algorithms (PSA 1.1+) */
 /** \brief Build a PSA HKDF algorithm identifier for a given hash */
 #define STSE_PSA_ALG_HKDF(hash_alg) \
     ((stse_psa_algorithm_t)(0x08000100U | ((hash_alg) & 0xFFU)))
 
+/** \brief Build a PSA TLS 1.2 PRF algorithm identifier for a given hash */
+#define STSE_PSA_ALG_TLS12_PRF(hash_alg) \
+    ((stse_psa_algorithm_t)(0x08000200U | ((hash_alg) & 0xFFU)))
+
+/** \brief Build a PSA TLS 1.2 PSK-to-MasterSecret algorithm for a given hash */
+#define STSE_PSA_ALG_TLS12_PSK_TO_MS(hash_alg) \
+    ((stse_psa_algorithm_t)(0x08000300U | ((hash_alg) & 0xFFU)))
+
 /* -------------------------------------------------------------------------- */
-/* PSA key usage flags (psa_key_usage_t equivalents)                          */
+/* PSA 1.3 PAKE algorithms                                                    */
+/* -------------------------------------------------------------------------- */
+
+#if (STSE_PSA_SPEC_VERSION >= 13)
+
+/** \brief Build a PSA J-PAKE algorithm identifier for a given hash */
+#define STSE_PSA_ALG_JPAKE(hash_alg) \
+    ((stse_psa_algorithm_t)(0x0A000100U | ((hash_alg) & 0xFFU)))
+
+/** \brief Build a PSA SPAKE2+ algorithm with HMAC for a given hash */
+#define STSE_PSA_ALG_SPAKE2P_HMAC(hash_alg) \
+    ((stse_psa_algorithm_t)(0x0A000200U | ((hash_alg) & 0xFFU)))
+
+/** \brief Build a PSA SPAKE2+ algorithm with CMAC for a given hash */
+#define STSE_PSA_ALG_SPAKE2P_CMAC(hash_alg) \
+    ((stse_psa_algorithm_t)(0x0A000300U | ((hash_alg) & 0xFFU)))
+
+/** \brief Build a PSA SRP-6 algorithm identifier for a given hash */
+#define STSE_PSA_ALG_SRP_6(hash_alg) \
+    ((stse_psa_algorithm_t)(0x0A000400U | ((hash_alg) & 0xFFU)))
+
+#endif /* STSE_PSA_SPEC_VERSION >= 13 */
+
+/* -------------------------------------------------------------------------- */
+/* PSA 1.4 post-quantum algorithms                                            */
+/* -------------------------------------------------------------------------- */
+
+#if (STSE_PSA_SPEC_VERSION >= 14)
+
+/** \brief ML-KEM key encapsulation (FIPS 203) */
+#define STSE_PSA_ALG_ML_KEM             ((stse_psa_algorithm_t)0x0B000001U)
+
+/** \brief ML-DSA signature (FIPS 204) */
+#define STSE_PSA_ALG_ML_DSA             ((stse_psa_algorithm_t)0x06010001U)
+
+/** \brief SLH-DSA signature (FIPS 205) */
+#define STSE_PSA_ALG_SLH_DSA            ((stse_psa_algorithm_t)0x06010002U)
+
+/** \brief LMS hash-based signature (RFC 8554) */
+#define STSE_PSA_ALG_LMS                ((stse_psa_algorithm_t)0x06010003U)
+
+/** \brief XMSS hash-based signature (RFC 8391) */
+#define STSE_PSA_ALG_XMSS               ((stse_psa_algorithm_t)0x06010004U)
+
+#endif /* STSE_PSA_SPEC_VERSION >= 14 */
+
+/* -------------------------------------------------------------------------- */
+/* PSA key usage flags (psa_key_usage_t equivalents) - all versions           */
 /* -------------------------------------------------------------------------- */
 
 #define STSE_PSA_KEY_USAGE_EXPORT          0x00000001U /*!< Key may be exported */
+#define STSE_PSA_KEY_USAGE_COPY            0x00000002U /*!< Key may be copied (PSA 1.1+) */
 #define STSE_PSA_KEY_USAGE_ENCRYPT         0x00000100U /*!< Key may be used for encryption */
 #define STSE_PSA_KEY_USAGE_DECRYPT         0x00000200U /*!< Key may be used for decryption */
-#define STSE_PSA_KEY_USAGE_SIGN_HASH       0x00001000U /*!< Key may be used to sign hashes */
-#define STSE_PSA_KEY_USAGE_VERIFY_HASH     0x00002000U /*!< Key may be used to verify signatures */
 #define STSE_PSA_KEY_USAGE_SIGN_MESSAGE    0x00000400U /*!< Key may be used to sign messages */
 #define STSE_PSA_KEY_USAGE_VERIFY_MESSAGE  0x00000800U /*!< Key may be used to verify messages */
+#define STSE_PSA_KEY_USAGE_SIGN_HASH       0x00001000U /*!< Key may be used to sign hashes */
+#define STSE_PSA_KEY_USAGE_VERIFY_HASH     0x00002000U /*!< Key may be used to verify signatures */
 #define STSE_PSA_KEY_USAGE_DERIVE          0x00004000U /*!< Key may be used for key derivation */
+
+#if (STSE_PSA_SPEC_VERSION >= 12)
+#define STSE_PSA_KEY_USAGE_VERIFY_DERIVATION 0x00008000U /*!< Key may be used to verify derivation (PSA 1.2+) */
+#endif /* STSE_PSA_SPEC_VERSION >= 12 */
+
+/* -------------------------------------------------------------------------- */
+/* PSA 1.2+ key lifetime and persistence types                                */
+/* -------------------------------------------------------------------------- */
+
+#if (STSE_PSA_SPEC_VERSION >= 12)
+
+/** \brief PSA key persistence level type (bits [7:0] of psa_key_lifetime_t) */
+typedef PLAT_UI8  stse_psa_key_persistence_t;
+
+/** \brief PSA key location indicator type (bits [31:8] of psa_key_lifetime_t) */
+typedef PLAT_UI32 stse_psa_key_location_t;
+
+/** \brief PSA key lifetime type: combines persistence and location */
+typedef PLAT_UI32 stse_psa_key_lifetime_t;
+
+/* Key persistence levels */
+#define STSE_PSA_KEY_PERSISTENCE_VOLATILE  ((stse_psa_key_persistence_t)0x00U) /*!< Key exists only in RAM */
+#define STSE_PSA_KEY_PERSISTENCE_DEFAULT   ((stse_psa_key_persistence_t)0x01U) /*!< Key in default persistent storage */
+#define STSE_PSA_KEY_PERSISTENCE_READ_ONLY ((stse_psa_key_persistence_t)0xFFU) /*!< Key is read-only / immutable */
+
+/* Key location identifiers */
+#define STSE_PSA_KEY_LOCATION_LOCAL_STORAGE ((stse_psa_key_location_t)0x000000U) /*!< Keys in local (host) storage */
+#define STSE_PSA_KEY_LOCATION_PRIMARY_SECURE_ELEMENT ((stse_psa_key_location_t)0x000001U) /*!< Keys in primary SE */
+
+/* Composed lifetime values */
+#define STSE_PSA_KEY_LIFETIME_VOLATILE     ((stse_psa_key_lifetime_t) \
+    (STSE_PSA_KEY_PERSISTENCE_VOLATILE | (STSE_PSA_KEY_LOCATION_LOCAL_STORAGE << 8U))) /*!< Volatile key in local storage */
+#define STSE_PSA_KEY_LIFETIME_PERSISTENT   ((stse_psa_key_lifetime_t) \
+    (STSE_PSA_KEY_PERSISTENCE_DEFAULT  | (STSE_PSA_KEY_LOCATION_LOCAL_STORAGE << 8U))) /*!< Persistent key in local storage */
+
+/** \brief Build a PSA key lifetime value from a persistence level and location */
+#define STSE_PSA_KEY_LIFETIME_FROM_PERSISTENCE_AND_LOCATION(persistence, location) \
+    ((stse_psa_key_lifetime_t)((PLAT_UI32)(persistence) | ((PLAT_UI32)(location) << 8U)))
+
+#endif /* STSE_PSA_SPEC_VERSION >= 12 */
 
 /* -------------------------------------------------------------------------- */
 /* Key-ID encoding helpers                                                     */
@@ -195,6 +411,9 @@ typedef struct stse_psa_key_attributes_t {
     stse_psa_algorithm_t alg;     /*!< Permitted algorithm for this key */
     stse_psa_key_usage_t usage;   /*!< Key usage flags */
     stse_psa_key_bits_t  bits;    /*!< Key size in bits (e.g. 256 for AES-256, 256 for P-256) */
+#if (STSE_PSA_SPEC_VERSION >= 12)
+    stse_psa_key_lifetime_t lifetime; /*!< Key lifetime (PSA 1.2+): volatile or persistent */
+#endif
 } stse_psa_key_attributes_t;
 
 /* -------------------------------------------------------------------------- */
@@ -212,6 +431,27 @@ typedef struct stse_psa_hash_operation_t {
     stse_hash_algorithm_t stse_algo;      /*!< Mapped STSE hash algorithm */
     PLAT_UI8              hash_started;   /*!< Non-zero after first stse_start_hash call */
 } stse_psa_hash_operation_t;
+
+/* -------------------------------------------------------------------------- */
+/* PSA 1.3+ PAKE operation context                                            */
+/* -------------------------------------------------------------------------- */
+
+#if (STSE_PSA_SPEC_VERSION >= 13)
+
+/*!
+ * \struct stse_psa_pake_operation_t
+ * \brief  Context for a multi-step PSA PAKE operation
+ *         (psa_pake_operation_t equivalent)
+ *         \note PAKE operations are not natively supported by the STSE hardware.
+ *               All PAKE functions in this adaptation layer return
+ *               \ref STSE_PSA_ERROR_NOT_SUPPORTED.
+ */
+typedef struct stse_psa_pake_operation_t {
+    PLAT_UI8              active;   /*!< Non-zero when an operation is in progress */
+    stse_psa_algorithm_t  alg;     /*!< PAKE algorithm */
+} stse_psa_pake_operation_t;
+
+#endif /* STSE_PSA_SPEC_VERSION >= 13 */
 
 /* -------------------------------------------------------------------------- */
 /* Internal key context table entry                                            */
@@ -232,6 +472,9 @@ typedef struct stse_psa_key_context_t {
     stse_aes_key_type_t       aes_type;    /*!< AES key type (symmetric keys only) */
     PLAT_UI8                  pub_key[STSE_PSA_MAX_PUBLIC_KEY_SIZE]; /*!< Cached public key */
     PLAT_UI8                  pub_key_len; /*!< Cached public key length in bytes */
+#if (STSE_PSA_SPEC_VERSION >= 12)
+    stse_psa_key_lifetime_t   lifetime;    /*!< Key lifetime (PSA 1.2+) */
+#endif
 } stse_psa_key_context_t;
 
 /* -------------------------------------------------------------------------- */
@@ -267,8 +510,10 @@ stse_psa_status_t stse_psa_crypto_init(stse_Handler_t *pSTSE);
  * \details     Generates an ECC key pair in the STSE private-key table and
  *              records the mapping in the PSA key table.
  *              The generated public key is optionally returned in \p pPublicKey.
+ *              For PSA 1.2+, the key \c lifetime field in \p pAttributes is
+ *              stored and honoured (volatile keys are removed on finalize).
  * \param[in]   pAttributes     Key attributes including \c id, \c type, \c alg,
- *                              \c usage, \c bits
+ *                              \c usage, \c bits (and \c lifetime for PSA 1.2+)
  * \param[in]   ecc_type        STSE ECC key type (\ref stse_ecc_key_type_t)
  * \param[in]   usage_limit     Key usage limit (0 = unlimited)
  * \param[out]  pPublicKey      Buffer to receive the generated public key
@@ -284,6 +529,8 @@ stse_psa_status_t stse_psa_generate_key(const stse_psa_key_attributes_t *pAttrib
  * \brief       Remove a registered PSA key
  * \details     Removes the key ID from the PSA adaptation-layer key table.
  *              The underlying STSE key slot is not erased by this call.
+ *              In PSA 1.2+, if the key was registered but no such ID exists,
+ *              returns \ref STSE_PSA_ERROR_DOES_NOT_EXIST.
  * \param[in]   key_id  Key identifier to remove
  * \return      \ref STSE_PSA_SUCCESS on success; PSA error code otherwise
  */
@@ -291,8 +538,7 @@ stse_psa_status_t stse_psa_destroy_key(stse_psa_key_id_t key_id);
 
 /**
  * \brief       Export the public key of a registered ECC key pair
- * \details     Reads the public key associated with \p key_id from the STSE
- *              and copies it into \p pData.
+ * \details     Returns the public key bytes cached at \ref stse_psa_generate_key.
  * \param[in]   key_id      Key identifier (must be an asymmetric key)
  * \param[out]  pData       Buffer to receive the public key bytes
  * \param[in]   data_size   Capacity of \p pData in bytes
@@ -461,9 +707,8 @@ stse_psa_status_t stse_psa_hash_finish(stse_psa_hash_operation_t *pOperation,
 
 /**
  * \brief       Compute a MAC (single-shot)
- * \details     Computes AES-CMAC or AES-GMAC over \p pInput using the
- *              symmetric key identified by \p key_id.
- *              Equivalent to \c psa_mac_compute.
+ * \details     Computes AES-CMAC over \p pInput using the symmetric key
+ *              identified by \p key_id. Equivalent to \c psa_mac_compute.
  * \param[in]   key_id       Symmetric key identifier
  * \param[in]   alg          MAC algorithm (\ref STSE_PSA_ALG_CMAC)
  * \param[in]   pInput       Input data buffer
@@ -503,21 +748,20 @@ stse_psa_status_t stse_psa_mac_verify(stse_psa_key_id_t    key_id,
 
 /**
  * \brief       Authenticated encryption (AEAD, single-shot)
- * \details     Encrypts \p pPlaintext with authentication using the symmetric
- *              key identified by \p key_id. Supported algorithms:
+ * \details     Encrypts \p pPlaintext with authentication. Supported algorithms:
  *              \ref STSE_PSA_ALG_CCM, \ref STSE_PSA_ALG_GCM.
- *              The authentication tag is appended to the ciphertext in
- *              \p pCiphertext. Equivalent to \c psa_aead_encrypt.
- * \param[in]     key_id           Symmetric key identifier
- * \param[in]     alg              AEAD algorithm
- * \param[in]     pNonce           Nonce / IV buffer
- * \param[in]     nonce_length     Nonce length in bytes
- * \param[in]     pAdditionalData  Additional authenticated data buffer
- * \param[in]     aad_length       AAD length in bytes
- * \param[in]     pPlaintext       Plaintext buffer
- * \param[in]     plaintext_length Plaintext length in bytes
- * \param[out]    pCiphertext      Ciphertext + tag output buffer
- * \param[in]     ciphertext_size  Capacity of \p pCiphertext in bytes
+ *              The authentication tag is appended to the ciphertext.
+ *              Equivalent to \c psa_aead_encrypt.
+ * \param[in]     key_id             Symmetric key identifier
+ * \param[in]     alg                AEAD algorithm
+ * \param[in]     pNonce             Nonce / IV buffer
+ * \param[in]     nonce_length       Nonce length in bytes
+ * \param[in]     pAdditionalData    Additional authenticated data buffer
+ * \param[in]     aad_length         AAD length in bytes
+ * \param[in]     pPlaintext         Plaintext buffer
+ * \param[in]     plaintext_length   Plaintext length in bytes
+ * \param[out]    pCiphertext        Ciphertext + tag output buffer
+ * \param[in]     ciphertext_size    Capacity of \p pCiphertext in bytes
  * \param[out]    pCiphertext_length Actual output length (ciphertext + tag)
  * \return      \ref STSE_PSA_SUCCESS on success; PSA error code otherwise
  */
@@ -539,17 +783,17 @@ stse_psa_status_t stse_psa_aead_encrypt(stse_psa_key_id_t   key_id,
  *              authentication tag at the end). Supported algorithms:
  *              \ref STSE_PSA_ALG_CCM, \ref STSE_PSA_ALG_GCM.
  *              Equivalent to \c psa_aead_decrypt.
- * \param[in]     key_id            Symmetric key identifier
- * \param[in]     alg               AEAD algorithm
- * \param[in]     pNonce            Nonce / IV buffer
- * \param[in]     nonce_length      Nonce length in bytes
- * \param[in]     pAdditionalData   Additional authenticated data buffer
- * \param[in]     aad_length        AAD length in bytes
- * \param[in]     pCiphertext       Ciphertext + tag input buffer
- * \param[in]     ciphertext_length Total ciphertext + tag length in bytes
- * \param[out]    pPlaintext        Decrypted plaintext output buffer
- * \param[in]     plaintext_size    Capacity of \p pPlaintext in bytes
- * \param[out]    pPlaintext_length Actual plaintext length written
+ * \param[in]     key_id              Symmetric key identifier
+ * \param[in]     alg                 AEAD algorithm
+ * \param[in]     pNonce              Nonce / IV buffer
+ * \param[in]     nonce_length        Nonce length in bytes
+ * \param[in]     pAdditionalData     Additional authenticated data buffer
+ * \param[in]     aad_length          AAD length in bytes
+ * \param[in]     pCiphertext         Ciphertext + tag input buffer
+ * \param[in]     ciphertext_length   Total ciphertext + tag length in bytes
+ * \param[out]    pPlaintext          Decrypted plaintext output buffer
+ * \param[in]     plaintext_size      Capacity of \p pPlaintext in bytes
+ * \param[out]    pPlaintext_length   Actual plaintext length written
  * \return      \ref STSE_PSA_SUCCESS on success;
  *              \ref STSE_PSA_ERROR_INVALID_SIGNATURE if authentication fails;
  *              other PSA error code otherwise
@@ -621,6 +865,91 @@ stse_psa_status_t stse_psa_key_derivation_output_bytes(stse_psa_key_id_t   key_i
                                                         PLAT_UI32            info_length,
                                                         PLAT_UI8            *pOutput,
                                                         PLAT_UI32            output_length);
+
+/* -------------------------------------------------------------------------- */
+/* PSA 1.3+ PAKE operation stubs                                              */
+/* -------------------------------------------------------------------------- */
+
+#if (STSE_PSA_SPEC_VERSION >= 13)
+
+/**
+ * \brief       Set up a PAKE operation
+ * \details     Equivalent to \c psa_pake_setup.
+ *              \n\b Note: The STSE device does not support PAKE. This function
+ *              always returns \ref STSE_PSA_ERROR_NOT_SUPPORTED.
+ * \param[out]  pOperation  PAKE operation context
+ * \param[in]   key_id      Password / verifier key identifier
+ * \param[in]   alg         PAKE algorithm (\ref STSE_PSA_ALG_JPAKE, etc.)
+ * \return      \ref STSE_PSA_ERROR_NOT_SUPPORTED
+ */
+stse_psa_status_t stse_psa_pake_setup(stse_psa_pake_operation_t *pOperation,
+                                       stse_psa_key_id_t          key_id,
+                                       stse_psa_algorithm_t       alg);
+
+/**
+ * \brief       Abort an in-progress PAKE operation
+ * \details     Equivalent to \c psa_pake_abort.
+ *              \n\b Note: Always returns \ref STSE_PSA_SUCCESS.
+ * \param[out]  pOperation  PAKE operation context to abort
+ * \return      \ref STSE_PSA_SUCCESS
+ */
+stse_psa_status_t stse_psa_pake_abort(stse_psa_pake_operation_t *pOperation);
+
+#endif /* STSE_PSA_SPEC_VERSION >= 13 */
+
+/* -------------------------------------------------------------------------- */
+/* PSA 1.4+ post-quantum operation stubs                                      */
+/* -------------------------------------------------------------------------- */
+
+#if (STSE_PSA_SPEC_VERSION >= 14)
+
+/**
+ * \brief       ML-KEM key encapsulation (stub)
+ * \details     Equivalent to \c psa_kem_encapsulate.
+ *              \n\b Note: The STSE device does not support ML-KEM.
+ *              Always returns \ref STSE_PSA_ERROR_NOT_SUPPORTED.
+ * \param[in]   key_id              ML-KEM public key identifier
+ * \param[in]   alg                 Key encapsulation algorithm (\ref STSE_PSA_ALG_ML_KEM)
+ * \param[out]  pCiphertext         Ciphertext output buffer
+ * \param[in]   ciphertext_size     Capacity of \p pCiphertext in bytes
+ * \param[out]  pCiphertext_length  Actual ciphertext length
+ * \param[out]  pSharedSecret       Shared secret output buffer
+ * \param[in]   shared_secret_size  Capacity of \p pSharedSecret in bytes
+ * \param[out]  pSharedSecret_length Actual shared secret length
+ * \return      \ref STSE_PSA_ERROR_NOT_SUPPORTED
+ */
+stse_psa_status_t stse_psa_kem_encapsulate(stse_psa_key_id_t   key_id,
+                                            stse_psa_algorithm_t alg,
+                                            PLAT_UI8            *pCiphertext,
+                                            PLAT_UI32            ciphertext_size,
+                                            PLAT_UI32           *pCiphertext_length,
+                                            PLAT_UI8            *pSharedSecret,
+                                            PLAT_UI32            shared_secret_size,
+                                            PLAT_UI32           *pSharedSecret_length);
+
+/**
+ * \brief       ML-KEM key decapsulation (stub)
+ * \details     Equivalent to \c psa_kem_decapsulate.
+ *              \n\b Note: The STSE device does not support ML-KEM.
+ *              Always returns \ref STSE_PSA_ERROR_NOT_SUPPORTED.
+ * \param[in]   key_id              ML-KEM private key identifier
+ * \param[in]   alg                 Key encapsulation algorithm
+ * \param[in]   pCiphertext         Ciphertext input buffer
+ * \param[in]   ciphertext_length   Ciphertext length in bytes
+ * \param[out]  pSharedSecret       Shared secret output buffer
+ * \param[in]   shared_secret_size  Capacity of \p pSharedSecret in bytes
+ * \param[out]  pSharedSecret_length Actual shared secret length
+ * \return      \ref STSE_PSA_ERROR_NOT_SUPPORTED
+ */
+stse_psa_status_t stse_psa_kem_decapsulate(stse_psa_key_id_t   key_id,
+                                            stse_psa_algorithm_t alg,
+                                            const PLAT_UI8      *pCiphertext,
+                                            PLAT_UI32            ciphertext_length,
+                                            PLAT_UI8            *pSharedSecret,
+                                            PLAT_UI32            shared_secret_size,
+                                            PLAT_UI32           *pSharedSecret_length);
+
+#endif /* STSE_PSA_SPEC_VERSION >= 14 */
 
 /** @}*/
 

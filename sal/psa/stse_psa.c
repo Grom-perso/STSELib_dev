@@ -62,17 +62,17 @@ static stse_ReturnCode_t _stse_psa_alg_to_hash(stse_psa_algorithm_t   alg,
             break;
 #endif
 #ifdef STSE_CONF_HASH_SHA_3_256
-        case 0x02000010U: /* STSE_PSA_ALG_SHA3_256 */
+        case 0x02000011U: /* STSE_PSA_ALG_SHA3_256 (PSA H=0x11) */
             *pAlgo = STSE_SHA3_256;
             break;
 #endif
 #ifdef STSE_CONF_HASH_SHA_3_384
-        case 0x02000011U: /* STSE_PSA_ALG_SHA3_384 */
+        case 0x02000012U: /* STSE_PSA_ALG_SHA3_384 (PSA H=0x12) */
             *pAlgo = STSE_SHA3_384;
             break;
 #endif
 #ifdef STSE_CONF_HASH_SHA_3_512
-        case 0x02000012U: /* STSE_PSA_ALG_SHA3_512 */
+        case 0x02000013U: /* STSE_PSA_ALG_SHA3_512 (PSA H=0x13) */
             *pAlgo = STSE_SHA3_512;
             break;
 #endif
@@ -189,6 +189,10 @@ stse_psa_status_t stse_psa_generate_key(const stse_psa_key_attributes_t *pAttrib
     pKeyCtx->stse_slot   = stse_slot;
     pKeyCtx->ecc_type    = ecc_type;
 
+#if (STSE_PSA_SPEC_VERSION >= 12)
+    pKeyCtx->lifetime = pAttributes->lifetime;
+#endif
+
     /* Cache the public key using the correct STSE key size from the info table */
     pKeyCtx->pub_key_len = (PLAT_UI8)stse_ecc_info_table[ecc_type].public_key_size;
     if (pKeyCtx->pub_key_len > STSE_PSA_MAX_PUBLIC_KEY_SIZE) {
@@ -213,7 +217,11 @@ stse_psa_status_t stse_psa_destroy_key(stse_psa_key_id_t key_id)
 
     pKeyCtx = _stse_psa_find_key(key_id);
     if (pKeyCtx == NULL) {
+#if (STSE_PSA_SPEC_VERSION >= 12)
+        return STSE_PSA_ERROR_DOES_NOT_EXIST;
+#else
         return STSE_PSA_ERROR_INVALID_HANDLE;
+#endif
     }
 
     pKeyCtx->in_use = 0U;
@@ -962,3 +970,87 @@ stse_psa_status_t stse_psa_key_derivation_output_bytes(stse_psa_key_id_t   key_i
 
     return (ret == STSE_OK) ? STSE_PSA_SUCCESS : STSE_PSA_ERROR_HARDWARE_FAILURE;
 }
+
+/* -------------------------------------------------------------------------- */
+/* PSA 1.3+ PAKE operation stubs                                              */
+/* -------------------------------------------------------------------------- */
+
+#if (STSE_PSA_SPEC_VERSION >= 13)
+
+stse_psa_status_t stse_psa_pake_setup(stse_psa_pake_operation_t *pOperation,
+                                       stse_psa_key_id_t          key_id,
+                                       stse_psa_algorithm_t       alg)
+{
+    (void)key_id;
+
+    if (pOperation == NULL) {
+        return STSE_PSA_ERROR_INVALID_ARGUMENT;
+    }
+
+    pOperation->active = 0U;
+    pOperation->alg    = alg;
+
+    /* PAKE is not supported by the STSE device */
+    return STSE_PSA_ERROR_NOT_SUPPORTED;
+}
+
+stse_psa_status_t stse_psa_pake_abort(stse_psa_pake_operation_t *pOperation)
+{
+    if (pOperation != NULL) {
+        pOperation->active = 0U;
+    }
+
+    return STSE_PSA_SUCCESS;
+}
+
+#endif /* STSE_PSA_SPEC_VERSION >= 13 */
+
+/* -------------------------------------------------------------------------- */
+/* PSA 1.4+ post-quantum operation stubs                                      */
+/* -------------------------------------------------------------------------- */
+
+#if (STSE_PSA_SPEC_VERSION >= 14)
+
+stse_psa_status_t stse_psa_kem_encapsulate(stse_psa_key_id_t   key_id,
+                                            stse_psa_algorithm_t alg,
+                                            PLAT_UI8            *pCiphertext,
+                                            PLAT_UI32            ciphertext_size,
+                                            PLAT_UI32           *pCiphertext_length,
+                                            PLAT_UI8            *pSharedSecret,
+                                            PLAT_UI32            shared_secret_size,
+                                            PLAT_UI32           *pSharedSecret_length)
+{
+    (void)key_id;
+    (void)alg;
+    (void)pCiphertext;
+    (void)ciphertext_size;
+    (void)pCiphertext_length;
+    (void)pSharedSecret;
+    (void)shared_secret_size;
+    (void)pSharedSecret_length;
+
+    /* Post-quantum KEM is not supported by the STSE device */
+    return STSE_PSA_ERROR_NOT_SUPPORTED;
+}
+
+stse_psa_status_t stse_psa_kem_decapsulate(stse_psa_key_id_t   key_id,
+                                            stse_psa_algorithm_t alg,
+                                            const PLAT_UI8      *pCiphertext,
+                                            PLAT_UI32            ciphertext_length,
+                                            PLAT_UI8            *pSharedSecret,
+                                            PLAT_UI32            shared_secret_size,
+                                            PLAT_UI32           *pSharedSecret_length)
+{
+    (void)key_id;
+    (void)alg;
+    (void)pCiphertext;
+    (void)ciphertext_length;
+    (void)pSharedSecret;
+    (void)shared_secret_size;
+    (void)pSharedSecret_length;
+
+    /* Post-quantum KEM is not supported by the STSE device */
+    return STSE_PSA_ERROR_NOT_SUPPORTED;
+}
+
+#endif /* STSE_PSA_SPEC_VERSION >= 14 */
