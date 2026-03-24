@@ -23,6 +23,22 @@
  *  \details  	The STSE Certificate parser is the entry point for the upper system application layer.
  *  			It provides high level certificate parsing functions to the application layer.
  *
+ *  \defgroup 	stse_sal STSE Security Abstraction Layer (SAL)
+ *  \brief		Adaptation layer for standard cryptographic interfaces
+ *  \details  	The SAL provides adaptation layers that map industry-standard
+ *              cryptographic interfaces to STSELib API calls. This eases
+ *              integration of STSAFE secure elements into advanced crypto
+ *              stacks and systems. \n
+ *              Two adaptation layers are provided: \n
+ *              - \b PKCS\#11 : maps the OASIS PKCS\#11 Cryptographic Token
+ *                Interface Standard to STSELib operations. See
+ *                \ref stse_sal_pkcs11 and include
+ *                <tt>sal/pkcs11/stse_pkcs11.h</tt>. \n
+ *              - \b PSA Crypto : maps the ARM Platform Security Architecture
+ *                (PSA) Crypto API to STSELib operations. See
+ *                \ref stse_sal_psa and include
+ *                <tt>sal/psa/stse_psa.h</tt>.
+ *
  *  \defgroup 	stse_api STSE API layer
  *  \brief		Common API set for STMicroelectronics brand protection secure elements
  *  \details  	The STSE API layer is the entry point for the upper system application layer.
