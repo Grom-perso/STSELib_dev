@@ -24,6 +24,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#include "sal/pkcs11/pkcs11.h"
 #include "api/stse_aes.h"
 #include "api/stse_asymmetric_keys_management.h"
 #include "api/stse_ecc.h"
@@ -40,6 +41,11 @@ extern "C" {
  *            (Cryptographic Token Interface Standard, OASIS) operations to
  *            STSELib API calls, enabling integration of STSAFE secure elements
  *            into systems that use PKCS \#11 as their cryptographic interface.
+ *
+ *            Standard OASIS PKCS \#11 types (\c CK_RV, \c CK_SESSION_HANDLE,
+ *            \c CK_MECHANISM_TYPE, \c CK_GCM_PARAMS, \c CK_CCM_PARAMS, etc.)
+ *            are used throughout; see \c sal/pkcs11/pkcs11.h for the bundled
+ *            OASIS type definitions.
  *
  *            \b Key mapping conventions:
  *            - For sign/encrypt/decrypt operations: \c hKey encodes the STSE
@@ -60,109 +66,6 @@ extern "C" {
 /** \brief Maximum number of concurrent PKCS \#11 sessions */
 #define STSE_PKCS11_MAX_SESSIONS 4U
 #endif
-
-/* -------------------------------------------------------------------------- */
-/* PKCS #11 compatible type definitions                                        */
-/* -------------------------------------------------------------------------- */
-
-typedef unsigned long      STSE_CK_ULONG;      /*!< PKCS\#11 unsigned long type */
-typedef unsigned char      STSE_CK_BYTE;       /*!< PKCS\#11 byte type */
-typedef STSE_CK_BYTE      *STSE_CK_BYTE_PTR;   /*!< Pointer to PKCS\#11 byte */
-typedef void              *STSE_CK_VOID_PTR;   /*!< Pointer to void */
-typedef STSE_CK_ULONG      STSE_CK_RV;         /*!< PKCS\#11 return value */
-typedef STSE_CK_ULONG      STSE_CK_SESSION_HANDLE;  /*!< Session handle */
-typedef STSE_CK_ULONG      STSE_CK_OBJECT_HANDLE;   /*!< Key/object handle */
-typedef STSE_CK_ULONG      STSE_CK_MECHANISM_TYPE;  /*!< Mechanism type identifier */
-typedef STSE_CK_ULONG      STSE_CK_FLAGS;      /*!< Session/token flags */
-
-/** \brief Sentinel value for an invalid handle */
-#define STSE_CK_INVALID_HANDLE  0UL
-
-/* -------------------------------------------------------------------------- */
-/* PKCS #11 Return codes (CKR_* equivalents)                                  */
-/* -------------------------------------------------------------------------- */
-
-#define STSE_CKR_OK                         0x00000000UL /*!< Operation successful */
-#define STSE_CKR_GENERAL_ERROR              0x00000005UL /*!< General error */
-#define STSE_CKR_ARGUMENTS_BAD              0x00000007UL /*!< Invalid arguments */
-#define STSE_CKR_DATA_LEN_RANGE             0x00000021UL /*!< Data length out of range */
-#define STSE_CKR_DEVICE_ERROR               0x00000030UL /*!< Device / secure-element error */
-#define STSE_CKR_FUNCTION_NOT_SUPPORTED     0x00000054UL /*!< Function not supported */
-#define STSE_CKR_KEY_HANDLE_INVALID         0x00000060UL /*!< Invalid key handle */
-#define STSE_CKR_MECHANISM_INVALID          0x00000070UL /*!< Unsupported mechanism */
-#define STSE_CKR_OPERATION_NOT_INITIALIZED  0x00000090UL /*!< No active operation */
-#define STSE_CKR_BUFFER_TOO_SMALL           0x00000150UL /*!< Output buffer too small */
-#define STSE_CKR_SESSION_HANDLE_INVALID     0x000000B3UL /*!< Invalid session handle */
-#define STSE_CKR_TOKEN_NOT_PRESENT          0x000000E0UL /*!< Token (STSE device) not present */
-#define STSE_CKR_CRYPTOKI_NOT_INITIALIZED   0x00000190UL /*!< Library not initialised */
-#define STSE_CKR_SIGNATURE_INVALID          0x000000C0UL /*!< Signature verification failed */
-
-/* -------------------------------------------------------------------------- */
-/* PKCS #11 Mechanism type identifiers (CKM_* equivalents)                    */
-/* -------------------------------------------------------------------------- */
-
-#define STSE_CKM_EC_KEY_PAIR_GEN    0x00001040UL /*!< ECC key-pair generation */
-#define STSE_CKM_ECDSA              0x00001041UL /*!< ECDSA raw (hash supplied externally) */
-#define STSE_CKM_ECDSA_SHA256       0x00001044UL /*!< ECDSA with SHA-256 */
-#define STSE_CKM_ECDSA_SHA384       0x00001045UL /*!< ECDSA with SHA-384 */
-#define STSE_CKM_ECDSA_SHA512       0x00001046UL /*!< ECDSA with SHA-512 */
-#define STSE_CKM_ECDH1_DERIVE       0x00001050UL /*!< ECDH key-derivation */
-#define STSE_CKM_AES_ECB            0x00001081UL /*!< AES-ECB cipher */
-#define STSE_CKM_AES_CCM            0x00001088UL /*!< AES-CCM authenticated cipher */
-#define STSE_CKM_AES_GCM            0x00001087UL /*!< AES-GCM authenticated cipher */
-#define STSE_CKM_AES_CMAC           0x0000108AUL /*!< AES-CMAC message authentication */
-#define STSE_CKM_SHA256             0x00000250UL /*!< SHA-256 digest */
-#define STSE_CKM_SHA384             0x00000260UL /*!< SHA-384 digest */
-#define STSE_CKM_SHA512             0x00000270UL /*!< SHA-512 digest */
-#define STSE_CKM_SHA3_256           0x000002B0UL /*!< SHA3-256 digest */
-#define STSE_CKM_SHA3_384           0x000002C0UL /*!< SHA3-384 digest */
-#define STSE_CKM_SHA3_512           0x000002D0UL /*!< SHA3-512 digest */
-
-/* -------------------------------------------------------------------------- */
-/* PKCS #11 Session flag (CKF_* equivalents)                                  */
-/* -------------------------------------------------------------------------- */
-
-#define STSE_CKF_RW_SESSION         0x00000002UL /*!< Read-write session */
-#define STSE_CKF_SERIAL_SESSION     0x00000004UL /*!< Serial-access session (mandatory per PKCS\#11) */
-
-/* -------------------------------------------------------------------------- */
-/* Mechanism parameter structures                                              */
-/* -------------------------------------------------------------------------- */
-
-/*!
- * \struct stse_pkcs11_gcm_params_t
- * \brief  AES-GCM mechanism parameters (CK_GCM_PARAMS equivalent)
- */
-typedef struct stse_pkcs11_gcm_params_t {
-    STSE_CK_BYTE_PTR pIv;       /*!< Initialisation vector buffer */
-    STSE_CK_ULONG    ulIvLen;   /*!< IV length in bytes */
-    STSE_CK_BYTE_PTR pAAD;      /*!< Additional authenticated data buffer */
-    STSE_CK_ULONG    ulAADLen;  /*!< AAD length in bytes */
-    STSE_CK_ULONG    ulTagBits; /*!< Authentication tag length in bits */
-} stse_pkcs11_gcm_params_t;
-
-/*!
- * \struct stse_pkcs11_ccm_params_t
- * \brief  AES-CCM mechanism parameters (CK_CCM_PARAMS equivalent)
- */
-typedef struct stse_pkcs11_ccm_params_t {
-    STSE_CK_ULONG    ulDataLen;   /*!< Plaintext/ciphertext data length */
-    STSE_CK_BYTE_PTR pNonce;      /*!< Nonce buffer */
-    STSE_CK_ULONG    ulNonceLen;  /*!< Nonce length in bytes */
-    STSE_CK_BYTE_PTR pAAD;        /*!< Additional authenticated data buffer */
-    STSE_CK_ULONG    ulAADLen;    /*!< AAD length in bytes */
-    STSE_CK_ULONG    ulMACLen;    /*!< MAC/tag length in bytes */
-} stse_pkcs11_ccm_params_t;
-
-/*!
- * \struct stse_pkcs11_mechanism_t
- * \brief  PKCS \#11 mechanism descriptor (CK_MECHANISM equivalent)
- */
-typedef struct stse_pkcs11_mechanism_t {
-    STSE_CK_MECHANISM_TYPE mechanism;    /*!< Mechanism type identifier (STSE_CKM_*) */
-    STSE_CK_VOID_PTR       pParameter;  /*!< Pointer to mechanism-specific parameters */
-    STSE_CK_ULONG          ulParameterLen; /*!< Parameter buffer length in bytes */
-} stse_pkcs11_mechanism_t;
 
 /* -------------------------------------------------------------------------- */
 /* Adaptation-layer internal types                                             */
@@ -198,8 +101,8 @@ typedef struct stse_pkcs11_session_t {
     PLAT_UI8                 *pPublic_key;        /*!< Public key buffer for verify (caller-owned) */
     /* Symmetric-key state (encrypt / decrypt) */
     PLAT_UI8                  sym_key_slot;       /*!< Symmetric-key slot */
-    STSE_CK_MECHANISM_TYPE    active_mechanism;   /*!< Mechanism set at EncryptInit/DecryptInit */
-    stse_pkcs11_mechanism_t   mechanism;          /*!< Full mechanism descriptor (including params) */
+    CK_MECHANISM_TYPE         active_mechanism;   /*!< Mechanism set at EncryptInit/DecryptInit */
+    CK_MECHANISM              mechanism;          /*!< Full mechanism descriptor (including params) */
 } stse_pkcs11_session_t;
 
 /*!
@@ -219,40 +122,40 @@ typedef struct stse_pkcs11_ctx_t {
  * \brief       Initialise the PKCS \#11 adaptation layer
  * \details     Clears and initialises the internal context. Must be called
  *              once before any other \c stse_pkcs11_* function.
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_initialize(void);
+CK_RV stse_pkcs11_initialize(void);
 
 /**
  * \brief       Finalise the PKCS \#11 adaptation layer
  * \details     Closes all open sessions and resets the internal context.
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_finalize(void);
+CK_RV stse_pkcs11_finalize(void);
 
 /**
  * \brief       Open a PKCS \#11 session backed by an STSE device
  * \details     Allocates a session slot and binds it to the given STSE handler.
  *              Equivalent to \c C_OpenSession.
  * \param[in]   pSTSE       Pointer to an initialised STSE handler
- * \param[in]   flags       Session flags (\ref STSE_CKF_RW_SESSION |
- *                          \ref STSE_CKF_SERIAL_SESSION)
+ * \param[in]   flags       Session flags (\ref CKF_RW_SESSION |
+ *                          \ref CKF_SERIAL_SESSION)
  * \param[out]  phSession   Receives the new session handle on success
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_open_session(
-    stse_Handler_t           *pSTSE,
-    STSE_CK_FLAGS             flags,
-    STSE_CK_SESSION_HANDLE   *phSession);
+CK_RV stse_pkcs11_open_session(
+    stse_Handler_t        *pSTSE,
+    CK_FLAGS               flags,
+    CK_SESSION_HANDLE     *phSession);
 
 /**
  * \brief       Close a PKCS \#11 session
  * \details     Releases the session slot. Equivalent to \c C_CloseSession.
  * \param[in]   hSession    Handle of the session to close
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_close_session(
-    STSE_CK_SESSION_HANDLE hSession);
+CK_RV stse_pkcs11_close_session(
+    CK_SESSION_HANDLE hSession);
 
 /**
  * \brief       Generate random bytes using the STSE TRNG
@@ -260,26 +163,26 @@ STSE_CK_RV stse_pkcs11_close_session(
  * \param[in]   hSession        Session handle
  * \param[out]  pRandomData     Buffer to receive random bytes
  * \param[in]   ulRandomLen     Number of random bytes requested
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_generate_random(
-    STSE_CK_SESSION_HANDLE hSession,
-    STSE_CK_BYTE_PTR       pRandomData,
-    STSE_CK_ULONG          ulRandomLen);
+CK_RV stse_pkcs11_generate_random(
+    CK_SESSION_HANDLE hSession,
+    CK_BYTE_PTR       pRandomData,
+    CK_ULONG          ulRandomLen);
 
 /**
  * \brief       Initialise a hash (digest) operation
  * \details     Stores the algorithm and prepares session state.
  *              Equivalent to \c C_DigestInit. Supported mechanisms:
- *              \ref STSE_CKM_SHA256, \ref STSE_CKM_SHA384, \ref STSE_CKM_SHA512,
- *              \ref STSE_CKM_SHA3_256, \ref STSE_CKM_SHA3_384, \ref STSE_CKM_SHA3_512.
+ *              \ref CKM_SHA256, \ref CKM_SHA384, \ref CKM_SHA512,
+ *              \ref CKM_SHA3_256, \ref CKM_SHA3_384, \ref CKM_SHA3_512.
  * \param[in]   hSession    Session handle
  * \param[in]   pMechanism  Mechanism descriptor
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_digest_init(
-    STSE_CK_SESSION_HANDLE    hSession,
-    stse_pkcs11_mechanism_t  *pMechanism);
+CK_RV stse_pkcs11_digest_init(
+    CK_SESSION_HANDLE hSession,
+    CK_MECHANISM     *pMechanism);
 
 /**
  * \brief       Feed data into an in-progress hash operation
@@ -291,12 +194,12 @@ STSE_CK_RV stse_pkcs11_digest_init(
  * \param[in]   hSession    Session handle
  * \param[in]   pPart       Data buffer
  * \param[in]   ulPartLen   Data length in bytes
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_digest_update(
-    STSE_CK_SESSION_HANDLE hSession,
-    STSE_CK_BYTE_PTR       pPart,
-    STSE_CK_ULONG          ulPartLen);
+CK_RV stse_pkcs11_digest_update(
+    CK_SESSION_HANDLE hSession,
+    CK_BYTE_PTR       pPart,
+    CK_ULONG          ulPartLen);
 
 /**
  * \brief       Finalise a hash operation and retrieve the digest
@@ -307,33 +210,33 @@ STSE_CK_RV stse_pkcs11_digest_update(
  * \param[out]    pDigest       Buffer to receive the digest
  * \param[in,out] pulDigestLen  On input: buffer capacity in bytes;
  *                              on output: actual digest length in bytes
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_digest_final(
-    STSE_CK_SESSION_HANDLE hSession,
-    STSE_CK_BYTE_PTR       pDigest,
-    STSE_CK_ULONG         *pulDigestLen);
+CK_RV stse_pkcs11_digest_final(
+    CK_SESSION_HANDLE hSession,
+    CK_BYTE_PTR       pDigest,
+    CK_ULONG         *pulDigestLen);
 
 /**
  * \brief       Initialise an ECDSA sign operation
  * \details     Stores the signing key slot and optional hash mechanism.
  *              Equivalent to \c C_SignInit.
- *              \n Supported mechanisms: \ref STSE_CKM_ECDSA,
- *              \ref STSE_CKM_ECDSA_SHA256, \ref STSE_CKM_ECDSA_SHA384,
- *              \ref STSE_CKM_ECDSA_SHA512.
+ *              \n Supported mechanisms: \ref CKM_ECDSA,
+ *              \ref CKM_ECDSA_SHA256, \ref CKM_ECDSA_SHA384,
+ *              \ref CKM_ECDSA_SHA512.
  *              \n\b STSE extension: \c key_type must be supplied because PKCS\#11
  *              key objects do not carry curve information in this adaptation layer.
  * \param[in]   hSession    Session handle
  * \param[in]   pMechanism  Mechanism descriptor
  * \param[in]   hKey        Private-key slot number (0-based STSE slot index)
  * \param[in]   key_type    ECC key type (\ref stse_ecc_key_type_t)
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_sign_init(
-    STSE_CK_SESSION_HANDLE    hSession,
-    stse_pkcs11_mechanism_t  *pMechanism,
-    STSE_CK_OBJECT_HANDLE     hKey,
-    stse_ecc_key_type_t       key_type);
+CK_RV stse_pkcs11_sign_init(
+    CK_SESSION_HANDLE    hSession,
+    CK_MECHANISM        *pMechanism,
+    CK_OBJECT_HANDLE     hKey,
+    stse_ecc_key_type_t  key_type);
 
 /**
  * \brief       Perform an ECDSA sign operation
@@ -345,23 +248,23 @@ STSE_CK_RV stse_pkcs11_sign_init(
  * \param[in]     ulDataLen         Data length in bytes
  * \param[out]    pSignature        Buffer to receive the R||S signature
  * \param[in,out] pulSignatureLen   On input: buffer capacity; on output: actual length
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_sign(
-    STSE_CK_SESSION_HANDLE hSession,
-    STSE_CK_BYTE_PTR       pData,
-    STSE_CK_ULONG          ulDataLen,
-    STSE_CK_BYTE_PTR       pSignature,
-    STSE_CK_ULONG         *pulSignatureLen);
+CK_RV stse_pkcs11_sign(
+    CK_SESSION_HANDLE hSession,
+    CK_BYTE_PTR       pData,
+    CK_ULONG          ulDataLen,
+    CK_BYTE_PTR       pSignature,
+    CK_ULONG         *pulSignatureLen);
 
 /**
  * \brief       Initialise an ECDSA verify operation
  * \details     Stores the ECC key type and public key for the subsequent
  *              \ref stse_pkcs11_verify call.
  *              Equivalent to \c C_VerifyInit.
- *              \n Supported mechanisms: \ref STSE_CKM_ECDSA,
- *              \ref STSE_CKM_ECDSA_SHA256, \ref STSE_CKM_ECDSA_SHA384,
- *              \ref STSE_CKM_ECDSA_SHA512.
+ *              \n Supported mechanisms: \ref CKM_ECDSA,
+ *              \ref CKM_ECDSA_SHA256, \ref CKM_ECDSA_SHA384,
+ *              \ref CKM_ECDSA_SHA512.
  *              \n\b STSE extension: \c hKey encodes the \ref stse_ecc_key_type_t
  *              value, and \c pPublic_key must point to the raw public key bytes
  *              (X||Y for uncompressed NIST/Brainpool, or the appropriate encoding
@@ -371,13 +274,13 @@ STSE_CK_RV stse_pkcs11_sign(
  * \param[in]   pMechanism  Mechanism descriptor
  * \param[in]   hKey        ECC key type (cast from \ref stse_ecc_key_type_t)
  * \param[in]   pPublic_key Pointer to the public key byte buffer (caller-owned)
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_verify_init(
-    STSE_CK_SESSION_HANDLE    hSession,
-    stse_pkcs11_mechanism_t  *pMechanism,
-    STSE_CK_OBJECT_HANDLE     hKey,
-    PLAT_UI8                 *pPublic_key);
+CK_RV stse_pkcs11_verify_init(
+    CK_SESSION_HANDLE    hSession,
+    CK_MECHANISM        *pMechanism,
+    CK_OBJECT_HANDLE     hKey,
+    PLAT_UI8            *pPublic_key);
 
 /**
  * \brief       Verify an ECDSA signature
@@ -388,34 +291,34 @@ STSE_CK_RV stse_pkcs11_verify_init(
  * \param[in]   ulDataLen      Data length in bytes
  * \param[in]   pSignature     R||S signature buffer
  * \param[in]   ulSignatureLen Signature length in bytes
- * \return      \ref STSE_CKR_OK if the signature is valid;
- *              \ref STSE_CKR_SIGNATURE_INVALID if verification fails;
+ * \return      \ref CKR_OK if the signature is valid;
+ *              \ref CKR_SIGNATURE_INVALID if verification fails;
  *              other PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_verify(
-    STSE_CK_SESSION_HANDLE hSession,
-    STSE_CK_BYTE_PTR       pData,
-    STSE_CK_ULONG          ulDataLen,
-    STSE_CK_BYTE_PTR       pSignature,
-    STSE_CK_ULONG          ulSignatureLen);
+CK_RV stse_pkcs11_verify(
+    CK_SESSION_HANDLE hSession,
+    CK_BYTE_PTR       pData,
+    CK_ULONG          ulDataLen,
+    CK_BYTE_PTR       pSignature,
+    CK_ULONG          ulSignatureLen);
 
 /**
  * \brief       Initialise an AES encrypt operation
  * \details     Stores the symmetric-key slot and mechanism for the encrypt.
  *              Equivalent to \c C_EncryptInit. Supported mechanisms:
- *              \ref STSE_CKM_AES_ECB, \ref STSE_CKM_AES_CCM, \ref STSE_CKM_AES_GCM.
- *              For \ref STSE_CKM_AES_CCM set \c pParameter to a
- *              \ref stse_pkcs11_ccm_params_t; for \ref STSE_CKM_AES_GCM set it
- *              to a \ref stse_pkcs11_gcm_params_t.
+ *              \ref CKM_AES_ECB, \ref CKM_AES_CCM, \ref CKM_AES_GCM.
+ *              For \ref CKM_AES_CCM set \c pParameter to a
+ *              \ref CK_CCM_PARAMS; for \ref CKM_AES_GCM set it
+ *              to a \ref CK_GCM_PARAMS.
  * \param[in]   hSession    Session handle
  * \param[in]   pMechanism  Mechanism descriptor (with optional parameters)
  * \param[in]   hKey        Symmetric-key slot number
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_encrypt_init(
-    STSE_CK_SESSION_HANDLE    hSession,
-    stse_pkcs11_mechanism_t  *pMechanism,
-    STSE_CK_OBJECT_HANDLE     hKey);
+CK_RV stse_pkcs11_encrypt_init(
+    CK_SESSION_HANDLE hSession,
+    CK_MECHANISM     *pMechanism,
+    CK_OBJECT_HANDLE  hKey);
 
 /**
  * \brief       Perform an AES encrypt operation
@@ -423,19 +326,21 @@ STSE_CK_RV stse_pkcs11_encrypt_init(
  *              \ref stse_pkcs11_encrypt_init. For CCM/GCM modes the
  *              authentication tag is appended to the ciphertext in
  *              \p pEncryptedData. Equivalent to \c C_Encrypt.
+ *              If \p pEncryptedData is NULL, the required output size is
+ *              returned in \p pulEncryptedDataLen without encrypting.
  * \param[in]     hSession              Session handle
  * \param[in]     pData                 Plaintext buffer
  * \param[in]     ulDataLen             Plaintext length in bytes
  * \param[out]    pEncryptedData        Ciphertext (+ optional tag) buffer
  * \param[in,out] pulEncryptedDataLen   On input: buffer capacity; on output: ciphertext length
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_encrypt(
-    STSE_CK_SESSION_HANDLE hSession,
-    STSE_CK_BYTE_PTR       pData,
-    STSE_CK_ULONG          ulDataLen,
-    STSE_CK_BYTE_PTR       pEncryptedData,
-    STSE_CK_ULONG         *pulEncryptedDataLen);
+CK_RV stse_pkcs11_encrypt(
+    CK_SESSION_HANDLE hSession,
+    CK_BYTE_PTR       pData,
+    CK_ULONG          ulDataLen,
+    CK_BYTE_PTR       pEncryptedData,
+    CK_ULONG         *pulEncryptedDataLen);
 
 /**
  * \brief       Initialise an AES decrypt operation
@@ -444,12 +349,12 @@ STSE_CK_RV stse_pkcs11_encrypt(
  * \param[in]   hSession    Session handle
  * \param[in]   pMechanism  Mechanism descriptor
  * \param[in]   hKey        Symmetric-key slot number
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_decrypt_init(
-    STSE_CK_SESSION_HANDLE    hSession,
-    stse_pkcs11_mechanism_t  *pMechanism,
-    STSE_CK_OBJECT_HANDLE     hKey);
+CK_RV stse_pkcs11_decrypt_init(
+    CK_SESSION_HANDLE hSession,
+    CK_MECHANISM     *pMechanism,
+    CK_OBJECT_HANDLE  hKey);
 
 /**
  * \brief       Perform an AES decrypt operation
@@ -457,19 +362,21 @@ STSE_CK_RV stse_pkcs11_decrypt_init(
  *              \ref stse_pkcs11_decrypt_init. For CCM/GCM modes the input must
  *              contain the authentication tag appended after the ciphertext.
  *              Equivalent to \c C_Decrypt.
+ *              If \p pData is NULL, the required output size is returned
+ *              in \p pulDataLen without decrypting.
  * \param[in]     hSession            Session handle
  * \param[in]     pEncryptedData      Ciphertext (+ optional tag) buffer
  * \param[in]     ulEncryptedDataLen  Ciphertext length in bytes
  * \param[out]    pData               Plaintext buffer
  * \param[in,out] pulDataLen          On input: buffer capacity; on output: plaintext length
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_decrypt(
-    STSE_CK_SESSION_HANDLE hSession,
-    STSE_CK_BYTE_PTR       pEncryptedData,
-    STSE_CK_ULONG          ulEncryptedDataLen,
-    STSE_CK_BYTE_PTR       pData,
-    STSE_CK_ULONG         *pulDataLen);
+CK_RV stse_pkcs11_decrypt(
+    CK_SESSION_HANDLE hSession,
+    CK_BYTE_PTR       pEncryptedData,
+    CK_ULONG          ulEncryptedDataLen,
+    CK_BYTE_PTR       pData,
+    CK_ULONG         *pulDataLen);
 
 /**
  * \brief       Generate an ECC key pair in the STSE
@@ -477,24 +384,24 @@ STSE_CK_RV stse_pkcs11_decrypt(
  *              private key in \p key_slot. The generated public key is returned
  *              in \p pPublicKey. Equivalent to \c C_GenerateKeyPair.
  * \param[in]   hSession        Session handle
- * \param[in]   pMechanism      Key-generation mechanism (\ref STSE_CKM_EC_KEY_PAIR_GEN)
+ * \param[in]   pMechanism      Key-generation mechanism (\ref CKM_EC_KEY_PAIR_GEN)
  * \param[in]   key_slot        STSE private-key slot to generate the key pair into
  * \param[in]   key_type        ECC key type (\ref stse_ecc_key_type_t)
  * \param[in]   usage_limit     Key usage limit (0 = unlimited)
  * \param[out]  pPublicKey      Buffer to receive the generated public key bytes
  * \param[out]  phPrivateKey    Receives the private-key object handle (= \p key_slot)
  * \param[out]  phPublicKey     Receives the public-key object handle  (= \p key_slot)
- * \return      \ref STSE_CKR_OK on success; PKCS \#11 error code otherwise
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
-STSE_CK_RV stse_pkcs11_generate_key_pair(
-    STSE_CK_SESSION_HANDLE    hSession,
-    stse_pkcs11_mechanism_t  *pMechanism,
-    PLAT_UI8                  key_slot,
-    stse_ecc_key_type_t       key_type,
-    PLAT_UI16                 usage_limit,
-    PLAT_UI8                 *pPublicKey,
-    STSE_CK_OBJECT_HANDLE    *phPrivateKey,
-    STSE_CK_OBJECT_HANDLE    *phPublicKey);
+CK_RV stse_pkcs11_generate_key_pair(
+    CK_SESSION_HANDLE    hSession,
+    CK_MECHANISM        *pMechanism,
+    PLAT_UI8             key_slot,
+    stse_ecc_key_type_t  key_type,
+    PLAT_UI16            usage_limit,
+    PLAT_UI8            *pPublicKey,
+    CK_OBJECT_HANDLE    *phPrivateKey,
+    CK_OBJECT_HANDLE    *phPublicKey);
 
 /** @}*/
 
