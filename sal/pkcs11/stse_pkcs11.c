@@ -22,7 +22,7 @@
 /* Module-level context (single instance)                                      */
 /* -------------------------------------------------------------------------- */
 
-static stse_pkcs11_ctx_t _stse_pkcs11_ctx;
+stse_pkcs11_ctx_t _stse_pkcs11_ctx;
 
 /* -------------------------------------------------------------------------- */
 /* Internal helpers                                                            */
@@ -125,12 +125,22 @@ CK_RV stse_pkcs11_initialize(void)
 {
     PLAT_UI8 i;
 
+    for (i = 0U; i < STSE_PKCS11_MAX_SLOTS; i++) {
+        _stse_pkcs11_ctx.slots[i].in_use = 0U;
+        _stse_pkcs11_ctx.slots[i].pSTSE  = NULL;
+    }
+
     for (i = 0U; i < STSE_PKCS11_MAX_SESSIONS; i++) {
         _stse_pkcs11_ctx.sessions[i].in_use           = 0U;
         _stse_pkcs11_ctx.sessions[i].pSTSE            = NULL;
+        _stse_pkcs11_ctx.sessions[i].slotID           = 0U;
         _stse_pkcs11_ctx.sessions[i].active_operation = STSE_PKCS11_OP_NONE;
         _stse_pkcs11_ctx.sessions[i].hash_started     = 0U;
         _stse_pkcs11_ctx.sessions[i].pPublic_key      = NULL;
+    }
+
+    for (i = 0U; i < STSE_PKCS11_MAX_KEY_OBJECTS; i++) {
+        _stse_pkcs11_ctx.key_objects[i].in_use = 0U;
     }
 
     _stse_pkcs11_ctx.initialized = 1U;
@@ -146,10 +156,19 @@ CK_RV stse_pkcs11_finalize(void)
         return CKR_CRYPTOKI_NOT_INITIALIZED;
     }
 
+    for (i = 0U; i < STSE_PKCS11_MAX_SLOTS; i++) {
+        _stse_pkcs11_ctx.slots[i].in_use = 0U;
+        _stse_pkcs11_ctx.slots[i].pSTSE  = NULL;
+    }
+
     for (i = 0U; i < STSE_PKCS11_MAX_SESSIONS; i++) {
         _stse_pkcs11_ctx.sessions[i].in_use           = 0U;
         _stse_pkcs11_ctx.sessions[i].pSTSE            = NULL;
         _stse_pkcs11_ctx.sessions[i].active_operation = STSE_PKCS11_OP_NONE;
+    }
+
+    for (i = 0U; i < STSE_PKCS11_MAX_KEY_OBJECTS; i++) {
+        _stse_pkcs11_ctx.key_objects[i].in_use = 0U;
     }
 
     _stse_pkcs11_ctx.initialized = 0U;
@@ -157,9 +176,29 @@ CK_RV stse_pkcs11_finalize(void)
     return CKR_OK;
 }
 
-CK_RV stse_pkcs11_open_session(stse_Handler_t           *pSTSE,
-                                     CK_FLAGS             flags,
-                                     CK_SESSION_HANDLE   *phSession)
+CK_RV stse_pkcs11_register_slot(CK_SLOT_ID slotID, stse_Handler_t *pSTSE)
+{
+    if (!_stse_pkcs11_ctx.initialized) {
+        return CKR_CRYPTOKI_NOT_INITIALIZED;
+    }
+
+    if (pSTSE == NULL) {
+        return CKR_ARGUMENTS_BAD;
+    }
+
+    if (slotID >= STSE_PKCS11_MAX_SLOTS) {
+        return CKR_SLOT_ID_INVALID;
+    }
+
+    _stse_pkcs11_ctx.slots[slotID].pSTSE  = pSTSE;
+    _stse_pkcs11_ctx.slots[slotID].in_use = 1U;
+
+    return CKR_OK;
+}
+
+CK_RV stse_pkcs11_open_session(CK_SLOT_ID         slotID,
+                                CK_FLAGS           flags,
+                                CK_SESSION_HANDLE *phSession)
 {
     PLAT_UI8 i;
 
@@ -169,14 +208,19 @@ CK_RV stse_pkcs11_open_session(stse_Handler_t           *pSTSE,
         return CKR_CRYPTOKI_NOT_INITIALIZED;
     }
 
-    if ((pSTSE == NULL) || (phSession == NULL)) {
+    if (phSession == NULL) {
         return CKR_ARGUMENTS_BAD;
+    }
+
+    if (slotID >= STSE_PKCS11_MAX_SLOTS || !_stse_pkcs11_ctx.slots[slotID].in_use) {
+        return CKR_SLOT_ID_INVALID;
     }
 
     for (i = 0U; i < STSE_PKCS11_MAX_SESSIONS; i++) {
         if (!_stse_pkcs11_ctx.sessions[i].in_use) {
             _stse_pkcs11_ctx.sessions[i].in_use           = 1U;
-            _stse_pkcs11_ctx.sessions[i].pSTSE            = pSTSE;
+            _stse_pkcs11_ctx.sessions[i].pSTSE            = _stse_pkcs11_ctx.slots[slotID].pSTSE;
+            _stse_pkcs11_ctx.sessions[i].slotID           = slotID;
             _stse_pkcs11_ctx.sessions[i].active_operation = STSE_PKCS11_OP_NONE;
             _stse_pkcs11_ctx.sessions[i].hash_started     = 0U;
             _stse_pkcs11_ctx.sessions[i].pPublic_key      = NULL;
@@ -185,7 +229,7 @@ CK_RV stse_pkcs11_open_session(stse_Handler_t           *pSTSE,
         }
     }
 
-    return CKR_GENERAL_ERROR;
+    return CKR_SESSION_COUNT;
 }
 
 CK_RV stse_pkcs11_close_session(CK_SESSION_HANDLE hSession)
@@ -838,8 +882,12 @@ CK_RV stse_pkcs11_generate_key_pair(CK_SESSION_HANDLE    hSession,
                                           CK_OBJECT_HANDLE    *phPrivateKey,
                                           CK_OBJECT_HANDLE    *phPublicKey)
 {
-    stse_pkcs11_session_t *pSession;
-    stse_ReturnCode_t      ret;
+    stse_pkcs11_session_t    *pSession;
+    stse_pkcs11_key_object_t *pPubObj  = NULL;
+    stse_pkcs11_key_object_t *pPrivObj = NULL;
+    stse_ReturnCode_t         ret;
+    PLAT_UI8                  i;
+    PLAT_UI16                 pub_key_size;
 
     if (!_stse_pkcs11_ctx.initialized) {
         return CKR_CRYPTOKI_NOT_INITIALIZED;
@@ -859,17 +907,54 @@ CK_RV stse_pkcs11_generate_key_pair(CK_SESSION_HANDLE    hSession,
         return CKR_MECHANISM_INVALID;
     }
 
+    /* Allocate two key-object slots: one for private, one for public */
+    for (i = 0U; i < STSE_PKCS11_MAX_KEY_OBJECTS; i++) {
+        if (!_stse_pkcs11_ctx.key_objects[i].in_use) {
+            if (pPrivObj == NULL) {
+                pPrivObj = &_stse_pkcs11_ctx.key_objects[i];
+            } else if (pPubObj == NULL) {
+                pPubObj = &_stse_pkcs11_ctx.key_objects[i];
+                break;
+            }
+        }
+    }
+
+    if ((pPrivObj == NULL) || (pPubObj == NULL)) {
+        return CKR_HOST_MEMORY; /* no room in key store */
+    }
+
     ret = stse_generate_ecc_key_pair(pSession->pSTSE,
                                      key_slot,
                                      key_type,
                                      usage_limit,
                                      pPublicKey);
 
-    if (ret == STSE_OK) {
-        *phPrivateKey = (CK_OBJECT_HANDLE)key_slot;
-        *phPublicKey  = (CK_OBJECT_HANDLE)key_slot;
-        return CKR_OK;
+    if (ret != STSE_OK) {
+        return CKR_DEVICE_ERROR;
     }
 
-    return CKR_DEVICE_ERROR;
+    /* Populate the private-key object */
+    pub_key_size = stse_ecc_info_table[key_type].public_key_size;
+    pPrivObj->in_use      = 1U;
+    pPrivObj->obj_class   = CKO_PRIVATE_KEY;
+    pPrivObj->ecc_type    = key_type;
+    pPrivObj->slot        = key_slot;
+    pPrivObj->pub_key_size = 0U;
+    pPrivObj->handle      = STSE_PKCS11_MAKE_PRIV_HANDLE(key_slot, key_type);
+
+    /* Populate the public-key object (cache the public key bytes) */
+    pPubObj->in_use      = 1U;
+    pPubObj->obj_class   = CKO_PUBLIC_KEY;
+    pPubObj->ecc_type    = key_type;
+    pPubObj->slot        = key_slot;
+    pPubObj->handle      = STSE_PKCS11_MAKE_PUB_HANDLE(key_slot, key_type);
+    pPubObj->pub_key_size = pub_key_size;
+    if (pub_key_size > 0U && pub_key_size <= STSE_PKCS11_MAX_PUB_KEY_SIZE) {
+        (void)memcpy(pPubObj->pub_key, pPublicKey, (PLAT_UI32)pub_key_size);
+    }
+
+    *phPrivateKey = pPrivObj->handle;
+    *phPublicKey  = pPubObj->handle;
+
+    return CKR_OK;
 }

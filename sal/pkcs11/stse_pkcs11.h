@@ -67,6 +67,62 @@ extern "C" {
 #define STSE_PKCS11_MAX_SESSIONS 4U
 #endif
 
+#ifndef STSE_PKCS11_MAX_SLOTS
+/** \brief Maximum number of registered PKCS \#11 slots (token slots) */
+#define STSE_PKCS11_MAX_SLOTS 4U
+#endif
+
+#ifndef STSE_PKCS11_MAX_KEY_OBJECTS
+/** \brief Maximum number of key objects tracked in the internal key store */
+#define STSE_PKCS11_MAX_KEY_OBJECTS 16U
+#endif
+
+/** \brief Maximum public key size in bytes (Brainpool P-512 = 128, NIST P-521 = 132) */
+#define STSE_PKCS11_MAX_PUB_KEY_SIZE   132U
+
+/* -------------------------------------------------------------------------- */
+/* Key handle encoding / decoding helpers                                     */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * \brief Build a key object handle that encodes \p slot and \p key_type.
+ *
+ * Bits [7:0]  = STSE key slot number.\n
+ * Bits [15:8] = \ref stse_ecc_key_type_t value.\n
+ * Bits [16]   = 1 for a public-key object, 0 for a private-key object.
+ */
+#define STSE_PKCS11_MAKE_PRIV_HANDLE(slot, key_type) \
+    ((CK_OBJECT_HANDLE)(((CK_ULONG)(key_type) << 8U) | ((CK_ULONG)(slot) & 0xFFUL)))
+#define STSE_PKCS11_MAKE_PUB_HANDLE(slot, key_type) \
+    ((CK_OBJECT_HANDLE)(0x00010000UL | ((CK_ULONG)(key_type) << 8U) | ((CK_ULONG)(slot) & 0xFFUL)))
+
+/** \brief Extract the key slot from an object handle */
+#define STSE_PKCS11_HANDLE_SLOT(h)      ((PLAT_UI8)((h) & 0xFFUL))
+/** \brief Extract the ECC key type from an object handle */
+#define STSE_PKCS11_HANDLE_KEY_TYPE(h)  ((stse_ecc_key_type_t)(((h) >> 8U) & 0xFFUL))
+/** \brief Return non-zero when \p h is a public-key handle */
+#define STSE_PKCS11_HANDLE_IS_PUB(h)    (((h) & 0x00010000UL) != 0UL)
+
+/* -------------------------------------------------------------------------- */
+/* Key object store                                                            */
+/* -------------------------------------------------------------------------- */
+
+/*!
+ * \struct stse_pkcs11_key_object_t
+ * \brief  Metadata record for a key object tracked by the adaptation layer.
+ *         Private-key objects store the slot+type; public-key objects also
+ *         hold a copy of the raw public-key bytes.
+ */
+typedef struct stse_pkcs11_key_object_t {
+    CK_BBOOL              in_use;                               /*!< Non-zero when slot is occupied */
+    CK_OBJECT_HANDLE      handle;                              /*!< Object handle (encoded slot + type) */
+    CK_OBJECT_CLASS       obj_class;                           /*!< CKO_PUBLIC_KEY / CKO_PRIVATE_KEY */
+    stse_ecc_key_type_t   ecc_type;                            /*!< ECC curve family */
+    PLAT_UI8              slot;                                /*!< STSE key slot */
+    PLAT_UI8              pub_key[STSE_PKCS11_MAX_PUB_KEY_SIZE]; /*!< Cached public key bytes (pub objects only) */
+    PLAT_UI16             pub_key_size;                        /*!< Valid bytes in \c pub_key */
+} stse_pkcs11_key_object_t;
+
 /* -------------------------------------------------------------------------- */
 /* Adaptation-layer internal types                                             */
 /* -------------------------------------------------------------------------- */
@@ -91,6 +147,7 @@ typedef enum stse_pkcs11_operation_t {
 typedef struct stse_pkcs11_session_t {
     PLAT_UI8                  in_use;             /*!< Non-zero when slot is occupied */
     stse_Handler_t           *pSTSE;              /*!< Bound STSE device handler */
+    CK_SLOT_ID                slotID;             /*!< Token slot this session belongs to */
     stse_pkcs11_operation_t   active_operation;   /*!< Currently active operation */
     /* Digest state */
     stse_hash_algorithm_t     hash_algorithm;     /*!< Hash algorithm for digest/sign */
@@ -106,17 +163,31 @@ typedef struct stse_pkcs11_session_t {
 } stse_pkcs11_session_t;
 
 /*!
+ * \struct stse_pkcs11_slot_t
+ * \brief  Per-slot context maintained by the adaptation layer
+ */
+typedef struct stse_pkcs11_slot_t {
+    CK_BBOOL          in_use;   /*!< Non-zero when slot is registered */
+    stse_Handler_t   *pSTSE;   /*!< STSE device handler for this slot */
+} stse_pkcs11_slot_t;
+
+/*!
  * \struct stse_pkcs11_ctx_t
  * \brief  Global PKCS \#11 adaptation-layer context
  */
 typedef struct stse_pkcs11_ctx_t {
-    PLAT_UI8                  initialized;                          /*!< Non-zero after initialise */
-    stse_pkcs11_session_t     sessions[STSE_PKCS11_MAX_SESSIONS];  /*!< Session pool */
+    PLAT_UI8                    initialized;                              /*!< Non-zero after initialise */
+    stse_pkcs11_slot_t          slots[STSE_PKCS11_MAX_SLOTS];            /*!< Registered slot pool */
+    stse_pkcs11_session_t       sessions[STSE_PKCS11_MAX_SESSIONS];      /*!< Session pool */
+    stse_pkcs11_key_object_t    key_objects[STSE_PKCS11_MAX_KEY_OBJECTS]; /*!< Key object store */
 } stse_pkcs11_ctx_t;
 
 /* -------------------------------------------------------------------------- */
 /* Function declarations                                                       */
 /* -------------------------------------------------------------------------- */
+
+/** \brief Global PKCS \#11 adaptation-layer context (accessible to stse_cryptoki.c) */
+extern stse_pkcs11_ctx_t _stse_pkcs11_ctx;
 
 /**
  * \brief       Initialise the PKCS \#11 adaptation layer
@@ -134,17 +205,31 @@ CK_RV stse_pkcs11_initialize(void);
 CK_RV stse_pkcs11_finalize(void);
 
 /**
- * \brief       Open a PKCS \#11 session backed by an STSE device
- * \details     Allocates a session slot and binds it to the given STSE handler.
- *              Equivalent to \c C_OpenSession.
- * \param[in]   pSTSE       Pointer to an initialised STSE handler
+ * \brief       Register an STSE device handler at a PKCS \#11 slot
+ * \details     Maps \p slotID to the given STSE handler so that
+ *              \c C_OpenSession and other slot-aware \c C_* functions can
+ *              locate the hardware.  Must be called after
+ *              \ref stse_pkcs11_initialize and before opening sessions on
+ *              \p slotID.
+ * \param[in]   slotID  PKCS \#11 slot identifier (0-based)
+ * \param[in]   pSTSE   Pointer to an initialised STSE handler
+ * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
+ */
+CK_RV stse_pkcs11_register_slot(CK_SLOT_ID slotID, stse_Handler_t *pSTSE);
+
+/**
+ * \brief       Open a PKCS \#11 session on a registered slot
+ * \details     Allocates a session slot and binds it to the STSE handler
+ *              registered for \p slotID.  Equivalent to \c C_OpenSession.
+ * \param[in]   slotID      PKCS \#11 slot identifier (registered via
+ *                          \ref stse_pkcs11_register_slot)
  * \param[in]   flags       Session flags (\ref CKF_RW_SESSION |
  *                          \ref CKF_SERIAL_SESSION)
  * \param[out]  phSession   Receives the new session handle on success
  * \return      \ref CKR_OK on success; PKCS \#11 error code otherwise
  */
 CK_RV stse_pkcs11_open_session(
-    stse_Handler_t        *pSTSE,
+    CK_SLOT_ID             slotID,
     CK_FLAGS               flags,
     CK_SESSION_HANDLE     *phSession);
 
