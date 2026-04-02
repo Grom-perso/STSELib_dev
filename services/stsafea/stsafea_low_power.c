@@ -18,6 +18,7 @@
 
 #include "services/stsafea/stsafea_low_power.h"
 #include "services/stsafea/stsafea_frame_transfer.h"
+#include "services/stsafea/stsafea_frame_transfer_nb.h"
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
@@ -46,6 +47,46 @@ stse_ReturnCode_t stsafea_hibernate(stse_Handler_t *pSTSE,
                                       &CmdFrame,
                                       &RspFrame,
                                       stsafea_cmd_timings[pSTSE->device_type][cmd_header]);
+}
+
+stse_ReturnCode_t stsafea_hibernate_start(
+    stsafea_hibernate_ctx_t *pCtx,
+    stse_Handler_t *pSTSE,
+    stse_hibernate_wake_up_mode_t wake_up_mode) {
+    (void)wake_up_mode;
+
+    if (pCtx == NULL || pSTSE == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+
+    pCtx->pSTSE = pSTSE;
+    pCtx->cmd_header = STSAFEA_CMD_HIBERNATE;
+
+    pCtx->CmdFrame = (stse_frame_t){0};
+    pCtx->eCmd_header_elem = (stse_frame_element_t){1, &pCtx->cmd_header, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
+
+    pCtx->RspFrame = (stse_frame_t){0};
+    pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
+
+    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame,
+                                            stsafea_cmd_timings[pSTSE->device_type][pCtx->cmd_header],
+                                            &pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_hibernate_transfer(stsafea_hibernate_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_hibernate_finalize(stsafea_hibernate_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_raw_transfer_finalize(pCtx->pSTSE, &pCtx->RspFrame);
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

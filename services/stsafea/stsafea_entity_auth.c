@@ -18,6 +18,7 @@
 
 #include "services/stsafea/stsafea_entity_auth.h"
 #include "services/stsafea/stsafea_frame_transfer.h"
+#include "services/stsafea/stsafea_frame_transfer_nb.h"
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
@@ -103,6 +104,121 @@ stse_ReturnCode_t stsafea_verify_entity_signature(
     }
 
     return (ret);
+}
+
+stse_ReturnCode_t stsafea_generate_challenge_start(
+    stsafea_generate_challenge_ctx_t *pCtx,
+    stse_Handler_t *pSTSE,
+    PLAT_UI8 challenge_size,
+    PLAT_UI8 *pChallenge) {
+    if (pCtx == NULL || pSTSE == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    if ((pChallenge == NULL) || (challenge_size < STSE_EDDSA_CHALLENGE_SIZE)) {
+        return STSE_SERVICE_INVALID_PARAMETER;
+    }
+
+    pCtx->pSTSE = pSTSE;
+    pCtx->cmd_header[0] = STSAFEA_EXTENDED_COMMAND_PREFIX;
+    pCtx->cmd_header[1] = STSAFEA_EXTENDED_CMD_GENERATE_CHALLENGE;
+
+    pCtx->CmdFrame = (stse_frame_t){0};
+    pCtx->eCmd_header_elem = (stse_frame_element_t){STSAFEA_EXT_HEADER_SIZE, pCtx->cmd_header, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
+
+    pCtx->RspFrame = (stse_frame_t){0};
+    pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
+    pCtx->eChallenge_elem = (stse_frame_element_t){STSE_EDDSA_CHALLENGE_SIZE, pChallenge, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eChallenge_elem);
+
+    return stsafea_frame_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_generate_challenge_transfer(stsafea_generate_challenge_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_generate_challenge_finalize(stsafea_generate_challenge_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_verify_entity_signature_start(
+    stsafea_verify_entity_signature_ctx_t *pCtx,
+    stse_Handler_t *pSTSE,
+    PLAT_UI8 slot_number,
+    stse_ecc_key_type_t key_type,
+    PLAT_UI8 *pSignature,
+    PLAT_UI8 *pSignature_validity) {
+    PLAT_UI16 half_sig_size;
+
+    if (pCtx == NULL || pSTSE == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    if (pSignature == NULL || pSignature_validity == NULL || key_type >= STSE_ECC_KT_INVALID) {
+        return STSE_SERVICE_INVALID_PARAMETER;
+    }
+
+    pCtx->pSTSE = pSTSE;
+    pCtx->cmd_header[0] = STSAFEA_EXTENDED_COMMAND_PREFIX;
+    pCtx->cmd_header[1] = STSAFEA_EXTENDED_CMD_VERIFY_ENTITY_SIGNATURE;
+    pCtx->filler = 0x00;
+    pCtx->slot_number = slot_number;
+
+    half_sig_size = stse_ecc_info_table[key_type].signature_size >> 1;
+    pCtx->signature_length[0] = UI16_B1(half_sig_size);
+    pCtx->signature_length[1] = UI16_B0(half_sig_size);
+
+    pCtx->CmdFrame = (stse_frame_t){0};
+    pCtx->eCmd_header_elem = (stse_frame_element_t){STSAFEA_EXT_HEADER_SIZE, pCtx->cmd_header, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
+    pCtx->eFiller_elem = (stse_frame_element_t){1, &pCtx->filler, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eFiller_elem);
+    pCtx->eSlot_number_elem = (stse_frame_element_t){STSAFEA_SLOT_NUMBER_ID_SIZE, &pCtx->slot_number, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eSlot_number_elem);
+    pCtx->eSignature_R_length_elem = (stse_frame_element_t){STSE_ECC_GENERIC_LENGTH_SIZE, pCtx->signature_length, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eSignature_R_length_elem);
+    pCtx->eSignature_R_elem = (stse_frame_element_t){half_sig_size, pSignature, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eSignature_R_elem);
+    pCtx->eSignature_S_length_elem = (stse_frame_element_t){STSE_ECC_GENERIC_LENGTH_SIZE, pCtx->signature_length, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eSignature_S_length_elem);
+    pCtx->eSignature_S_elem = (stse_frame_element_t){half_sig_size, pSignature + half_sig_size, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eSignature_S_elem);
+
+    pCtx->RspFrame = (stse_frame_t){0};
+    pCtx->eRsp_header_elem = (stse_frame_element_t){STSAFEA_HEADER_SIZE, &pCtx->rsp_header, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
+    pCtx->eSignature_validity_elem = (stse_frame_element_t){1, pSignature_validity, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eSignature_validity_elem);
+
+    return stsafea_frame_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_verify_entity_signature_transfer(stsafea_verify_entity_signature_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_verify_entity_signature_finalize(stsafea_verify_entity_signature_ctx_t *pCtx) {
+    stse_ReturnCode_t ret;
+
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+
+    ret = stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+    if (ret != STSE_OK) {
+        *(pCtx->eSignature_validity_elem.pData) = STSAFEA_FALSE;
+    }
+    return ret;
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

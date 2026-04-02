@@ -95,6 +95,7 @@ typedef struct {
     stse_frame_element_t S2;                          /*!< Strap element inserted on RspFrame   */
 #endif /* STSE_CONF_USE_HOST_SESSION */
 } stsafea_nb_transfer_ctx_t;
+#define STSAFEA_NB_CTX_T_DEFINED
 
 /* -------------------------------------------------------------------------
  * Low-level non-blocking frame-transfer API (raw – no session handling)

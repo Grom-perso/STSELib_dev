@@ -18,6 +18,7 @@
 
 #include "services/stsafea/stsafea_reset.h"
 #include "services/stsafea/stsafea_frame_transfer.h"
+#include "services/stsafea/stsafea_frame_transfer_nb.h"
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
@@ -42,6 +43,41 @@ stse_ReturnCode_t stsafea_reset(stse_Handler_t *pSTSE) {
                                       &CmdFrame,
                                       &RspFrame,
                                       stsafea_cmd_timings[pSTSE->device_type][cmd_header]);
+}
+
+stse_ReturnCode_t stsafea_reset_start(stsafea_reset_ctx_t *pCtx, stse_Handler_t *pSTSE) {
+    if (pCtx == NULL || pSTSE == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+
+    pCtx->pSTSE = pSTSE;
+    pCtx->cmd_header = STSAFEA_CMD_RESET;
+
+    pCtx->CmdFrame = (stse_frame_t){0};
+    pCtx->eCmd_header_elem = (stse_frame_element_t){1, &pCtx->cmd_header, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
+
+    pCtx->RspFrame = (stse_frame_t){0};
+    pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
+
+    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame,
+                                            stsafea_cmd_timings[pSTSE->device_type][pCtx->cmd_header],
+                                            &pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_reset_transfer(stsafea_reset_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_reset_finalize(stsafea_reset_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_raw_transfer_finalize(pCtx->pSTSE, &pCtx->RspFrame);
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

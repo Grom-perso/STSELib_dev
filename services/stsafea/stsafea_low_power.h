@@ -43,6 +43,31 @@
 stse_ReturnCode_t stsafea_hibernate(stse_Handler_t *pSTSAFE,
                                     stse_hibernate_wake_up_mode_t wake_up_mode);
 
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
+#include "services/stsafea/stsafea_frame_transfer_nb.h"
+
+typedef struct {
+    stse_Handler_t *pSTSE;
+    stsafea_nb_transfer_ctx_t nb_ctx;
+    PLAT_UI8 cmd_header;
+    stse_frame_t CmdFrame;
+    stse_frame_element_t eCmd_header_elem;
+    PLAT_UI8 rsp_header;
+    stse_frame_t RspFrame;
+    stse_frame_element_t eRsp_header_elem;
+} stsafea_hibernate_ctx_t;
+
+stse_ReturnCode_t stsafea_hibernate_start(
+    stsafea_hibernate_ctx_t *pCtx,
+    stse_Handler_t *pSTSE,
+    stse_hibernate_wake_up_mode_t wake_up_mode);
+
+stse_ReturnCode_t stsafea_hibernate_transfer(stsafea_hibernate_ctx_t *pCtx);
+
+stse_ReturnCode_t stsafea_hibernate_finalize(stsafea_hibernate_ctx_t *pCtx);
+
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
+
 /** \}*/
 
 #endif /*STSAFEA_LOW_POWER_H*/

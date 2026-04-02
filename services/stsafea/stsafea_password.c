@@ -18,6 +18,7 @@
 
 #include "services/stsafea/stsafea_password.h"
 #include "services/stsafea/stsafea_frame_transfer.h"
+#include "services/stsafea/stsafea_frame_transfer_nb.h"
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
@@ -78,6 +79,94 @@ stse_ReturnCode_t stsafea_delete_password(stse_Handler_t *pSTSE) {
                                       &CmdFrame,
                                       &RspFrame,
                                       stsafea_cmd_timings[pSTSE->device_type][cmd_header]);
+}
+
+stse_ReturnCode_t stsafea_verify_password_start(
+    stsafea_verify_password_ctx_t *pCtx,
+    stse_Handler_t *pSTSE,
+    PLAT_UI8 *pPassword_buffer,
+    PLAT_UI8 password_length,
+    PLAT_UI8 *pVerification_status,
+    PLAT_UI8 *pRemaining_tries) {
+    if (pCtx == NULL || pSTSE == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    if (password_length != STSAFEA_PASSWORD_LENGTH) {
+        return STSE_SERVICE_INVALID_PARAMETER;
+    }
+
+    pCtx->pSTSE = pSTSE;
+    pCtx->cmd_header = STSAFEA_CMD_VERIFY_PASSWORD;
+
+    pCtx->CmdFrame = (stse_frame_t){0};
+    pCtx->eCmd_header_elem = (stse_frame_element_t){1, &pCtx->cmd_header, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
+    pCtx->ePassword_elem = (stse_frame_element_t){password_length, pPassword_buffer, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->ePassword_elem);
+
+    pCtx->RspFrame = (stse_frame_t){0};
+    pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
+    pCtx->eVerStat_elem = (stse_frame_element_t){1, pVerification_status, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eVerStat_elem);
+    pCtx->eRemTri_elem = (stse_frame_element_t){1, pRemaining_tries, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRemTri_elem);
+
+    return stsafea_frame_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_verify_password_transfer(stsafea_verify_password_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_verify_password_finalize(stsafea_verify_password_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_delete_password_start(
+    stsafea_delete_password_ctx_t *pCtx,
+    stse_Handler_t *pSTSE) {
+    if (pCtx == NULL || pSTSE == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+
+    pCtx->pSTSE = pSTSE;
+    pCtx->cmd_header = STSAFEA_CMD_DELETE;
+    pCtx->tag = STSAFEA_DELETE_TAG_PASSWORD;
+
+    pCtx->CmdFrame = (stse_frame_t){0};
+    pCtx->eCmd_header_elem = (stse_frame_element_t){1, &pCtx->cmd_header, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
+    pCtx->eTag_elem = (stse_frame_element_t){1, &pCtx->tag, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eTag_elem);
+
+    pCtx->RspFrame = (stse_frame_t){0};
+    pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
+
+    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame,
+                                            stsafea_cmd_timings[pSTSE->device_type][pCtx->cmd_header],
+                                            &pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_delete_password_transfer(stsafea_delete_password_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_delete_password_finalize(stsafea_delete_password_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_raw_transfer_finalize(pCtx->pSTSE, &pCtx->RspFrame);
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

@@ -18,6 +18,7 @@
 
 #include "services/stsafea/stsafea_random.h"
 #include "services/stsafea/stsafea_frame_transfer.h"
+#include "services/stsafea/stsafea_frame_transfer_nb.h"
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
@@ -55,6 +56,54 @@ stse_ReturnCode_t stsafea_generate_random(
                                  &RspFrame);
 
     return (ret);
+}
+
+stse_ReturnCode_t stsafea_generate_random_start(
+    stsafea_generate_random_ctx_t *pCtx,
+    stse_Handler_t *pSTSE,
+    PLAT_UI8 *pRandom,
+    PLAT_UI8 random_size) {
+    if (pCtx == NULL || pSTSE == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    if (pRandom == NULL || random_size == 0) {
+        return STSE_SERVICE_INVALID_PARAMETER;
+    }
+
+    pCtx->pSTSE = pSTSE;
+    pCtx->cmd_header = STSAFEA_CMD_GENERATE_RANDOM;
+    pCtx->subject = 0x00;
+    pCtx->random_size = random_size;
+
+    pCtx->CmdFrame = (stse_frame_t){0};
+    pCtx->eCmd_header_elem = (stse_frame_element_t){1, &pCtx->cmd_header, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
+    pCtx->eSubject_elem = (stse_frame_element_t){1, &pCtx->subject, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eSubject_elem);
+    pCtx->eSize_elem = (stse_frame_element_t){1, &pCtx->random_size, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eSize_elem);
+
+    pCtx->RspFrame = (stse_frame_t){0};
+    pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
+    pCtx->eRandom_elem = (stse_frame_element_t){random_size, pRandom, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRandom_elem);
+
+    return stsafea_frame_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_generate_random_transfer(stsafea_generate_random_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_generate_random_finalize(stsafea_generate_random_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */
