@@ -59,3 +59,12 @@ __WEAK stse_ReturnCode_t stse_platform_hmac_sha256_compute(PLAT_UI8 *pSalt, PLAT
 
     return retval;
 }
+
+__WEAK PLAT_UI32 stse_platform_get_timestamp_ms(void)
+{
+    /* Default stub returns 0 - platform integrator must override this.
+     * When 0 is returned the non-blocking transfer check always reports
+     * "ready", which degrades the non-blocking API to an immediate-finalize
+     * mode without blocking on the inter-frame delay. */
+    return 0U;
+}

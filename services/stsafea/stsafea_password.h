@@ -59,6 +59,58 @@ stse_ReturnCode_t stsafea_verify_password(stse_Handler_t *pSTSE,
  */
 stse_ReturnCode_t stsafea_delete_password(stse_Handler_t *pSTSE);
 
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
+#include "services/stsafea/stsafea_frame_transfer_nb.h"
+
+typedef struct {
+    stse_Handler_t *pSTSE;
+    stsafea_nb_transfer_ctx_t nb_ctx;
+    PLAT_UI8 cmd_header;
+    stse_frame_t CmdFrame;
+    stse_frame_element_t eCmd_header_elem;
+    stse_frame_element_t ePassword_elem;
+    PLAT_UI8 rsp_header;
+    stse_frame_t RspFrame;
+    stse_frame_element_t eRsp_header_elem;
+    stse_frame_element_t eVerStat_elem;
+    stse_frame_element_t eRemTri_elem;
+} stsafea_verify_password_ctx_t;
+
+stse_ReturnCode_t stsafea_verify_password_start(
+    stsafea_verify_password_ctx_t *pCtx,
+    stse_Handler_t *pSTSE,
+    PLAT_UI8 *pPassword_buffer,
+    PLAT_UI8 password_length,
+    PLAT_UI8 *pVerification_status,
+    PLAT_UI8 *pRemaining_tries);
+
+stse_ReturnCode_t stsafea_verify_password_transfer(stsafea_verify_password_ctx_t *pCtx);
+
+stse_ReturnCode_t stsafea_verify_password_finalize(stsafea_verify_password_ctx_t *pCtx);
+
+typedef struct {
+    stse_Handler_t *pSTSE;
+    stsafea_nb_transfer_ctx_t nb_ctx;
+    PLAT_UI8 cmd_header;
+    PLAT_UI8 tag;
+    stse_frame_t CmdFrame;
+    stse_frame_element_t eCmd_header_elem;
+    stse_frame_element_t eTag_elem;
+    PLAT_UI8 rsp_header;
+    stse_frame_t RspFrame;
+    stse_frame_element_t eRsp_header_elem;
+} stsafea_delete_password_ctx_t;
+
+stse_ReturnCode_t stsafea_delete_password_start(
+    stsafea_delete_password_ctx_t *pCtx,
+    stse_Handler_t *pSTSE);
+
+stse_ReturnCode_t stsafea_delete_password_transfer(stsafea_delete_password_ctx_t *pCtx);
+
+stse_ReturnCode_t stsafea_delete_password_finalize(stsafea_delete_password_ctx_t *pCtx);
+
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
+
 /** \}*/
 
 #endif /*STSAFEA_PASSWORD_H*/

@@ -18,6 +18,7 @@
 
 #include "services/stsafea/stsafea_hash.h"
 #include "services/stsafea/stsafea_frame_transfer.h"
+#include "services/stsafea/stsafea_frame_transfer_nb.h"
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
@@ -193,5 +194,159 @@ stse_ReturnCode_t stsafea_finish_hash(
 }
 
 #endif
+
+stse_ReturnCode_t stsafea_start_hash_start(
+    stsafea_start_hash_ctx_t *pCtx,
+    stse_Handler_t *pSTSE,
+    stse_hash_algorithm_t sha_algorithm,
+    PLAT_UI8 *pMessage,
+    PLAT_UI16 message_size) {
+    if (pCtx == NULL || pSTSE == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    if ((pMessage == NULL) || (message_size == 0)) {
+        return STSE_SERVICE_INVALID_PARAMETER;
+    }
+
+    pCtx->pSTSE = pSTSE;
+    pCtx->cmd_header[0] = STSAFEA_EXTENDED_COMMAND_PREFIX;
+    pCtx->cmd_header[1] = STSAFEA_EXTENDED_CMD_START_HASH;
+    pCtx->hash_algo_id_length = STSAFEA_HASH_ALGO_ID_SIZE;
+
+    pCtx->CmdFrame = (stse_frame_t){0};
+    pCtx->eCmd_header_elem = (stse_frame_element_t){STSAFEA_EXT_HEADER_SIZE, pCtx->cmd_header, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
+    pCtx->eHashAlgo_elem = (stse_frame_element_t){pCtx->hash_algo_id_length, (PLAT_UI8 *)&stsafea_hash_info_table[sha_algorithm].id, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eHashAlgo_elem);
+    pCtx->eMessage_elem = (stse_frame_element_t){message_size, pMessage, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eMessage_elem);
+
+    pCtx->RspFrame = (stse_frame_t){0};
+    pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
+
+    return stsafea_frame_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_start_hash_transfer(stsafea_start_hash_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_start_hash_finalize(stsafea_start_hash_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_process_hash_start(
+    stsafea_process_hash_ctx_t *pCtx,
+    stse_Handler_t *pSTSE,
+    PLAT_UI8 *pMessage,
+    PLAT_UI16 message_size) {
+    if (pCtx == NULL || pSTSE == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    if ((pMessage == NULL) || (message_size == 0)) {
+        return STSE_SERVICE_INVALID_PARAMETER;
+    }
+
+    pCtx->pSTSE = pSTSE;
+    pCtx->cmd_header[0] = STSAFEA_EXTENDED_COMMAND_PREFIX;
+    pCtx->cmd_header[1] = STSAFEA_EXTENDED_CMD_PROCESS_HASH;
+
+    pCtx->CmdFrame = (stse_frame_t){0};
+    pCtx->eCmd_header_elem = (stse_frame_element_t){STSAFEA_EXT_HEADER_SIZE, pCtx->cmd_header, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
+    pCtx->eMessage_elem = (stse_frame_element_t){message_size, pMessage, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eMessage_elem);
+
+    pCtx->RspFrame = (stse_frame_t){0};
+    pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
+
+    return stsafea_frame_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_process_hash_transfer(stsafea_process_hash_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_process_hash_finalize(stsafea_process_hash_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_finish_hash_start(
+    stsafea_finish_hash_ctx_t *pCtx,
+    stse_Handler_t *pSTSE,
+    stse_hash_algorithm_t sha_algorithm,
+    PLAT_UI8 *pMessage,
+    PLAT_UI16 message_size,
+    PLAT_UI8 *pDigest,
+    PLAT_UI16 *pDigest_size) {
+    PLAT_UI16 expected_digest_size;
+
+    if (pCtx == NULL || pSTSE == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    if (pDigest == NULL || pDigest_size == NULL || (pMessage != NULL && message_size == 0) || (pMessage == NULL && message_size != 0)) {
+        return STSE_SERVICE_INVALID_PARAMETER;
+    }
+
+    pCtx->pSTSE = pSTSE;
+    pCtx->sha_algorithm = sha_algorithm;
+    pCtx->pDigest_size = pDigest_size;
+    pCtx->cmd_header[0] = STSAFEA_EXTENDED_COMMAND_PREFIX;
+    pCtx->cmd_header[1] = STSAFEA_EXTENDED_CMD_FINISH_HASH;
+    expected_digest_size = stsafea_hash_info_table[sha_algorithm].length;
+
+    pCtx->CmdFrame = (stse_frame_t){0};
+    pCtx->eCmd_header_elem = (stse_frame_element_t){STSAFEA_EXT_HEADER_SIZE, pCtx->cmd_header, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
+    pCtx->eMessage_elem = (stse_frame_element_t){message_size, pMessage, NULL};
+    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eMessage_elem);
+
+    pCtx->RspFrame = (stse_frame_t){0};
+    pCtx->eRsp_header_elem = (stse_frame_element_t){STSAFEA_HEADER_SIZE, &pCtx->rsp_header, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
+    pCtx->eDigestSize_elem = (stse_frame_element_t){STSAFEA_GENERIC_LENGTH_SIZE, pCtx->digest_size_array, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eDigestSize_elem);
+    pCtx->eDigest_elem = (stse_frame_element_t){expected_digest_size, pDigest, NULL};
+    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eDigest_elem);
+
+    return stsafea_frame_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_finish_hash_transfer(stsafea_finish_hash_ctx_t *pCtx) {
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+}
+
+stse_ReturnCode_t stsafea_finish_hash_finalize(stsafea_finish_hash_ctx_t *pCtx) {
+    stse_ReturnCode_t ret;
+
+    if (pCtx == NULL) {
+        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
+    }
+
+    ret = stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+    if (ret == STSE_OK) {
+        *pCtx->pDigest_size = stsafea_hash_info_table[pCtx->sha_algorithm].length;
+    } else {
+        *pCtx->pDigest_size = 0;
+    }
+    return ret;
+}
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

@@ -47,6 +47,37 @@ stse_ReturnCode_t stsafea_generate_random(
     PLAT_UI8 *pRandom,
     PLAT_UI8 random_size);
 
+#ifdef STSE_CONF_STSAFE_A_SUPPORT
+#include "services/stsafea/stsafea_frame_transfer_nb.h"
+
+typedef struct {
+    stse_Handler_t *pSTSE;
+    stsafea_nb_transfer_ctx_t nb_ctx;
+    PLAT_UI8 cmd_header;
+    PLAT_UI8 subject;
+    PLAT_UI8 random_size;
+    stse_frame_t CmdFrame;
+    stse_frame_element_t eCmd_header_elem;
+    stse_frame_element_t eSubject_elem;
+    stse_frame_element_t eSize_elem;
+    PLAT_UI8 rsp_header;
+    stse_frame_t RspFrame;
+    stse_frame_element_t eRsp_header_elem;
+    stse_frame_element_t eRandom_elem;
+} stsafea_generate_random_ctx_t;
+
+stse_ReturnCode_t stsafea_generate_random_start(
+    stsafea_generate_random_ctx_t *pCtx,
+    stse_Handler_t *pSTSE,
+    PLAT_UI8 *pRandom,
+    PLAT_UI8 random_size);
+
+stse_ReturnCode_t stsafea_generate_random_transfer(stsafea_generate_random_ctx_t *pCtx);
+
+stse_ReturnCode_t stsafea_generate_random_finalize(stsafea_generate_random_ctx_t *pCtx);
+
+#endif /* STSE_CONF_STSAFE_A_SUPPORT */
+
 /** \}*/
 
 #endif /*STSAFEA_RANDOM_H*/

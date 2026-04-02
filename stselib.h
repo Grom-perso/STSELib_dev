@@ -63,6 +63,7 @@ extern "C" {
 #include "services/stsafea/stsafea_aes.h"
 #include "services/stsafea/stsafea_asymmetric_key_slots.h"
 #include "services/stsafea/stsafea_commands.h"
+#include "services/stsafea/stsafea_frame_transfer_nb.h"
 #include "services/stsafea/stsafea_data_partition.h"
 #include "services/stsafea/stsafea_ecc.h"
 #include "services/stsafea/stsafea_echo.h"
