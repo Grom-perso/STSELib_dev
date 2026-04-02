@@ -95,6 +95,17 @@ PLAT_UI16 stse_platform_Crc16_Accumulate(PLAT_UI8 *pbuffer, PLAT_UI16 length);
 void stse_platform_Delay_ms(PLAT_UI16 delay_val);
 
 /*!
+ * \brief      Get current system timestamp in milliseconds
+ * \details    Used by the non-blocking service layer to measure inter-frame
+ *             delay without blocking. Platform integrators must implement this
+ *             function (e.g. return HAL_GetTick() on STM32). The default weak
+ *             stub returns 0, which makes the non-blocking transfer check always
+ *             report "ready" (i.e. equivalent to immediate finalize).
+ * \return     Current timestamp in milliseconds (wraps at UINT32 boundary)
+ */
+PLAT_UI32 stse_platform_get_timestamp_ms(void);
+
+/*!
  * \brief      Verify ECC signature
  * \param[in]  key_type Type of ECC key
  * \param[in]  pPubKey Pointer to the public key

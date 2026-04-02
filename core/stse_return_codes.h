@@ -71,6 +71,7 @@ enum stse_ReturnCode_t {
     STSE_PLATFORM_BUS_ARBITRATION_LOST, /*!< STSE Host platform Communication bus Arbitration Lost */
     STSE_PLATFORM_BUS_RECEIVE_TIMEOUT,  /*!< STSE Host platform Communication bus Receive Timeout */
     STSE_PLATFORM_BUS_ACK_ERROR,        /*!< STSE Host platform Communication bus Ack Timeout */
+    STSE_PLATFORM_PENDING = 0x010A,     /*!< Non-blocking operation in progress, not yet complete */
     STSE_PLATFORM_FLASH_WRITE_ERROR,    /*!< STSE Host platform Flash write issue */
     STSE_PLATFORM_POWER_ERROR,          /*!< STSE Host platform power init/on/off issue */
     STSE_PLATFORM_ECC_GENERATE_KEY_PAIR_ERROR,
