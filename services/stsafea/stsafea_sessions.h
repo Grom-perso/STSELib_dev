@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stse_session.h
- * \brief   STSE session manager (header)
+ * \brief   STSAFE-A services for sessions (header)
  * \author  STMicroelectronics - SMD application team
  *
  ******************************************************************************
@@ -57,8 +57,8 @@ void stsafea_session_clear_context(stse_session_t *p_session);
  * \brief 		Perform encrypted session transfer
  * \details 	This service performs a command/response transfer with encryption
  * \param[in] 	p_session				Pointer to session structure
- * \param[in] 	pCmdFrame				Pointer to command frame
- * \param[out] 	pRspFrame				Pointer to response frame
+ * \param[in] 	p_cmd_frame				Pointer to command frame
+ * \param[out] 	p_rsp_frame				Pointer to response frame
  * \param[in] 	cmd_encryption_flag		Command encryption flag
  * \param[in] 	rsp_encryption_flag		Response encryption flag
  * \param[in] 	cmd_ac_info				Command access conditions
@@ -66,8 +66,8 @@ void stsafea_session_clear_context(stse_session_t *p_session);
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
 stse_return_code_t stsafea_session_encrypted_transfer(stse_session_t *p_session,
-                                                     stse_frame_t *pCmdFrame,
-                                                     stse_frame_t *pRspFrame,
+                                                     stse_frame_t *p_cmd_frame,
+                                                     stse_frame_t *p_rsp_frame,
                                                      PLAT_UI8 cmd_encryption_flag,
                                                      PLAT_UI8 rsp_encryption_flag,
                                                      stse_cmd_access_conditions_t cmd_ac_info,
@@ -77,15 +77,15 @@ stse_return_code_t stsafea_session_encrypted_transfer(stse_session_t *p_session,
  * \brief 		Perform authenticated session transfer
  * \details 	This service performs a command/response transfer with authentication
  * \param[in] 	p_session			Pointer to session structure
- * \param[in] 	pCmdFrame			Pointer to command frame
- * \param[out] 	pRspFrame			Pointer to response frame
+ * \param[in] 	p_cmd_frame			Pointer to command frame
+ * \param[out] 	p_rsp_frame			Pointer to response frame
  * \param[in] 	cmd_ac_info			Command access conditions
  * \param[in] 	processing_time		Expected processing time
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
 stse_return_code_t stsafea_session_authenticated_transfer(stse_session_t *p_session,
-                                                         stse_frame_t *pCmdFrame,
-                                                         stse_frame_t *pRspFrame,
+                                                         stse_frame_t *p_cmd_frame,
+                                                         stse_frame_t *p_rsp_frame,
                                                          stse_cmd_access_conditions_t cmd_ac_info,
                                                          PLAT_UI16 processing_time);
 

@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file    stsafea_commands.c
- * \brief   Commands services for STSAFE-A
+ * \brief   STSAFE-A command services (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -15,6 +15,9 @@
  *
  ******************************************************************************
  */
+
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
 
 #include "services/stsafea/stsafea_commands.h"
 #include "services/stsafea/stsafea_frame_transfer.h"
@@ -34,20 +37,20 @@ stse_return_code_t stsafea_get_command_count(stse_handler_t *p_stse, PLAT_UI8 *p
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &tag);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, eCmd_header, 1, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eTag, 1, &tag);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(RspFrame);
-    stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&RspFrame, eCR, 1, &table_cr);
-    stse_frame_element_allocate_push(&RspFrame, eCommand_count, 1, (PLAT_UI8 *)pCommand_count);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, eRsp_header, 1, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eCR, 1, &table_cr);
+    stse_frame_element_allocate_push(&rsp_frame, eCommand_count, 1, (PLAT_UI8 *)pCommand_count);
 
     /*- Perform Transfer*/
     return stsafea_frame_raw_transfer(p_stse,
-                                      &CmdFrame,
-                                      &RspFrame,
+                                      &cmd_frame,
+                                      &rsp_frame,
                                       stsafea_cmd_timings[p_stse->device_type][cmd_header]);
 }
 
@@ -68,21 +71,21 @@ stse_return_code_t stsafea_get_command_AC_table(stse_handler_t *p_stse,
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &tag);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, eCmd_header, 1, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eTag, 1, &tag);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(RspFrame);
-    stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&RspFrame, eCR, sizeof(stse_cmd_authorization_CR_t), (PLAT_UI8 *)pChange_rights);
-    stse_frame_element_allocate_push(&RspFrame, eRecordCount, 1, &record_index);
-    stse_frame_element_allocate_push(&RspFrame, eRecordTable, total_command_count * sizeof(stse_cmd_authorization_record_t), raw_data);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, eRsp_header, 1, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eCR, sizeof(stse_cmd_authorization_CR_t), (PLAT_UI8 *)pChange_rights);
+    stse_frame_element_allocate_push(&rsp_frame, eRecordCount, 1, &record_index);
+    stse_frame_element_allocate_push(&rsp_frame, eRecordTable, total_command_count * sizeof(stse_cmd_authorization_record_t), raw_data);
 
     /*- Perform Transfer*/
     ret = stsafea_frame_raw_transfer(p_stse,
-                                     &CmdFrame,
-                                     &RspFrame,
+                                     &cmd_frame,
+                                     &rsp_frame,
                                      stsafea_cmd_timings[p_stse->device_type][cmd_header]);
     if (ret != STSE_OK) {
         return ret;

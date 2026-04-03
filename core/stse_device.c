@@ -1,7 +1,7 @@
 /*!
  * ******************************************************************************
  * \file	stse_device.c
- * \brief   STSAFE Frame layer (sources)
+ * \brief   STSELib api for device (sources)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -27,16 +27,19 @@ stse_return_code_t stse_set_default_handler_value(stse_handler_t *p_stse_handler
 
     p_stse_handler->device_type = (stse_device_t)0;
     memset(&p_stse_handler->perso_info, 0, sizeof(p_stse_handler->perso_info));
-    p_stse_handler->p_active_host_session = NULL;
-    p_stse_handler->p_active_other_session = NULL;
+    p_stse_handler->pActive_host_session = NULL;
+    p_stse_handler->pActive_other_session = NULL;
+#if defined(STSE_CONF_STSAFE_A_SUPPORT) || \
+    (defined(STSE_CONF_STSAFE_L_SUPPORT) && defined(STSE_CONF_USE_I2C))
     p_stse_handler->io.bus_recv_start = stse_platform_i2c_receive_start;
     p_stse_handler->io.bus_recv_continue = stse_platform_i2c_receive_continue;
     p_stse_handler->io.bus_recv_stop = stse_platform_i2c_receive_stop;
     p_stse_handler->io.bus_send_start = stse_platform_i2c_send_start;
     p_stse_handler->io.bus_send_continue = stse_platform_i2c_send_continue;
     p_stse_handler->io.bus_send_stop = stse_platform_i2c_send_stop;
-    p_stse_handler->io.io_line_get = NULL;
     p_stse_handler->io.bus_wake = stse_platform_i2c_wake;
+#endif /* STSE_CONF_STSAFE_A_SUPPORT || (STSE_CONF_STSAFE_L_SUPPORT && defined(STSE_CONF_USE_I2C) */
+    p_stse_handler->io.io_line_get = NULL;
     p_stse_handler->io.bus_recovery = NULL;
     p_stse_handler->io.power_line_off = stse_platform_power_off;
     p_stse_handler->io.power_line_on = stse_platform_power_on;

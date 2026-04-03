@@ -1,7 +1,7 @@
 /*!
  * ******************************************************************************
  * \file    stsafea_frame_transfer.c
- * \brief   STSAFE-A Frame transfer service (sources)
+ * \brief   STSAFE-A services for frame transfer (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -16,8 +16,12 @@
  ******************************************************************************
  */
 
-#include "services/stsafea/stsafea_frame_transfer.h"
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
+#include <stdio.h>
+
 #include "services/stsafea/stsafea_commands.h"
+#include "services/stsafea/stsafea_frame_transfer.h"
 #include "services/stsafea/stsafea_sessions.h"
 #include "services/stsafea/stsafea_timings.h"
 
@@ -101,7 +105,7 @@ stse_return_code_t stsafea_frame_transmit(stse_handler_t *p_stse, stse_frame_t *
 
         if (ret != STSE_OK) {
             retry_count--;
-            stse_platform_Delay_ms(STSE_POLLING_RETRY_INTERVAL);
+            stse_platform_delay_ms(STSE_POLLING_RETRY_INTERVAL);
         }
     }
 
@@ -142,7 +146,7 @@ stse_return_code_t stsafea_frame_receive(stse_handler_t *p_stse, stse_frame_t *p
 
         if (ret != STSE_OK) {
             retry_count--;
-            stse_platform_Delay_ms(STSE_POLLING_RETRY_INTERVAL);
+            stse_platform_delay_ms(STSE_POLLING_RETRY_INTERVAL);
         }
     }
 
@@ -220,7 +224,7 @@ stse_return_code_t stsafea_frame_receive(stse_handler_t *p_stse, stse_frame_t *p
 
         if (ret != STSE_OK) {
             retry_count--;
-            stse_platform_Delay_ms(STSE_POLLING_RETRY_INTERVAL);
+            stse_platform_delay_ms(STSE_POLLING_RETRY_INTERVAL);
         }
     }
 
@@ -335,8 +339,8 @@ stse_return_code_t stsafea_frame_receive(stse_handler_t *p_stse, stse_frame_t *p
 }
 
 stse_return_code_t stsafea_frame_raw_transfer(stse_handler_t *p_stse,
-                                             stse_frame_t *pCmdFrame,
-                                             stse_frame_t *pRspFrame,
+                                             stse_frame_t *p_cmd_frame,
+                                             stse_frame_t *p_rsp_frame,
                                              PLAT_UI16 inter_frame_delay) {
     stse_return_code_t ret = STSE_SERVICE_INVALID_PARAMETER;
 
@@ -345,24 +349,24 @@ stse_return_code_t stsafea_frame_raw_transfer(stse_handler_t *p_stse,
 #endif /* STSE_USE_RSP_POLLING */
 
     /* - Send Non-protected Frame */
-    ret = stsafea_frame_transmit(p_stse, pCmdFrame);
+    ret = stsafea_frame_transmit(p_stse, p_cmd_frame);
     if (ret == STSE_OK) {
 #ifdef STSE_USE_RSP_POLLING
         /* - Wait for command to be executed by target STSAFE  */
-        stse_platform_Delay_ms(STSE_FIRST_POLLING_INTERVAL);
+        stse_platform_delay_ms(STSE_FIRST_POLLING_INTERVAL);
 #else
         /* - Wait for command to be executed by target STSAFE  */
-        stse_platform_Delay_ms(inter_frame_delay);
+        stse_platform_delay_ms(inter_frame_delay);
 #endif /* STSE_USE_RSP_POLLING */
         /* - Receive non protected Frame */
-        ret = stsafea_frame_receive(p_stse, pRspFrame);
+        ret = stsafea_frame_receive(p_stse, p_rsp_frame);
     }
 
     return ret;
 }
 
-stse_return_code_t stsafea_frame_transfer(stse_handler_t *p_stse, stse_frame_t *pCmdFrame,
-                                         stse_frame_t *pRspFrame) {
+stse_return_code_t stsafea_frame_transfer(stse_handler_t *p_stse, stse_frame_t *p_cmd_frame,
+                                         stse_frame_t *p_rsp_frame) {
     stse_return_code_t ret = STSE_SERVICE_INVALID_PARAMETER;
     PLAT_UI16 inter_frame_delay = STSAFEA_EXEC_TIME_DEFAULT;
 
@@ -372,21 +376,21 @@ stse_return_code_t stsafea_frame_transfer(stse_handler_t *p_stse, stse_frame_t *
     PLAT_UI8 rsp_encryption_flag = 0;
 #endif /* STSE_CONF_USE_HOST_SESSION */
 
-    if (pCmdFrame->first_element != NULL && pCmdFrame->first_element->p_data != NULL) {
-        if (pCmdFrame->first_element->length == STSAFEA_EXT_HEADER_SIZE && pCmdFrame->first_element->p_data[0] == STSAFEA_EXTENDED_COMMAND_PREFIX) {
-            inter_frame_delay = stsafea_extended_cmd_timings[p_stse->device_type][pCmdFrame->first_element->p_data[1]];
+    if (p_cmd_frame->first_element != NULL && p_cmd_frame->first_element->p_data != NULL) {
+        if (p_cmd_frame->first_element->length == STSAFEA_EXT_HEADER_SIZE && p_cmd_frame->first_element->p_data[0] == STSAFEA_EXTENDED_COMMAND_PREFIX) {
+            inter_frame_delay = stsafea_extended_cmd_timings[p_stse->device_type][p_cmd_frame->first_element->p_data[1]];
 #ifdef STSE_CONF_USE_HOST_SESSION
-            stsafea_perso_info_get_ext_cmd_AC(&p_stse->perso_info, pCmdFrame->first_element->p_data[1], &cmd_ac_info);
-            stsafea_perso_info_get_ext_cmd_encrypt_flag(&p_stse->perso_info, pCmdFrame->first_element->p_data[1], &cmd_encryption_flag);
-            stsafea_perso_info_get_ext_rsp_encrypt_flag(&p_stse->perso_info, pCmdFrame->first_element->p_data[1], &rsp_encryption_flag);
+            stsafea_perso_info_get_ext_cmd_AC(&p_stse->perso_info, p_cmd_frame->first_element->p_data[1], &cmd_ac_info);
+            stsafea_perso_info_get_ext_cmd_encrypt_flag(&p_stse->perso_info, p_cmd_frame->first_element->p_data[1], &cmd_encryption_flag);
+            stsafea_perso_info_get_ext_rsp_encrypt_flag(&p_stse->perso_info, p_cmd_frame->first_element->p_data[1], &rsp_encryption_flag);
 #endif /* STSE_CONF_USE_HOST_SESSION */
             ret = STSE_OK;
-        } else if (pCmdFrame->first_element->length == STSAFEA_HEADER_SIZE && pCmdFrame->first_element->p_data[0] != STSAFEA_EXTENDED_COMMAND_PREFIX) {
-            inter_frame_delay = stsafea_cmd_timings[p_stse->device_type][pCmdFrame->first_element->p_data[0]];
+        } else if (p_cmd_frame->first_element->length == STSAFEA_HEADER_SIZE && p_cmd_frame->first_element->p_data[0] != STSAFEA_EXTENDED_COMMAND_PREFIX) {
+            inter_frame_delay = stsafea_cmd_timings[p_stse->device_type][p_cmd_frame->first_element->p_data[0]];
 #ifdef STSE_CONF_USE_HOST_SESSION
-            stsafea_perso_info_get_cmd_AC(&p_stse->perso_info, pCmdFrame->first_element->p_data[0], &cmd_ac_info);
-            stsafea_perso_info_get_cmd_encrypt_flag(&p_stse->perso_info, pCmdFrame->first_element->p_data[0], &cmd_encryption_flag);
-            stsafea_perso_info_get_rsp_encrypt_flag(&p_stse->perso_info, pCmdFrame->first_element->p_data[0], &rsp_encryption_flag);
+            stsafea_perso_info_get_cmd_AC(&p_stse->perso_info, p_cmd_frame->first_element->p_data[0], &cmd_ac_info);
+            stsafea_perso_info_get_cmd_encrypt_flag(&p_stse->perso_info, p_cmd_frame->first_element->p_data[0], &cmd_encryption_flag);
+            stsafea_perso_info_get_rsp_encrypt_flag(&p_stse->perso_info, p_cmd_frame->first_element->p_data[0], &rsp_encryption_flag);
 #endif /* STSE_CONF_USE_HOST_SESSION */
             ret = STSE_OK;
         }
@@ -400,24 +404,24 @@ stse_return_code_t stsafea_frame_transfer(stse_handler_t *p_stse, stse_frame_t *
 #ifdef STSE_CONF_USE_HOST_SESSION
     if (cmd_encryption_flag || rsp_encryption_flag) {
         ret = stsafea_session_encrypted_transfer(p_stse->pActive_host_session,
-                                                 pCmdFrame,
-                                                 pRspFrame,
+                                                 p_cmd_frame,
+                                                 p_rsp_frame,
                                                  cmd_encryption_flag,
                                                  rsp_encryption_flag,
                                                  cmd_ac_info,
                                                  inter_frame_delay);
     } else if (cmd_ac_info != STSE_CMD_AC_FREE) {
         ret = stsafea_session_authenticated_transfer(p_stse->pActive_host_session,
-                                                     pCmdFrame,
-                                                     pRspFrame,
+                                                     p_cmd_frame,
+                                                     p_rsp_frame,
                                                      cmd_ac_info,
                                                      inter_frame_delay);
     } else
 #endif /* STSE_CONF_USE_HOST_SESSION */
     {
         ret = stsafea_frame_raw_transfer(p_stse,
-                                         pCmdFrame,
-                                         pRspFrame,
+                                         p_cmd_frame,
+                                         p_rsp_frame,
                                          inter_frame_delay);
     }
 

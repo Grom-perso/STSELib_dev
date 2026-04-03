@@ -16,6 +16,8 @@
  *****************************************************************************/
 
 /* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
+
 #include "api/stse_device_management.h"
 
 /* Exported variables --------------------------------------------------------*/
@@ -91,7 +93,7 @@ stse_return_code_t stse_init(stse_handler_t *p_stse) {
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
     if (p_stse->device_type != STSAFE_L010) {
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
-        stse_platform_Delay_ms(stsafea_boot_time[p_stse->device_type]);
+        stse_platform_delay_ms(stsafea_boot_time[p_stse->device_type]);
 
 #ifndef STSE_CONF_USE_STATIC_PERSONALIZATION_INFORMATIONS
         ret = stsafea_perso_info_update(p_stse);
@@ -155,12 +157,12 @@ stse_return_code_t stse_device_power_on(stse_handler_t *p_stse) {
     case STSAFE_A110:
     case STSAFE_A120:
     case STSAFE_A200:
-        stse_platform_Delay_ms(stsafea_boot_time[p_stse->device_type]);
+        stse_platform_delay_ms(stsafea_boot_time[p_stse->device_type]);
         break;
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
     case STSAFE_L010:
-        stse_platform_Delay_ms(stsafel_boot_time[p_stse->device_type]);
+        stse_platform_delay_ms(stsafel_boot_time[p_stse->device_type]);
         break;
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
     default:

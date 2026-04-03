@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stsafea_sessions.c
- * \brief   STSAFE-A sessions (header)
+ * \brief   STSAFE-A services for sessions (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -16,11 +16,16 @@
  ******************************************************************************
  */
 
-#include "services/stsafea/stsafea_sessions.h"
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "services/stsafea/stsafea_aes.h"
 #include "services/stsafea/stsafea_commands.h"
 #include "services/stsafea/stsafea_frame_transfer.h"
 #include "services/stsafea/stsafea_host_key_slot.h"
+#include "services/stsafea/stsafea_sessions.h"
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
@@ -523,8 +528,8 @@ static stse_return_code_t stsafea_session_frame_r_mac_verify(stse_session_t *p_s
 }
 
 stse_return_code_t stsafea_session_encrypted_transfer(stse_session_t *p_session,
-                                                     stse_frame_t *pCmdFrame,
-                                                     stse_frame_t *pRspFrame,
+                                                     stse_frame_t *p_cmd_frame,
+                                                     stse_frame_t *p_rsp_frame,
                                                      PLAT_UI8 cmd_encryption_flag,
                                                      PLAT_UI8 rsp_encryption_flag,
                                                      stse_cmd_access_conditions_t cmd_ac_info,
@@ -534,20 +539,20 @@ stse_return_code_t stsafea_session_encrypted_transfer(stse_session_t *p_session,
     PLAT_UI16 encrypted_rsp_payload_size = 0;
     PLAT_UI8 padding = 16;
 
-    if (p_session == NULL || pCmdFrame == NULL || pRspFrame == NULL ||
-        pCmdFrame->first_element == NULL || pCmdFrame->first_element->p_data == NULL ||
-        pRspFrame->first_element == NULL || pRspFrame->first_element->p_data == NULL) {
+    if (p_session == NULL || p_cmd_frame == NULL || p_rsp_frame == NULL ||
+        p_cmd_frame->first_element == NULL || p_cmd_frame->first_element->p_data == NULL ||
+        p_rsp_frame->first_element == NULL || p_rsp_frame->first_element->p_data == NULL) {
         return STSE_SERVICE_SESSION_ERROR;
     }
 
     if (cmd_encryption_flag == 1) {
 #ifdef STSE_FRAME_DEBUG_LOG
         printf("\n\r STSAFE Plaintext Frame > ");
-        stse_frame_debug_print(pCmdFrame);
+        stse_frame_debug_print(p_cmd_frame);
         printf("\n\r");
 #endif /* STSE_FRAME_DEBUG_LOG */
 
-        PLAT_UI16 plaintext_payload_size = pCmdFrame->length - pCmdFrame->first_element->length;
+        PLAT_UI16 plaintext_payload_size = p_cmd_frame->length - p_cmd_frame->first_element->length;
         if ((plaintext_payload_size % 16) != 0) {
             padding = 16 - (plaintext_payload_size % 16);
         }
@@ -559,17 +564,17 @@ stse_return_code_t stsafea_session_encrypted_transfer(stse_session_t *p_session,
     stse_frame_strap_allocate(S1);
 
     if (cmd_encryption_flag == 1) {
-        ret = stsafea_session_frame_encrypt(p_session, pCmdFrame, &eEncrypted_cmd_payload);
+        ret = stsafea_session_frame_encrypt(p_session, p_cmd_frame, &eEncrypted_cmd_payload);
         if (ret != STSE_OK) {
             return ret;
         }
-        stse_frame_insert_strap(&S1, pCmdFrame->first_element, &eEncrypted_cmd_payload);
-        stse_frame_update(pCmdFrame);
+        stse_frame_insert_strap(&S1, p_cmd_frame->first_element, &eEncrypted_cmd_payload);
+        stse_frame_update(p_cmd_frame);
     }
 
     if (rsp_encryption_flag == 1) {
         padding = 16;
-        PLAT_UI16 plaintext_payload_size = pRspFrame->length - pRspFrame->first_element->length;
+        PLAT_UI16 plaintext_payload_size = p_rsp_frame->length - p_rsp_frame->first_element->length;
         if ((plaintext_payload_size % 16) != 0) {
             padding = 16 - (plaintext_payload_size % 16);
         }
@@ -580,23 +585,23 @@ stse_return_code_t stsafea_session_encrypted_transfer(stse_session_t *p_session,
     stse_frame_element_allocate(eEncrypted_rsp_payload, encrypted_rsp_payload_size, encrypted_rsp_payload);
     stse_frame_strap_allocate(S2);
 
-    if (rsp_encryption_flag == 1 && pRspFrame->first_element->next != NULL) {
-        stse_frame_insert_strap(&S2, pRspFrame->first_element, &eEncrypted_rsp_payload);
-        stse_frame_update(pRspFrame);
+    if (rsp_encryption_flag == 1 && p_rsp_frame->first_element->next != NULL) {
+        stse_frame_insert_strap(&S2, p_rsp_frame->first_element, &eEncrypted_rsp_payload);
+        stse_frame_update(p_rsp_frame);
     }
 
     ret = stsafea_session_authenticated_transfer(p_session,
-                                                 pCmdFrame,
-                                                 pRspFrame,
+                                                 p_cmd_frame,
+                                                 p_rsp_frame,
                                                  cmd_ac_info,
                                                  processing_time);
 
     if ((ret == STSE_OK) && (rsp_encryption_flag == 1)) {
-        ret = stsafea_session_frame_decrypt(p_session, pRspFrame);
+        ret = stsafea_session_frame_decrypt(p_session, p_rsp_frame);
 
 #ifdef STSE_FRAME_DEBUG_LOG
         printf("\n\r STSAFE Plaintext Frame < ");
-        stse_frame_debug_print(pRspFrame);
+        stse_frame_debug_print(p_rsp_frame);
         printf("\n\r");
 #endif /* STSE_FRAME_DEBUG_LOG */
     }
@@ -605,8 +610,8 @@ stse_return_code_t stsafea_session_encrypted_transfer(stse_session_t *p_session,
 }
 
 stse_return_code_t stsafea_session_authenticated_transfer(stse_session_t *p_session,
-                                                         stse_frame_t *pCmdFrame,
-                                                         stse_frame_t *pRspFrame,
+                                                         stse_frame_t *p_cmd_frame,
+                                                         stse_frame_t *p_rsp_frame,
                                                          stse_cmd_access_conditions_t cmd_ac_info,
                                                          PLAT_UI16 processing_time) {
     (void)cmd_ac_info;
@@ -614,31 +619,31 @@ stse_return_code_t stsafea_session_authenticated_transfer(stse_session_t *p_sess
     PLAT_UI8 Cmd_MAC[STSAFEA_MAC_SIZE];
     PLAT_UI8 Rsp_MAC[STSAFEA_MAC_SIZE];
 
-    if (p_session == NULL || pCmdFrame == NULL || pRspFrame == NULL ||
-        pCmdFrame->first_element == NULL || pCmdFrame->first_element->p_data == NULL ||
-        pRspFrame->first_element == NULL || pRspFrame->first_element->p_data == NULL) {
+    if (p_session == NULL || p_cmd_frame == NULL || p_rsp_frame == NULL ||
+        p_cmd_frame->first_element == NULL || p_cmd_frame->first_element->p_data == NULL ||
+        p_rsp_frame->first_element == NULL || p_rsp_frame->first_element->p_data == NULL) {
         return STSE_SERVICE_SESSION_ERROR;
     }
 
     if (p_session->type == STSE_HOST_SESSION) {
-        *(pCmdFrame->first_element->p_data) |= (1 << 5);
+        *(p_cmd_frame->first_element->p_data) |= (1 << 5);
     }
 
-    *(pCmdFrame->first_element->p_data) |= ((1 << 7) | (1 << 6));
+    *(p_cmd_frame->first_element->p_data) |= ((1 << 7) | (1 << 6));
 
-    stse_frame_element_allocate_push(pRspFrame, eRspMAC, STSAFEA_MAC_SIZE, Rsp_MAC);
+    stse_frame_element_allocate_push(p_rsp_frame, eRspMAC, STSAFEA_MAC_SIZE, Rsp_MAC);
 
-    ret = stsafea_session_frame_c_mac_compute(p_session, pCmdFrame, Cmd_MAC);
+    ret = stsafea_session_frame_c_mac_compute(p_session, p_cmd_frame, Cmd_MAC);
     if (ret != STSE_OK) {
         return ret;
     }
 
-    stse_frame_element_allocate_push(pCmdFrame, eCmdMAC, STSAFEA_MAC_SIZE, Cmd_MAC);
+    stse_frame_element_allocate_push(p_cmd_frame, eCmdMAC, STSAFEA_MAC_SIZE, Cmd_MAC);
 
     switch (p_session->type) {
 
     case STSE_HOST_SESSION:
-        ret = stsafea_frame_raw_transfer(p_session->context.host.p_stse, pCmdFrame, pRspFrame, processing_time);
+        ret = stsafea_frame_raw_transfer(p_session->context.host.p_stse, p_cmd_frame, p_rsp_frame, processing_time);
         if (ret <= 0xFF && ret != STSE_INVALID_C_MAC && ret != STSE_COMMUNICATION_ERROR) {
             p_session->context.host.MAC_counter++;
         }
@@ -650,10 +655,10 @@ stse_return_code_t stsafea_session_authenticated_transfer(stse_session_t *p_sess
     }
 
     /*- Pop C-MAC from frame*/
-    stse_frame_pop_element(pCmdFrame);
+    stse_frame_pop_element(p_cmd_frame);
 
     if (ret == STSE_OK) {
-        ret = stsafea_session_frame_r_mac_verify(p_session, pCmdFrame, pRspFrame, Rsp_MAC);
+        ret = stsafea_session_frame_r_mac_verify(p_session, p_cmd_frame, p_rsp_frame, Rsp_MAC);
     }
 
     return ret;

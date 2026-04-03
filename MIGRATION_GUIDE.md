@@ -1,5 +1,7 @@
 # STSELib Migration Guide
 
+> This guide applies to migrating from STSELib pre-v1.1.7 to v1.1.7+ (including latest main).
+
 This document summarizes the naming convention changes made to STSELib and provides guidance on how to port applications using the previous version to the new version.
 
 ## Overview

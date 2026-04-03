@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stse_platform.h
- * \brief   STSAFE-Axxx Middleware Platform Abstraction layer (header)
+ * \brief   STSELib callback functions declaration for platform Abstraction layer (header)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -92,7 +92,7 @@ PLAT_UI16 stse_platform_Crc16_Accumulate(PLAT_UI8 *pbuffer, PLAT_UI16 length);
  * \param[in]  delay_val length of the delay in milliseconds
  * \return     None
  */
-void stse_platform_Delay_ms(PLAT_UI16 delay_val);
+void stse_platform_delay_ms(PLAT_UI16 delay_val);
 
 /*!
  * \brief      Verify ECC signature
@@ -414,32 +414,32 @@ stse_return_code_t stse_platform_i2c_init(PLAT_UI8 bus_id);
  * \param[in]  devAddr I2C device address
  * \param[in]  speed I2C speed
  * \param[in]  p_frame Pointer to the data frame
- * \param[in]  FrameLength Length of the data frame
+ * \param[in]  frame_length Length of the data frame
  * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
 stse_return_code_t stse_platform_i2c_send(PLAT_UI8 bus_id,
                                          PLAT_UI8 devAddr,
                                          PLAT_UI16 speed,
                                          PLAT_UI8 *p_frame,
-                                         PLAT_UI16 FrameLength);
+                                         PLAT_UI16 frame_length);
 
 /*!
  * \brief      Receive data over I2C
  * \param[in]  bus_id I2C bus ID
  * \param[in]  devAddr I2C device address
  * \param[in]  speed I2C speed
- * \param[in]  pFrame_header Pointer to the frame header
- * \param[out] pFrame_payload Pointer to the frame payload
- * \param[out] pFrame_payload_Length Pointer to the length of the frame payload
+ * \param[in]  p_frame_header Pointer to the frame header
+ * \param[out] p_frame_payload Pointer to the frame payload
+ * \param[out] p_frame_payload_length Pointer to the length of the frame payload
  * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
 stse_return_code_t stse_platform_i2c_receive(
     PLAT_UI8 bus_id,
     PLAT_UI8 devAddr,
     PLAT_UI16 speed,
-    PLAT_UI8 *pFrame_header,
-    PLAT_UI8 *pFrame_payload,
-    PLAT_UI16 *pFrame_payload_Length);
+    PLAT_UI8 *p_frame_header,
+    PLAT_UI8 *p_frame_payload,
+    PLAT_UI16 *p_frame_payload_length);
 
 /*!
  * \brief      Wake up I2C device
@@ -457,14 +457,14 @@ stse_return_code_t stse_platform_i2c_wake(PLAT_UI8 bus_id,
  * \param[in]  bus_id I2C bus ID
  * \param[in]  devAddr I2C device address
  * \param[in]  speed I2C speed
- * \param[in]  FrameLength Length of the data frame
+ * \param[in]  frame_length Length of the data frame
  * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
 stse_return_code_t stse_platform_i2c_send_start(
     PLAT_UI8 bus_id,
     PLAT_UI8 devAddr,
     PLAT_UI16 speed,
-    PLAT_UI16 FrameLength);
+    PLAT_UI16 frame_length);
 
 /*!
  * \brief      Continue I2C send operation
@@ -571,14 +571,14 @@ stse_return_code_t stse_platform_st1wire_wake(PLAT_UI8 bus_id,
  * \param[in]  bus_id 1-wire bus ID
  * \param[in]  devAddr 1-wire device address
  * \param[in]  speed 1-wire speed
- * \param[in]  FrameLength Length of the data frame
+ * \param[in]  frame_length Length of the data frame
  * \return     \ref STSE_OK on success; \ref stse_return_code_t error code otherwise
  */
 stse_return_code_t stse_platform_st1wire_send_start(
     PLAT_UI8 bus_id,
     PLAT_UI8 devAddr,
     PLAT_UI16 speed,
-    PLAT_UI16 FrameLength);
+    PLAT_UI16 frame_length);
 
 /*!
  * \brief      Continue 1-wire send operation

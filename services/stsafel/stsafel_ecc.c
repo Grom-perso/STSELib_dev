@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stsafel_ecc.h
- * \brief   Elliptic Curves Cryptography (ECC) services for STSAFE-L
+ * \brief   STSAFE-L services for ECC (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -16,8 +16,11 @@
  ******************************************************************************
  */
 
-#include "services/stsafel/stsafel_ecc.h"
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
+
 #include "services/stsafel/stsafel_commands.h"
+#include "services/stsafel/stsafel_ecc.h"
 #include "services/stsafel/stsafel_frame_transfer.h"
 
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
@@ -25,7 +28,7 @@
 stse_return_code_t stsafel_ecc_generate_signature(
     stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
-    PLAT_UI8 *pChallenge,
+    const PLAT_UI8 *pChallenge,
     PLAT_UI16 challenge_length,
     PLAT_UI8 *p_signature) {
     PLAT_UI8 cmd_header = STSAFEL_CMD_GENERATE_SIGNATURE;
@@ -44,7 +47,7 @@ stse_return_code_t stsafel_ecc_generate_signature(
     /*- Create CMD frame and populate elements */
     stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eChallenge, challenge_length, pChallenge);
+    stse_frame_element_allocate_push(&CmdFrame, eChallenge, challenge_length, (PLAT_UI8 *)pChallenge);
     stse_frame_element_allocate_push(&CmdFrame, eInternal_data_subject, 1, &internal_data_subject);
 
     /*- Create Rsp frame and populate elements*/

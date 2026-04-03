@@ -60,9 +60,9 @@
 stse_return_code_t stse_ecc_verify_signature(
     stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
-    PLAT_UI8 *p_public_key,
-    PLAT_UI8 *p_signature,
-    PLAT_UI8 *p_message,
+    const PLAT_UI8 *p_public_key,
+    const PLAT_UI8 *p_signature,
+    const PLAT_UI8 *p_message,
     PLAT_UI16 message_length,
     PLAT_UI8 eddsa_variant,
     PLAT_UI8 *pSignature_validity);
@@ -86,7 +86,7 @@ stse_return_code_t stse_ecc_generate_signature(
     stse_handler_t *p_stse,
     PLAT_UI8 slot_number,
     stse_ecc_key_type_t key_type,
-    PLAT_UI8 *p_message,
+    const PLAT_UI8 *p_message,
     PLAT_UI16 message_length,
     PLAT_UI8 *p_signature);
 

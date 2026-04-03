@@ -1,7 +1,7 @@
 /*!
  * ******************************************************************************
  * \file	stsafel_frame_transfer.c
- * \brief   STSAFE-L Frame transfer service (sources)
+ * \brief   STSAFE-L services for frame transfer (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -15,6 +15,10 @@
  *
  ******************************************************************************
  */
+
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
+#include <stdio.h>
 
 #include "services/stsafel/stsafel_frame_transfer.h"
 #include "services/stsafel/stsafel_timings.h"
@@ -96,7 +100,7 @@ stse_return_code_t stsafel_frame_transmit(stse_handler_t *p_stse, stse_frame_t *
 
         if (ret != STSE_OK) {
             retry_count--;
-            stse_platform_Delay_ms(STSE_POLLING_RETRY_INTERVAL);
+            stse_platform_delay_ms(STSE_POLLING_RETRY_INTERVAL);
         }
     }
 
@@ -138,7 +142,7 @@ stse_return_code_t stsafel_i2c_frame_receive(stse_handler_t *p_stse, stse_frame_
 
         if (ret != STSE_OK) {
             retry_count--;
-            stse_platform_Delay_ms(STSE_POLLING_RETRY_INTERVAL);
+            stse_platform_delay_ms(STSE_POLLING_RETRY_INTERVAL);
         }
     }
 
@@ -199,7 +203,7 @@ stse_return_code_t stsafel_i2c_frame_receive(stse_handler_t *p_stse, stse_frame_
 
         if (ret != STSE_OK) {
             retry_count--;
-            stse_platform_Delay_ms(STSE_POLLING_RETRY_INTERVAL);
+            stse_platform_delay_ms(STSE_POLLING_RETRY_INTERVAL);
         }
     }
 
@@ -340,7 +344,7 @@ stse_return_code_t stsafel_st1wire_frame_receive(stse_handler_t *p_stse, stse_fr
 
         if (ret != STSE_OK) {
             retry_count--;
-            stse_platform_Delay_ms(STSE_POLLING_RETRY_INTERVAL);
+            stse_platform_delay_ms(STSE_POLLING_RETRY_INTERVAL);
         }
     }
 
@@ -429,8 +433,8 @@ stse_return_code_t stsafel_st1wire_frame_receive(stse_handler_t *p_stse, stse_fr
 #endif /* STSE_CONF_USE_ST1WIRE */
 
 stse_return_code_t stsafel_frame_raw_transfer(stse_handler_t *p_stse,
-                                             stse_frame_t *pCmdFrame,
-                                             stse_frame_t *pRspFrame,
+                                             stse_frame_t *p_cmd_frame,
+                                             stse_frame_t *p_rsp_frame,
                                              PLAT_UI16 inter_frame_delay) {
     stse_return_code_t ret = STSE_SERVICE_INVALID_PARAMETER;
 
@@ -439,26 +443,26 @@ stse_return_code_t stsafel_frame_raw_transfer(stse_handler_t *p_stse,
 #endif /* STSE_USE_RSP_POLLING */
 
     /* - Send Non-protected Frame */
-    ret = stsafel_frame_transmit(p_stse, pCmdFrame);
+    ret = stsafel_frame_transmit(p_stse, p_cmd_frame);
     if (ret == STSE_OK) {
 #ifdef STSE_USE_RSP_POLLING
         /* - Wait for command to be executed by target STSAFE  */
-        stse_platform_Delay_ms(STSE_FIRST_POLLING_INTERVAL);
+        stse_platform_delay_ms(STSE_FIRST_POLLING_INTERVAL);
 #else
         /* - Wait for command to be executed by target STSAFE  */
-        stse_platform_Delay_ms(inter_frame_delay);
+        stse_platform_delay_ms(inter_frame_delay);
 #endif /* STSE_USE_RSP_POLLING */
 
         /* - Receive non protected Frame */
         switch (p_stse->io.bus_type) {
 #ifdef STSE_CONF_USE_I2C
         case STSE_BUS_TYPE_I2C:
-            ret = stsafel_i2c_frame_receive(p_stse, pRspFrame);
+            ret = stsafel_i2c_frame_receive(p_stse, p_rsp_frame);
             break;
 #endif /* STSE_CONF_USE_I2C */
 #ifdef STSE_CONF_USE_ST1WIRE
         case STSE_BUS_TYPE_ST1WIRE:
-            ret = stsafel_st1wire_frame_receive(p_stse, pRspFrame);
+            ret = stsafel_st1wire_frame_receive(p_stse, p_rsp_frame);
             break;
 #endif /* STSE_CONF_USE_ST1WIRE */
         default:
@@ -470,17 +474,17 @@ stse_return_code_t stsafel_frame_raw_transfer(stse_handler_t *p_stse,
 }
 
 stse_return_code_t stsafel_frame_transfer(stse_handler_t *p_stse,
-                                         stse_frame_t *pCmdFrame,
-                                         stse_frame_t *pRspFrame) {
+                                         stse_frame_t *p_cmd_frame,
+                                         stse_frame_t *p_rsp_frame) {
     stse_return_code_t ret = STSE_SERVICE_INVALID_PARAMETER;
     PLAT_UI8 cmd_header;
 
     PLAT_UI16 inter_frame_delay = STSAFEL_EXEC_TIME_DEFAULT;
 
-    if (pCmdFrame->first_element != NULL && pCmdFrame->first_element->p_data != NULL) {
-        if (pCmdFrame->first_element->length == 1) // STSAFEA_HEADER_SIZE)
+    if (p_cmd_frame->first_element != NULL && p_cmd_frame->first_element->p_data != NULL) {
+        if (p_cmd_frame->first_element->length == 1) // STSAFEA_HEADER_SIZE)
         {
-            cmd_header = pCmdFrame->first_element->p_data[0];
+            cmd_header = p_cmd_frame->first_element->p_data[0];
             inter_frame_delay = stsafel_cmd_exec_duration(p_stse, (stsafel_cmd_code_t)cmd_header);
             ret = STSE_OK;
         }
@@ -492,8 +496,8 @@ stse_return_code_t stsafel_frame_transfer(stse_handler_t *p_stse,
 
     /*- Perform Transfer*/
     ret = stsafel_frame_raw_transfer(p_stse,
-                                     pCmdFrame,
-                                     pRspFrame,
+                                     p_cmd_frame,
+                                     p_rsp_frame,
                                      inter_frame_delay);
 
     return ret;
