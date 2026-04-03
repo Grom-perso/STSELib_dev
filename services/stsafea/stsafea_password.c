@@ -126,7 +126,7 @@ stse_ReturnCode_t stsafea_verify_password_finalize(stsafea_verify_password_ctx_t
     if (pCtx == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
-    return stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+    return stsafea_frame_transfer_finalize(&pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
 }
 
 stse_ReturnCode_t stsafea_delete_password_start(
@@ -150,9 +150,7 @@ stse_ReturnCode_t stsafea_delete_password_start(
     pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
     stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
 
-    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame,
-                                            stsafea_cmd_timings[pSTSE->device_type][pCtx->cmd_header],
-                                            &pCtx->nb_ctx);
+    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->nb_ctx);
 }
 
 stse_ReturnCode_t stsafea_delete_password_transfer(stsafea_delete_password_ctx_t *pCtx) {
@@ -166,7 +164,7 @@ stse_ReturnCode_t stsafea_delete_password_finalize(stsafea_delete_password_ctx_t
     if (pCtx == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
-    return stsafea_frame_raw_transfer_finalize(pCtx->pSTSE, &pCtx->RspFrame);
+    return stsafea_frame_raw_transfer_finalize(&pCtx->nb_ctx, &pCtx->RspFrame);
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

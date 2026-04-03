@@ -171,9 +171,7 @@ stse_ReturnCode_t stsafea_put_life_cyle_state_start(
     pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
     stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
 
-    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame,
-                                            stsafea_cmd_timings[pSTSE->device_type][pCtx->cmd_header],
-                                            &pCtx->nb_ctx);
+    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->nb_ctx);
 }
 
 stse_ReturnCode_t stsafea_put_life_cyle_state_transfer(stsafea_put_life_cyle_state_ctx_t *pCtx) {
@@ -187,7 +185,7 @@ stse_ReturnCode_t stsafea_put_life_cyle_state_finalize(stsafea_put_life_cyle_sta
     if (pCtx == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
-    return stsafea_frame_raw_transfer_finalize(pCtx->pSTSE, &pCtx->RspFrame);
+    return stsafea_frame_raw_transfer_finalize(&pCtx->nb_ctx, &pCtx->RspFrame);
 }
 
 stse_ReturnCode_t stsafea_query_life_cycle_state_start(
@@ -214,9 +212,7 @@ stse_ReturnCode_t stsafea_query_life_cycle_state_start(
     pCtx->eLife_cycle_state_elem = (stse_frame_element_t){1, (PLAT_UI8 *)pLife_cycle_state, NULL};
     stse_frame_push_element(&pCtx->RspFrame, &pCtx->eLife_cycle_state_elem);
 
-    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame,
-                                            stsafea_cmd_timings[pSTSE->device_type][pCtx->cmd_header],
-                                            &pCtx->nb_ctx);
+    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->nb_ctx);
 }
 
 stse_ReturnCode_t stsafea_query_life_cycle_state_transfer(stsafea_query_life_cycle_state_ctx_t *pCtx) {
@@ -230,7 +226,7 @@ stse_ReturnCode_t stsafea_query_life_cycle_state_finalize(stsafea_query_life_cyc
     if (pCtx == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
-    return stsafea_frame_raw_transfer_finalize(pCtx->pSTSE, &pCtx->RspFrame);
+    return stsafea_frame_raw_transfer_finalize(&pCtx->nb_ctx, &pCtx->RspFrame);
 }
 
 stse_ReturnCode_t stsafea_put_i2c_parameters_start(
@@ -269,9 +265,7 @@ stse_ReturnCode_t stsafea_put_i2c_parameters_start(
     pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
     stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
 
-    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame,
-                                            stsafea_cmd_timings[pSTSE->device_type][pCtx->cmd_header],
-                                            &pCtx->nb_ctx);
+    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->nb_ctx);
 }
 
 stse_ReturnCode_t stsafea_put_i2c_parameters_transfer(stsafea_put_i2c_parameters_ctx_t *pCtx) {
@@ -285,7 +279,7 @@ stse_ReturnCode_t stsafea_put_i2c_parameters_finalize(stsafea_put_i2c_parameters
     if (pCtx == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
-    return stsafea_frame_raw_transfer_finalize(pCtx->pSTSE, &pCtx->RspFrame);
+    return stsafea_frame_raw_transfer_finalize(&pCtx->nb_ctx, &pCtx->RspFrame);
 }
 
 stse_ReturnCode_t stsafea_query_i2c_parameters_start(
@@ -312,9 +306,7 @@ stse_ReturnCode_t stsafea_query_i2c_parameters_start(
     pCtx->eI2cParameters_elem = (stse_frame_element_t){sizeof(stsafea_i2c_parameters_t), (PLAT_UI8 *)pI2c_parameters, NULL};
     stse_frame_push_element(&pCtx->RspFrame, &pCtx->eI2cParameters_elem);
 
-    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame,
-                                            stsafea_cmd_timings[pSTSE->device_type][pCtx->cmd_header],
-                                            &pCtx->nb_ctx);
+    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->nb_ctx);
 }
 
 stse_ReturnCode_t stsafea_query_i2c_parameters_transfer(stsafea_query_i2c_parameters_ctx_t *pCtx) {
@@ -328,7 +320,7 @@ stse_ReturnCode_t stsafea_query_i2c_parameters_finalize(stsafea_query_i2c_parame
     if (pCtx == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
-    return stsafea_frame_raw_transfer_finalize(pCtx->pSTSE, &pCtx->RspFrame);
+    return stsafea_frame_raw_transfer_finalize(&pCtx->nb_ctx, &pCtx->RspFrame);
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

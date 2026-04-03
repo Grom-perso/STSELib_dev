@@ -239,7 +239,7 @@ stse_ReturnCode_t stsafea_start_hash_finalize(stsafea_start_hash_ctx_t *pCtx) {
     if (pCtx == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
-    return stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+    return stsafea_frame_transfer_finalize(&pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
 }
 
 stse_ReturnCode_t stsafea_process_hash_start(
@@ -282,7 +282,7 @@ stse_ReturnCode_t stsafea_process_hash_finalize(stsafea_process_hash_ctx_t *pCtx
     if (pCtx == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
-    return stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+    return stsafea_frame_transfer_finalize(&pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
 }
 
 stse_ReturnCode_t stsafea_finish_hash_start(
@@ -340,7 +340,7 @@ stse_ReturnCode_t stsafea_finish_hash_finalize(stsafea_finish_hash_ctx_t *pCtx) 
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
 
-    ret = stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+    ret = stsafea_frame_transfer_finalize(&pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
     if (ret == STSE_OK) {
         *pCtx->pDigest_size = stsafea_hash_info_table[pCtx->sha_algorithm].length;
     } else {

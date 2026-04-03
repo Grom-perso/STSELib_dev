@@ -103,7 +103,7 @@ stse_ReturnCode_t stsafea_generate_random_finalize(stsafea_generate_random_ctx_t
     if (pCtx == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
-    return stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+    return stsafea_frame_transfer_finalize(&pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

@@ -137,7 +137,7 @@ stse_ReturnCode_t stsafea_wrap_payload_finalize(stsafea_wrap_payload_ctx_t *pCtx
     if (pCtx == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
-    return stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+    return stsafea_frame_transfer_finalize(&pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
 }
 
 stse_ReturnCode_t stsafea_unwrap_payload_start(
@@ -187,7 +187,7 @@ stse_ReturnCode_t stsafea_unwrap_payload_finalize(stsafea_unwrap_payload_ctx_t *
     if (pCtx == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
-    return stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+    return stsafea_frame_transfer_finalize(&pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

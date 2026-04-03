@@ -61,9 +61,7 @@ stse_ReturnCode_t stsafea_reset_start(stsafea_reset_ctx_t *pCtx, stse_Handler_t 
     pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
     stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
 
-    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame,
-                                            stsafea_cmd_timings[pSTSE->device_type][pCtx->cmd_header],
-                                            &pCtx->nb_ctx);
+    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->nb_ctx);
 }
 
 stse_ReturnCode_t stsafea_reset_transfer(stsafea_reset_ctx_t *pCtx) {
@@ -77,7 +75,7 @@ stse_ReturnCode_t stsafea_reset_finalize(stsafea_reset_ctx_t *pCtx) {
     if (pCtx == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
-    return stsafea_frame_raw_transfer_finalize(pCtx->pSTSE, &pCtx->RspFrame);
+    return stsafea_frame_raw_transfer_finalize(&pCtx->nb_ctx, &pCtx->RspFrame);
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

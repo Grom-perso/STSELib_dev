@@ -146,7 +146,7 @@ stse_ReturnCode_t stsafea_generate_challenge_finalize(stsafea_generate_challenge
     if (pCtx == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
-    return stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+    return stsafea_frame_transfer_finalize(&pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
 }
 
 stse_ReturnCode_t stsafea_verify_entity_signature_start(
@@ -214,7 +214,7 @@ stse_ReturnCode_t stsafea_verify_entity_signature_finalize(stsafea_verify_entity
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
 
-    ret = stsafea_frame_transfer_finalize(pCtx->pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+    ret = stsafea_frame_transfer_finalize(&pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
     if (ret != STSE_OK) {
         *(pCtx->eSignature_validity_elem.pData) = STSAFEA_FALSE;
     }

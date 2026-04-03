@@ -72,14 +72,21 @@ extern "C" {
 #define STSAFEA_NB_MAX_ENCRYPTED_PAYLOAD_SIZE (STSAFEA_MAX_FRAME_LENGTH_A120 + 16U)
 
 /**
- * \brief   Non-blocking transfer timing context.
+ * \brief   Non-blocking transfer context.
  *
  * Embed this struct inside every per-service non-blocking context.  It carries
  * all state required between _start, _transfer and _finalize.
+ *
+ * The _transfer step actively polls the device by attempting a single I²C read.
+ * If the device NACKs it returns \ref STSE_PLATFORM_PENDING; when the device
+ * ACKs the first read (header + length bytes) the data is stored here so that
+ * _finalize can perform the second-pass data read immediately without delay.
+ * Pacing between _transfer calls is entirely controlled by the application.
  */
 typedef struct {
-    PLAT_UI32 cmd_sent_timestamp_ms; /*!< Timestamp (ms) captured after CMD transmit */
-    PLAT_UI16 inter_frame_delay_ms;  /*!< Required inter-frame delay for this command */
+    stse_Handler_t *pSTSE;           /*!< Device handler used by _transfer for bus polling  */
+    PLAT_UI8  received_header;        /*!< RSP status/header byte read during _transfer       */
+    PLAT_UI8  received_length_raw[STSE_FRAME_LENGTH_SIZE]; /*!< Raw 2-byte length from _transfer */
 #ifdef STSE_CONF_USE_HOST_SESSION
     PLAT_UI8                    cmd_encryption_flag;  /*!< 1 = command payload was encrypted   */
     PLAT_UI8                    rsp_encryption_flag;  /*!< 1 = response payload is encrypted    */
@@ -103,37 +110,44 @@ typedef struct {
 
 /**
  * \brief   Start a raw non-blocking frame transfer (no session).
- * \details Transmits \p pCmdFrame and records the send timestamp.
+ * \details Transmits \p pCmdFrame and stores the device handler in \p pNbCtx
+ *          so that \ref stsafea_frame_transfer_check can poll the device.
  *          Use this when calling the session-free path (equivalent of
  *          \ref stsafea_frame_raw_transfer).
- * \param[in]  pSTSE              Pointer to STSE handler
- * \param[in]  pCmdFrame          Pointer to the pre-built command frame
- * \param[in]  inter_frame_delay  Inter-frame delay required (ms)
- * \param[out] pNbCtx             Pointer to the non-blocking context to fill
+ * \param[in]  pSTSE     Pointer to STSE handler
+ * \param[in]  pCmdFrame Pointer to the pre-built command frame
+ * \param[out] pNbCtx    Pointer to the non-blocking context to fill
  * \return \ref STSE_OK on success; error code otherwise
  */
 stse_ReturnCode_t stsafea_frame_raw_transfer_start(stse_Handler_t *pSTSE,
                                                    stse_frame_t *pCmdFrame,
-                                                   PLAT_UI16 inter_frame_delay,
                                                    stsafea_nb_transfer_ctx_t *pNbCtx);
 
 /**
- * \brief   Check whether the inter-frame delay has elapsed (raw path).
- * \details Returns \ref STSE_PLATFORM_PENDING until the delay recorded in
- *          \p pNbCtx has expired.  No I²C activity is performed.
- * \param[in] pNbCtx  Pointer to the non-blocking context
- * \return \ref STSE_OK when ready; \ref STSE_PLATFORM_PENDING otherwise
+ * \brief   Poll device readiness (raw or session path).
+ * \details Attempts a single I²C read of the response header and length bytes.
+ *          Returns \ref STSE_PLATFORM_PENDING while the device NACKs (still
+ *          processing); returns \ref STSE_OK once the device ACKs and the
+ *          header + length bytes have been stored in \p pNbCtx for use by the
+ *          subsequent _finalize call.  No delay is applied — the application
+ *          state machine is responsible for pacing repeated calls.
+ * \param[in,out] pNbCtx  Pointer to the non-blocking context
+ * \return \ref STSE_OK when ready; \ref STSE_PLATFORM_PENDING if not yet ready;
+ *         other \ref stse_ReturnCode_t on bus error
  */
 stse_ReturnCode_t stsafea_frame_transfer_check(stsafea_nb_transfer_ctx_t *pNbCtx);
 
 /**
  * \brief   Finalize a raw non-blocking frame transfer (no session).
- * \details Reads and validates the response frame.
- * \param[in]     pSTSE    Pointer to STSE handler
+ * \details Uses the response header and length already captured by
+ *          \ref stsafea_frame_transfer_check to perform the second-pass
+ *          I²C data read and validate the CRC.  Must be called only after
+ *          \ref stsafea_frame_transfer_check has returned \ref STSE_OK.
+ * \param[in,out] pNbCtx   Non-blocking context containing the pre-read header/length
  * \param[in,out] pRspFrame Pointer to the pre-built response frame
  * \return \ref STSE_OK on success; error code otherwise
  */
-stse_ReturnCode_t stsafea_frame_raw_transfer_finalize(stse_Handler_t *pSTSE,
+stse_ReturnCode_t stsafea_frame_raw_transfer_finalize(stsafea_nb_transfer_ctx_t *pNbCtx,
                                                       stse_frame_t *pRspFrame);
 
 /* -------------------------------------------------------------------------
@@ -145,7 +159,8 @@ stse_ReturnCode_t stsafea_frame_raw_transfer_finalize(stse_Handler_t *pSTSE,
  * \details Mirrors \ref stsafea_frame_transfer for the transmit phase:
  *          looks up the inter-frame timing, performs any required session
  *          pre-processing (C-MAC computation, command encryption), transmits
- *          the frame and records the timestamp in \p pNbCtx.
+ *          the frame and stores \p pSTSE in \p pNbCtx so that
+ *          \ref stsafea_frame_transfer_check can poll the device.
  * \param[in]  pSTSE     Pointer to STSE handler
  * \param[in]  pCmdFrame Pointer to the pre-built command frame
  * \param[in,out] pRspFrame Pointer to the pre-built response frame (needed
@@ -160,17 +175,18 @@ stse_ReturnCode_t stsafea_frame_transfer_start(stse_Handler_t *pSTSE,
 
 /**
  * \brief   Finalize a session-capable non-blocking frame transfer.
- * \details Reads and validates the response frame and performs any required
- *          session post-processing (R-MAC verification, response decryption).
- * \param[in]     pSTSE     Pointer to STSE handler
+ * \details Uses the response header and length captured by
+ *          \ref stsafea_frame_transfer_check to perform the second-pass
+ *          data read, then applies session post-processing (R-MAC
+ *          verification, response decryption).  Must be called only after
+ *          \ref stsafea_frame_transfer_check has returned \ref STSE_OK.
  * \param[in,out] pCmdFrame Pointer to the command frame (needed to pop C-MAC
  *                          in authenticated-session mode)
  * \param[in,out] pRspFrame Pointer to the response frame
  * \param[in]     pNbCtx    Pointer to the non-blocking context
  * \return \ref STSE_OK on success; error code otherwise
  */
-stse_ReturnCode_t stsafea_frame_transfer_finalize(stse_Handler_t *pSTSE,
-                                                  stse_frame_t *pCmdFrame,
+stse_ReturnCode_t stsafea_frame_transfer_finalize(stse_frame_t *pCmdFrame,
                                                   stse_frame_t *pRspFrame,
                                                   stsafea_nb_transfer_ctx_t *pNbCtx);
 
