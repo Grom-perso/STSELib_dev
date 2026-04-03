@@ -344,7 +344,7 @@ CK_ULONG stse_pkcs11_pubkey_to_ec_point(
 
     /* DER OCTET STRING tag */
     pEc_point[pos++] = 0x04U;
-    /* DER OCTET STRING length (single-byte: max inner = 1 + 2*66 = 133 < 128 is false for P-521,
+    /* DER OCTET STRING length (single-byte: max inner = 1 + 2*66 = 133 which is >= 128 for P-521,
      * so we use definite long form only when needed) */
     if (inner_len < 0x80U) {
         pEc_point[pos++] = (uint8_t)inner_len;

@@ -197,7 +197,7 @@ typedef struct stse_pkcs11_session_t {
 
 /*!
  * \struct stse_pkcs11_pubkey_cache_t
- * \brief  Cached public key (raw X‖Y) for one private-key slot.
+ * \brief  Cached public key (raw X||Y) for one private-key slot.
  *
  * Populated by C_GenerateKeyPair() and used by
  * C_GetAttributeValue(CKA_EC_POINT) to avoid re-issuing a generate command.
@@ -205,7 +205,7 @@ typedef struct stse_pkcs11_session_t {
 typedef struct stse_pkcs11_pubkey_cache_t {
     CK_BBOOL            valid;                              /*!< CK_TRUE if this entry is populated */
     stse_ecc_key_type_t key_type;                          /*!< Curve of the cached key */
-    uint8_t             raw_xy[STSE_PKCS11_MAX_COORD_PAIR_SIZE]; /*!< X‖Y coordinate bytes */
+    uint8_t             raw_xy[STSE_PKCS11_MAX_COORD_PAIR_SIZE]; /*!< X||Y coordinate bytes */
 } stse_pkcs11_pubkey_cache_t;
 
 /* ---------------------------------------------------------------------------
@@ -286,7 +286,7 @@ CK_RV stse_pkcs11_enumerate_objects(
 
 /*!
  * \brief  Build the DER-encoded ANSI X9.62 EC point (CKA_EC_POINT) from the
- *         raw X‖Y coordinates returned by STSELib.
+ *         raw X||Y coordinates returned by STSELib.
  * \details
  *   The output is a DER OCTET STRING wrapping the uncompressed point:
  *   \c 0x04 0x<length> 0x04 <X[coord_size]> <Y[coord_size]>
@@ -312,7 +312,7 @@ CK_ULONG stse_pkcs11_pubkey_to_ec_point(
 CK_ULONG stse_pkcs11_ec_point_size(uint16_t coord_size);
 
 /*!
- * \brief  Extract raw X‖Y coordinates from a PKCS#11 EC point parameter.
+ * \brief  Extract raw X||Y coordinates from a PKCS#11 EC point parameter.
  * \details
  *   Accepts both the raw uncompressed format \c 0x04 <X> <Y> and the DER
  *   OCTET STRING wrapped format \c 0x04 <len> 0x04 <X> <Y>.
@@ -320,7 +320,7 @@ CK_ULONG stse_pkcs11_ec_point_size(uint16_t coord_size);
  * \param[in]  pEc_point   Input EC point buffer from the application.
  * \param[in]  point_len   Length of @p pEc_point in bytes.
  * \param[in]  coord_size  Expected coordinate size in bytes.
- * \param[out] pRaw_xy     Output buffer of at least (2 × @p coord_size) bytes
+ * \param[out] pRaw_xy     Output buffer of at least (2 * @p coord_size) bytes
  *                         that will receive X followed by Y.
  * \return CK_TRUE on success; CK_FALSE if the format is unrecognised.
  */

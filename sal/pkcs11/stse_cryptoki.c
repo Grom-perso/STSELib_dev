@@ -1597,7 +1597,7 @@ CK_RV C_DeriveKey(CK_SESSION_HANDLE     hSession,
         return CKR_MECHANISM_PARAM_INVALID;
     }
 
-    /* Extract raw X‖Y from the peer public key */
+    /* Extract raw X||Y from the peer public key */
     uint16_t coord_size = stse_ecc_info_table[key_type].coordinate_or_key_size;
     uint8_t  raw_xy[STSE_PKCS11_MAX_EC_POINT_SIZE];
 
