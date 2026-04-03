@@ -145,105 +145,40 @@ stse_ReturnCode_t stsafea_query_i2c_parameters(
     stsafea_i2c_parameters_t *pI2c_parameters);
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
-#ifndef STSAFEA_NB_CTX_T_DEFINED
 #include "services/stsafea/stsafea_frame_transfer_nb.h"
-#endif /* STSAFEA_NB_CTX_T_DEFINED */
-#ifdef STSAFEA_NB_CTX_T_DEFINED
-
-typedef struct {
-    stse_Handler_t *pSTSE;
-    stsafea_nb_transfer_ctx_t nb_ctx;
-    PLAT_UI8 cmd_header;
-    PLAT_UI8 tag;
-    stsafea_life_cycle_state_t life_cycle_state;
-    stse_frame_t CmdFrame;
-    stse_frame_element_t eCmd_header_elem;
-    stse_frame_element_t eTag_elem;
-    stse_frame_element_t eLifeCycleState_elem;
-    PLAT_UI8 rsp_header;
-    stse_frame_t RspFrame;
-    stse_frame_element_t eRsp_header_elem;
-} stsafea_put_life_cyle_state_ctx_t;
 
 stse_ReturnCode_t stsafea_put_life_cyle_state_start(
-    stsafea_put_life_cyle_state_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     stsafea_life_cycle_state_t life_cycle_state);
 
-stse_ReturnCode_t stsafea_put_life_cyle_state_transfer(stsafea_put_life_cyle_state_ctx_t *pCtx);
+stse_ReturnCode_t stsafea_put_life_cyle_state_transfer(void);
 
-stse_ReturnCode_t stsafea_put_life_cyle_state_finalize(stsafea_put_life_cyle_state_ctx_t *pCtx);
-
-typedef struct {
-    stse_Handler_t *pSTSE;
-    stsafea_nb_transfer_ctx_t nb_ctx;
-    PLAT_UI8 cmd_header;
-    PLAT_UI8 tag;
-    stse_frame_t CmdFrame;
-    stse_frame_element_t eCmd_header_elem;
-    stse_frame_element_t eTag_elem;
-    PLAT_UI8 rsp_header;
-    stse_frame_t RspFrame;
-    stse_frame_element_t eRsp_header_elem;
-    stse_frame_element_t eLife_cycle_state_elem;
-} stsafea_query_life_cycle_state_ctx_t;
+stse_ReturnCode_t stsafea_put_life_cyle_state_finalize(void);
 
 stse_ReturnCode_t stsafea_query_life_cycle_state_start(
-    stsafea_query_life_cycle_state_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     stsafea_life_cycle_state_t *pLife_cycle_state);
 
-stse_ReturnCode_t stsafea_query_life_cycle_state_transfer(stsafea_query_life_cycle_state_ctx_t *pCtx);
+stse_ReturnCode_t stsafea_query_life_cycle_state_transfer(void);
 
-stse_ReturnCode_t stsafea_query_life_cycle_state_finalize(stsafea_query_life_cycle_state_ctx_t *pCtx);
-
-typedef struct {
-    stse_Handler_t *pSTSE;
-    stsafea_nb_transfer_ctx_t nb_ctx;
-    PLAT_UI8 cmd_header;
-    PLAT_UI8 tag;
-    stse_frame_t CmdFrame;
-    stse_frame_element_t eCmd_header_elem;
-    stse_frame_element_t eTag_elem;
-    stse_frame_element_t eI2cParameters_elem;
-    PLAT_UI8 rsp_header;
-    stse_frame_t RspFrame;
-    stse_frame_element_t eRsp_header_elem;
-} stsafea_put_i2c_parameters_ctx_t;
+stse_ReturnCode_t stsafea_query_life_cycle_state_finalize(void);
 
 stse_ReturnCode_t stsafea_put_i2c_parameters_start(
-    stsafea_put_i2c_parameters_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     stsafea_i2c_parameters_t *pI2c_parameters);
 
-stse_ReturnCode_t stsafea_put_i2c_parameters_transfer(stsafea_put_i2c_parameters_ctx_t *pCtx);
+stse_ReturnCode_t stsafea_put_i2c_parameters_transfer(void);
 
-stse_ReturnCode_t stsafea_put_i2c_parameters_finalize(stsafea_put_i2c_parameters_ctx_t *pCtx);
-
-typedef struct {
-    stse_Handler_t *pSTSE;
-    stsafea_nb_transfer_ctx_t nb_ctx;
-    PLAT_UI8 cmd_header;
-    PLAT_UI8 tag;
-    stse_frame_t CmdFrame;
-    stse_frame_element_t eCmd_header_elem;
-    stse_frame_element_t eTag_elem;
-    PLAT_UI8 rsp_header;
-    stse_frame_t RspFrame;
-    stse_frame_element_t eRsp_header_elem;
-    stse_frame_element_t eI2cParameters_elem;
-} stsafea_query_i2c_parameters_ctx_t;
+stse_ReturnCode_t stsafea_put_i2c_parameters_finalize(void);
 
 stse_ReturnCode_t stsafea_query_i2c_parameters_start(
-    stsafea_query_i2c_parameters_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     stsafea_i2c_parameters_t *pI2c_parameters);
 
-stse_ReturnCode_t stsafea_query_i2c_parameters_transfer(stsafea_query_i2c_parameters_ctx_t *pCtx);
+stse_ReturnCode_t stsafea_query_i2c_parameters_transfer(void);
 
-stse_ReturnCode_t stsafea_query_i2c_parameters_finalize(stsafea_query_i2c_parameters_ctx_t *pCtx);
+stse_ReturnCode_t stsafea_query_i2c_parameters_finalize(void);
 
-#endif /* STSAFEA_NB_CTX_T_DEFINED */
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */
 
 /** \}*/

@@ -22,6 +22,47 @@
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
+static PLAT_UI8 s_put_lcs_cmd_header;
+static PLAT_UI8 s_put_lcs_tag;
+static stsafea_life_cycle_state_t s_put_lcs_life_cycle_state;
+static PLAT_UI8 s_put_lcs_rsp_header;
+static stse_frame_t s_put_lcs_CmdFrame;
+static stse_frame_t s_put_lcs_RspFrame;
+static stse_frame_element_t s_put_lcs_eCmd_header;
+static stse_frame_element_t s_put_lcs_eTag;
+static stse_frame_element_t s_put_lcs_eLifeCycleState;
+static stse_frame_element_t s_put_lcs_eRsp_header;
+
+static PLAT_UI8 s_query_lcs_cmd_header;
+static PLAT_UI8 s_query_lcs_tag;
+static PLAT_UI8 s_query_lcs_rsp_header;
+static stse_frame_t s_query_lcs_CmdFrame;
+static stse_frame_t s_query_lcs_RspFrame;
+static stse_frame_element_t s_query_lcs_eCmd_header;
+static stse_frame_element_t s_query_lcs_eTag;
+static stse_frame_element_t s_query_lcs_eRsp_header;
+static stse_frame_element_t s_query_lcs_eLife_cycle_state;
+
+static PLAT_UI8 s_put_i2c_cmd_header;
+static PLAT_UI8 s_put_i2c_tag;
+static PLAT_UI8 s_put_i2c_rsp_header;
+static stse_frame_t s_put_i2c_CmdFrame;
+static stse_frame_t s_put_i2c_RspFrame;
+static stse_frame_element_t s_put_i2c_eCmd_header;
+static stse_frame_element_t s_put_i2c_eTag;
+static stse_frame_element_t s_put_i2c_eI2cParameters;
+static stse_frame_element_t s_put_i2c_eRsp_header;
+
+static PLAT_UI8 s_query_i2c_cmd_header;
+static PLAT_UI8 s_query_i2c_tag;
+static PLAT_UI8 s_query_i2c_rsp_header;
+static stse_frame_t s_query_i2c_CmdFrame;
+static stse_frame_t s_query_i2c_RspFrame;
+static stse_frame_element_t s_query_i2c_eCmd_header;
+static stse_frame_element_t s_query_i2c_eTag;
+static stse_frame_element_t s_query_i2c_eRsp_header;
+static stse_frame_element_t s_query_i2c_eI2cParameters;
+
 stse_ReturnCode_t stsafea_put_life_cyle_state(
     stse_Handler_t *pSTSE,
     stsafea_life_cycle_state_t life_cycle_state) {
@@ -147,93 +188,76 @@ stse_ReturnCode_t stsafea_query_i2c_parameters(
 }
 
 stse_ReturnCode_t stsafea_put_life_cyle_state_start(
-    stsafea_put_life_cyle_state_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     stsafea_life_cycle_state_t life_cycle_state) {
-    if (pCtx == NULL || pSTSE == NULL) {
+    if (pSTSE == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
 
-    pCtx->pSTSE = pSTSE;
-    pCtx->cmd_header = STSAFEA_CMD_PUT_ATTRIBUTE;
-    pCtx->tag = STSAFEA_SUBJECT_TAG_LIFE_CYCLE_STATE;
-    pCtx->life_cycle_state = life_cycle_state;
+    s_put_lcs_cmd_header = STSAFEA_CMD_PUT_ATTRIBUTE;
+    s_put_lcs_tag = STSAFEA_SUBJECT_TAG_LIFE_CYCLE_STATE;
+    s_put_lcs_life_cycle_state = life_cycle_state;
 
-    pCtx->CmdFrame = (stse_frame_t){0};
-    pCtx->eCmd_header_elem = (stse_frame_element_t){1, &pCtx->cmd_header, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
-    pCtx->eTag_elem = (stse_frame_element_t){1, &pCtx->tag, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eTag_elem);
-    pCtx->eLifeCycleState_elem = (stse_frame_element_t){1, (PLAT_UI8 *)&pCtx->life_cycle_state, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eLifeCycleState_elem);
+    s_put_lcs_CmdFrame = (stse_frame_t){0};
+    s_put_lcs_eCmd_header = (stse_frame_element_t){1, &s_put_lcs_cmd_header, NULL};
+    stse_frame_push_element(&s_put_lcs_CmdFrame, &s_put_lcs_eCmd_header);
+    s_put_lcs_eTag = (stse_frame_element_t){1, &s_put_lcs_tag, NULL};
+    stse_frame_push_element(&s_put_lcs_CmdFrame, &s_put_lcs_eTag);
+    s_put_lcs_eLifeCycleState = (stse_frame_element_t){1, (PLAT_UI8 *)&s_put_lcs_life_cycle_state, NULL};
+    stse_frame_push_element(&s_put_lcs_CmdFrame, &s_put_lcs_eLifeCycleState);
 
-    pCtx->RspFrame = (stse_frame_t){0};
-    pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
-    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
+    s_put_lcs_RspFrame = (stse_frame_t){0};
+    s_put_lcs_eRsp_header = (stse_frame_element_t){1, &s_put_lcs_rsp_header, NULL};
+    stse_frame_push_element(&s_put_lcs_RspFrame, &s_put_lcs_eRsp_header);
 
-    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->nb_ctx);
+    return stsafea_frame_raw_transfer_start(pSTSE, &s_put_lcs_CmdFrame, &stsafea_nb_ctx);
 }
 
-stse_ReturnCode_t stsafea_put_life_cyle_state_transfer(stsafea_put_life_cyle_state_ctx_t *pCtx) {
-    if (pCtx == NULL) {
-        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
-    }
-    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+stse_ReturnCode_t stsafea_put_life_cyle_state_transfer(void) {
+    return stsafea_frame_transfer_check(&stsafea_nb_ctx);
 }
 
-stse_ReturnCode_t stsafea_put_life_cyle_state_finalize(stsafea_put_life_cyle_state_ctx_t *pCtx) {
-    if (pCtx == NULL) {
-        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
-    }
-    return stsafea_frame_raw_transfer_finalize(&pCtx->nb_ctx, &pCtx->RspFrame);
+stse_ReturnCode_t stsafea_put_life_cyle_state_finalize(void) {
+    return stsafea_frame_raw_transfer_finalize(&stsafea_nb_ctx, &s_put_lcs_RspFrame);
 }
 
 stse_ReturnCode_t stsafea_query_life_cycle_state_start(
-    stsafea_query_life_cycle_state_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     stsafea_life_cycle_state_t *pLife_cycle_state) {
-    if (pCtx == NULL || pSTSE == NULL) {
+    if (pSTSE == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
 
-    pCtx->pSTSE = pSTSE;
-    pCtx->cmd_header = STSAFEA_CMD_QUERY;
-    pCtx->tag = STSAFEA_SUBJECT_TAG_LIFE_CYCLE_STATE;
+    s_query_lcs_cmd_header = STSAFEA_CMD_QUERY;
+    s_query_lcs_tag = STSAFEA_SUBJECT_TAG_LIFE_CYCLE_STATE;
 
-    pCtx->CmdFrame = (stse_frame_t){0};
-    pCtx->eCmd_header_elem = (stse_frame_element_t){1, &pCtx->cmd_header, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
-    pCtx->eTag_elem = (stse_frame_element_t){1, &pCtx->tag, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eTag_elem);
+    s_query_lcs_CmdFrame = (stse_frame_t){0};
+    s_query_lcs_eCmd_header = (stse_frame_element_t){1, &s_query_lcs_cmd_header, NULL};
+    stse_frame_push_element(&s_query_lcs_CmdFrame, &s_query_lcs_eCmd_header);
+    s_query_lcs_eTag = (stse_frame_element_t){1, &s_query_lcs_tag, NULL};
+    stse_frame_push_element(&s_query_lcs_CmdFrame, &s_query_lcs_eTag);
 
-    pCtx->RspFrame = (stse_frame_t){0};
-    pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
-    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
-    pCtx->eLife_cycle_state_elem = (stse_frame_element_t){1, (PLAT_UI8 *)pLife_cycle_state, NULL};
-    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eLife_cycle_state_elem);
+    s_query_lcs_RspFrame = (stse_frame_t){0};
+    s_query_lcs_eRsp_header = (stse_frame_element_t){1, &s_query_lcs_rsp_header, NULL};
+    stse_frame_push_element(&s_query_lcs_RspFrame, &s_query_lcs_eRsp_header);
+    s_query_lcs_eLife_cycle_state = (stse_frame_element_t){1, (PLAT_UI8 *)pLife_cycle_state, NULL};
+    stse_frame_push_element(&s_query_lcs_RspFrame, &s_query_lcs_eLife_cycle_state);
 
-    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->nb_ctx);
+    return stsafea_frame_raw_transfer_start(pSTSE, &s_query_lcs_CmdFrame, &stsafea_nb_ctx);
 }
 
-stse_ReturnCode_t stsafea_query_life_cycle_state_transfer(stsafea_query_life_cycle_state_ctx_t *pCtx) {
-    if (pCtx == NULL) {
-        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
-    }
-    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+stse_ReturnCode_t stsafea_query_life_cycle_state_transfer(void) {
+    return stsafea_frame_transfer_check(&stsafea_nb_ctx);
 }
 
-stse_ReturnCode_t stsafea_query_life_cycle_state_finalize(stsafea_query_life_cycle_state_ctx_t *pCtx) {
-    if (pCtx == NULL) {
-        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
-    }
-    return stsafea_frame_raw_transfer_finalize(&pCtx->nb_ctx, &pCtx->RspFrame);
+stse_ReturnCode_t stsafea_query_life_cycle_state_finalize(void) {
+    return stsafea_frame_raw_transfer_finalize(&stsafea_nb_ctx, &s_query_lcs_RspFrame);
 }
 
 stse_ReturnCode_t stsafea_put_i2c_parameters_start(
-    stsafea_put_i2c_parameters_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     stsafea_i2c_parameters_t *pI2c_parameters) {
-    if (pCtx == NULL || pSTSE == NULL) {
+    if (pSTSE == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
 
@@ -249,78 +273,63 @@ stse_ReturnCode_t stsafea_put_i2c_parameters_start(
         pI2c_parameters->idle_bus_time_to_standby = 0;
     }
 
-    pCtx->pSTSE = pSTSE;
-    pCtx->cmd_header = STSAFEA_CMD_PUT_ATTRIBUTE;
-    pCtx->tag = STSAFEA_SUBJECT_TAG_I2C_PARAMETERS;
+    s_put_i2c_cmd_header = STSAFEA_CMD_PUT_ATTRIBUTE;
+    s_put_i2c_tag = STSAFEA_SUBJECT_TAG_I2C_PARAMETERS;
 
-    pCtx->CmdFrame = (stse_frame_t){0};
-    pCtx->eCmd_header_elem = (stse_frame_element_t){1, &pCtx->cmd_header, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
-    pCtx->eTag_elem = (stse_frame_element_t){1, &pCtx->tag, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eTag_elem);
-    pCtx->eI2cParameters_elem = (stse_frame_element_t){sizeof(stsafea_i2c_parameters_t), (PLAT_UI8 *)pI2c_parameters, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eI2cParameters_elem);
+    s_put_i2c_CmdFrame = (stse_frame_t){0};
+    s_put_i2c_eCmd_header = (stse_frame_element_t){1, &s_put_i2c_cmd_header, NULL};
+    stse_frame_push_element(&s_put_i2c_CmdFrame, &s_put_i2c_eCmd_header);
+    s_put_i2c_eTag = (stse_frame_element_t){1, &s_put_i2c_tag, NULL};
+    stse_frame_push_element(&s_put_i2c_CmdFrame, &s_put_i2c_eTag);
+    s_put_i2c_eI2cParameters = (stse_frame_element_t){sizeof(stsafea_i2c_parameters_t), (PLAT_UI8 *)pI2c_parameters, NULL};
+    stse_frame_push_element(&s_put_i2c_CmdFrame, &s_put_i2c_eI2cParameters);
 
-    pCtx->RspFrame = (stse_frame_t){0};
-    pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
-    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
+    s_put_i2c_RspFrame = (stse_frame_t){0};
+    s_put_i2c_eRsp_header = (stse_frame_element_t){1, &s_put_i2c_rsp_header, NULL};
+    stse_frame_push_element(&s_put_i2c_RspFrame, &s_put_i2c_eRsp_header);
 
-    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->nb_ctx);
+    return stsafea_frame_raw_transfer_start(pSTSE, &s_put_i2c_CmdFrame, &stsafea_nb_ctx);
 }
 
-stse_ReturnCode_t stsafea_put_i2c_parameters_transfer(stsafea_put_i2c_parameters_ctx_t *pCtx) {
-    if (pCtx == NULL) {
-        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
-    }
-    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+stse_ReturnCode_t stsafea_put_i2c_parameters_transfer(void) {
+    return stsafea_frame_transfer_check(&stsafea_nb_ctx);
 }
 
-stse_ReturnCode_t stsafea_put_i2c_parameters_finalize(stsafea_put_i2c_parameters_ctx_t *pCtx) {
-    if (pCtx == NULL) {
-        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
-    }
-    return stsafea_frame_raw_transfer_finalize(&pCtx->nb_ctx, &pCtx->RspFrame);
+stse_ReturnCode_t stsafea_put_i2c_parameters_finalize(void) {
+    return stsafea_frame_raw_transfer_finalize(&stsafea_nb_ctx, &s_put_i2c_RspFrame);
 }
 
 stse_ReturnCode_t stsafea_query_i2c_parameters_start(
-    stsafea_query_i2c_parameters_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     stsafea_i2c_parameters_t *pI2c_parameters) {
-    if (pCtx == NULL || pSTSE == NULL) {
+    if (pSTSE == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
 
-    pCtx->pSTSE = pSTSE;
-    pCtx->cmd_header = STSAFEA_CMD_QUERY;
-    pCtx->tag = STSAFEA_SUBJECT_TAG_I2C_PARAMETERS;
+    s_query_i2c_cmd_header = STSAFEA_CMD_QUERY;
+    s_query_i2c_tag = STSAFEA_SUBJECT_TAG_I2C_PARAMETERS;
 
-    pCtx->CmdFrame = (stse_frame_t){0};
-    pCtx->eCmd_header_elem = (stse_frame_element_t){1, &pCtx->cmd_header, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
-    pCtx->eTag_elem = (stse_frame_element_t){1, &pCtx->tag, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eTag_elem);
+    s_query_i2c_CmdFrame = (stse_frame_t){0};
+    s_query_i2c_eCmd_header = (stse_frame_element_t){1, &s_query_i2c_cmd_header, NULL};
+    stse_frame_push_element(&s_query_i2c_CmdFrame, &s_query_i2c_eCmd_header);
+    s_query_i2c_eTag = (stse_frame_element_t){1, &s_query_i2c_tag, NULL};
+    stse_frame_push_element(&s_query_i2c_CmdFrame, &s_query_i2c_eTag);
 
-    pCtx->RspFrame = (stse_frame_t){0};
-    pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
-    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
-    pCtx->eI2cParameters_elem = (stse_frame_element_t){sizeof(stsafea_i2c_parameters_t), (PLAT_UI8 *)pI2c_parameters, NULL};
-    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eI2cParameters_elem);
+    s_query_i2c_RspFrame = (stse_frame_t){0};
+    s_query_i2c_eRsp_header = (stse_frame_element_t){1, &s_query_i2c_rsp_header, NULL};
+    stse_frame_push_element(&s_query_i2c_RspFrame, &s_query_i2c_eRsp_header);
+    s_query_i2c_eI2cParameters = (stse_frame_element_t){sizeof(stsafea_i2c_parameters_t), (PLAT_UI8 *)pI2c_parameters, NULL};
+    stse_frame_push_element(&s_query_i2c_RspFrame, &s_query_i2c_eI2cParameters);
 
-    return stsafea_frame_raw_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->nb_ctx);
+    return stsafea_frame_raw_transfer_start(pSTSE, &s_query_i2c_CmdFrame, &stsafea_nb_ctx);
 }
 
-stse_ReturnCode_t stsafea_query_i2c_parameters_transfer(stsafea_query_i2c_parameters_ctx_t *pCtx) {
-    if (pCtx == NULL) {
-        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
-    }
-    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+stse_ReturnCode_t stsafea_query_i2c_parameters_transfer(void) {
+    return stsafea_frame_transfer_check(&stsafea_nb_ctx);
 }
 
-stse_ReturnCode_t stsafea_query_i2c_parameters_finalize(stsafea_query_i2c_parameters_ctx_t *pCtx) {
-    if (pCtx == NULL) {
-        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
-    }
-    return stsafea_frame_raw_transfer_finalize(&pCtx->nb_ctx, &pCtx->RspFrame);
+stse_ReturnCode_t stsafea_query_i2c_parameters_finalize(void) {
+    return stsafea_frame_raw_transfer_finalize(&stsafea_nb_ctx, &s_query_i2c_RspFrame);
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

@@ -20,6 +20,8 @@
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
+stsafea_nb_transfer_ctx_t stsafea_nb_ctx;
+
 /* -------------------------------------------------------------------------
  * Private helper — second-pass receive using header+length already read
  * during stsafea_frame_transfer_check().

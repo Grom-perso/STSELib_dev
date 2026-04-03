@@ -32,10 +32,9 @@
  *
  * Typical applicative state-machine usage:
  * \code
- *   stsafea_echo_ctx_t ctx;
- *   while (stsafea_echo_start (&ctx, pSTSE, msg, rsp, len) != STSE_OK);
- *   while (stsafea_echo_transfer(&ctx) != STSE_OK);
- *   while (stsafea_echo_finalize(&ctx) != STSE_OK);
+ *   stsafea_echo_start(pSTSE, msg, rsp, len);
+ *   while (stsafea_echo_transfer() == STSE_PLATFORM_PENDING);
+ *   ret = stsafea_echo_finalize();
  * \endcode
  *
  * @{
@@ -189,6 +188,8 @@ stse_ReturnCode_t stsafea_frame_transfer_start(stse_Handler_t *pSTSE,
 stse_ReturnCode_t stsafea_frame_transfer_finalize(stse_frame_t *pCmdFrame,
                                                   stse_frame_t *pRspFrame,
                                                   stsafea_nb_transfer_ctx_t *pNbCtx);
+
+extern stsafea_nb_transfer_ctx_t stsafea_nb_ctx;
 
 /*! @} */
 

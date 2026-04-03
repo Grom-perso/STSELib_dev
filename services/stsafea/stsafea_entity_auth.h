@@ -65,60 +65,25 @@ stse_ReturnCode_t stsafea_verify_entity_signature(
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 #include "services/stsafea/stsafea_frame_transfer_nb.h"
 
-typedef struct {
-    stse_Handler_t *pSTSE;
-    stsafea_nb_transfer_ctx_t nb_ctx;
-    PLAT_UI8 cmd_header[STSAFEA_EXT_HEADER_SIZE];
-    stse_frame_t CmdFrame;
-    stse_frame_element_t eCmd_header_elem;
-    PLAT_UI8 rsp_header;
-    stse_frame_t RspFrame;
-    stse_frame_element_t eRsp_header_elem;
-    stse_frame_element_t eChallenge_elem;
-} stsafea_generate_challenge_ctx_t;
-
 stse_ReturnCode_t stsafea_generate_challenge_start(
-    stsafea_generate_challenge_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     PLAT_UI8 challenge_size,
     PLAT_UI8 *pChallenge);
 
-stse_ReturnCode_t stsafea_generate_challenge_transfer(stsafea_generate_challenge_ctx_t *pCtx);
+stse_ReturnCode_t stsafea_generate_challenge_transfer(void);
 
-stse_ReturnCode_t stsafea_generate_challenge_finalize(stsafea_generate_challenge_ctx_t *pCtx);
-
-typedef struct {
-    stse_Handler_t *pSTSE;
-    stsafea_nb_transfer_ctx_t nb_ctx;
-    PLAT_UI8 cmd_header[STSAFEA_EXT_HEADER_SIZE];
-    PLAT_UI8 filler;
-    PLAT_UI8 slot_number;
-    PLAT_UI8 signature_length[STSE_ECC_GENERIC_LENGTH_SIZE];
-    stse_frame_t CmdFrame;
-    stse_frame_element_t eCmd_header_elem;
-    stse_frame_element_t eFiller_elem;
-    stse_frame_element_t eSlot_number_elem;
-    stse_frame_element_t eSignature_R_length_elem;
-    stse_frame_element_t eSignature_R_elem;
-    stse_frame_element_t eSignature_S_length_elem;
-    stse_frame_element_t eSignature_S_elem;
-    PLAT_UI8 rsp_header;
-    stse_frame_t RspFrame;
-    stse_frame_element_t eRsp_header_elem;
-    stse_frame_element_t eSignature_validity_elem;
-} stsafea_verify_entity_signature_ctx_t;
+stse_ReturnCode_t stsafea_generate_challenge_finalize(void);
 
 stse_ReturnCode_t stsafea_verify_entity_signature_start(
-    stsafea_verify_entity_signature_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     PLAT_UI8 slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *pSignature,
     PLAT_UI8 *pSignature_validity);
 
-stse_ReturnCode_t stsafea_verify_entity_signature_transfer(stsafea_verify_entity_signature_ctx_t *pCtx);
+stse_ReturnCode_t stsafea_verify_entity_signature_transfer(void);
 
-stse_ReturnCode_t stsafea_verify_entity_signature_finalize(stsafea_verify_entity_signature_ctx_t *pCtx);
+stse_ReturnCode_t stsafea_verify_entity_signature_finalize(void);
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */
 

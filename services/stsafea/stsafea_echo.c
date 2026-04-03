@@ -22,6 +22,15 @@
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
+static PLAT_UI8 s_echo_cmd_header;
+static PLAT_UI8 s_echo_rsp_header;
+static stse_frame_t s_echo_CmdFrame;
+static stse_frame_t s_echo_RspFrame;
+static stse_frame_element_t s_echo_eCmd_header;
+static stse_frame_element_t s_echo_eMessage;
+static stse_frame_element_t s_echo_eRsp_header;
+static stse_frame_element_t s_echo_eEchoed_message;
+
 stse_ReturnCode_t stsafea_echo(stse_Handler_t *pSTSE,
                                PLAT_UI8 *pMessage,
                                PLAT_UI8 *pEchoed_message,
@@ -54,48 +63,40 @@ stse_ReturnCode_t stsafea_echo(stse_Handler_t *pSTSE,
 }
 
 stse_ReturnCode_t stsafea_echo_start(
-    stsafea_echo_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     PLAT_UI8 *pMessage,
     PLAT_UI8 *pEchoed_message,
     PLAT_UI16 message_length) {
-    if (pCtx == NULL || pSTSE == NULL) {
+    if (pSTSE == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
     if (pMessage == NULL || pEchoed_message == NULL || message_length == 0) {
         return STSE_SERVICE_INVALID_PARAMETER;
     }
 
-    pCtx->pSTSE = pSTSE;
-    pCtx->cmd_header = STSAFEA_CMD_ECHO;
+    s_echo_cmd_header = STSAFEA_CMD_ECHO;
 
-    pCtx->CmdFrame = (stse_frame_t){0};
-    pCtx->eCmd_header_elem = (stse_frame_element_t){1, &pCtx->cmd_header, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
-    pCtx->eMessage_elem = (stse_frame_element_t){message_length, pMessage, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eMessage_elem);
+    s_echo_CmdFrame = (stse_frame_t){0};
+    s_echo_eCmd_header = (stse_frame_element_t){1, &s_echo_cmd_header, NULL};
+    stse_frame_push_element(&s_echo_CmdFrame, &s_echo_eCmd_header);
+    s_echo_eMessage = (stse_frame_element_t){message_length, pMessage, NULL};
+    stse_frame_push_element(&s_echo_CmdFrame, &s_echo_eMessage);
 
-    pCtx->RspFrame = (stse_frame_t){0};
-    pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
-    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
-    pCtx->eEchoed_message_elem = (stse_frame_element_t){message_length, pEchoed_message, NULL};
-    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eEchoed_message_elem);
+    s_echo_RspFrame = (stse_frame_t){0};
+    s_echo_eRsp_header = (stse_frame_element_t){1, &s_echo_rsp_header, NULL};
+    stse_frame_push_element(&s_echo_RspFrame, &s_echo_eRsp_header);
+    s_echo_eEchoed_message = (stse_frame_element_t){message_length, pEchoed_message, NULL};
+    stse_frame_push_element(&s_echo_RspFrame, &s_echo_eEchoed_message);
 
-    return stsafea_frame_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+    return stsafea_frame_transfer_start(pSTSE, &s_echo_CmdFrame, &s_echo_RspFrame, &stsafea_nb_ctx);
 }
 
-stse_ReturnCode_t stsafea_echo_transfer(stsafea_echo_ctx_t *pCtx) {
-    if (pCtx == NULL) {
-        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
-    }
-    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+stse_ReturnCode_t stsafea_echo_transfer(void) {
+    return stsafea_frame_transfer_check(&stsafea_nb_ctx);
 }
 
-stse_ReturnCode_t stsafea_echo_finalize(stsafea_echo_ctx_t *pCtx) {
-    if (pCtx == NULL) {
-        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
-    }
-    return stsafea_frame_transfer_finalize(&pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+stse_ReturnCode_t stsafea_echo_finalize(void) {
+    return stsafea_frame_transfer_finalize(&s_echo_CmdFrame, &s_echo_RspFrame, &stsafea_nb_ctx);
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

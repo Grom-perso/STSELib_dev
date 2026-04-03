@@ -50,29 +50,15 @@ stse_ReturnCode_t stsafea_echo(
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 #include "services/stsafea/stsafea_frame_transfer_nb.h"
 
-typedef struct {
-    stse_Handler_t *pSTSE;
-    stsafea_nb_transfer_ctx_t nb_ctx;
-    PLAT_UI8 cmd_header;
-    stse_frame_t CmdFrame;
-    stse_frame_element_t eCmd_header_elem;
-    stse_frame_element_t eMessage_elem;
-    PLAT_UI8 rsp_header;
-    stse_frame_t RspFrame;
-    stse_frame_element_t eRsp_header_elem;
-    stse_frame_element_t eEchoed_message_elem;
-} stsafea_echo_ctx_t;
-
 stse_ReturnCode_t stsafea_echo_start(
-    stsafea_echo_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     PLAT_UI8 *pMessage,
     PLAT_UI8 *pEchoed_message,
     PLAT_UI16 message_length);
 
-stse_ReturnCode_t stsafea_echo_transfer(stsafea_echo_ctx_t *pCtx);
+stse_ReturnCode_t stsafea_echo_transfer(void);
 
-stse_ReturnCode_t stsafea_echo_finalize(stsafea_echo_ctx_t *pCtx);
+stse_ReturnCode_t stsafea_echo_finalize(void);
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */
 

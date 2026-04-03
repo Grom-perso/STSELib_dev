@@ -154,72 +154,26 @@ stse_ReturnCode_t stsafea_finish_hash(
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 #include "services/stsafea/stsafea_frame_transfer_nb.h"
 
-typedef struct {
-    stse_Handler_t *pSTSE;
-    stsafea_nb_transfer_ctx_t nb_ctx;
-    PLAT_UI8 cmd_header[STSAFEA_EXT_HEADER_SIZE];
-    PLAT_UI16 hash_algo_id_length;
-    PLAT_UI8 rsp_header;
-    stse_frame_t CmdFrame;
-    stse_frame_element_t eCmd_header_elem;
-    stse_frame_element_t eHashAlgo_elem;
-    stse_frame_element_t eMessage_elem;
-    stse_frame_t RspFrame;
-    stse_frame_element_t eRsp_header_elem;
-} stsafea_start_hash_ctx_t;
-
 stse_ReturnCode_t stsafea_start_hash_start(
-    stsafea_start_hash_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     stse_hash_algorithm_t sha_algorithm,
     PLAT_UI8 *pMessage,
     PLAT_UI16 message_size);
 
-stse_ReturnCode_t stsafea_start_hash_transfer(stsafea_start_hash_ctx_t *pCtx);
+stse_ReturnCode_t stsafea_start_hash_transfer(void);
 
-stse_ReturnCode_t stsafea_start_hash_finalize(stsafea_start_hash_ctx_t *pCtx);
-
-typedef struct {
-    stse_Handler_t *pSTSE;
-    stsafea_nb_transfer_ctx_t nb_ctx;
-    PLAT_UI8 cmd_header[STSAFEA_EXT_HEADER_SIZE];
-    PLAT_UI8 rsp_header;
-    stse_frame_t CmdFrame;
-    stse_frame_element_t eCmd_header_elem;
-    stse_frame_element_t eMessage_elem;
-    stse_frame_t RspFrame;
-    stse_frame_element_t eRsp_header_elem;
-} stsafea_process_hash_ctx_t;
+stse_ReturnCode_t stsafea_start_hash_finalize(void);
 
 stse_ReturnCode_t stsafea_process_hash_start(
-    stsafea_process_hash_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     PLAT_UI8 *pMessage,
     PLAT_UI16 message_size);
 
-stse_ReturnCode_t stsafea_process_hash_transfer(stsafea_process_hash_ctx_t *pCtx);
+stse_ReturnCode_t stsafea_process_hash_transfer(void);
 
-stse_ReturnCode_t stsafea_process_hash_finalize(stsafea_process_hash_ctx_t *pCtx);
-
-typedef struct {
-    stse_Handler_t *pSTSE;
-    stsafea_nb_transfer_ctx_t nb_ctx;
-    stse_hash_algorithm_t sha_algorithm;
-    PLAT_UI16 *pDigest_size;
-    PLAT_UI8 cmd_header[STSAFEA_EXT_HEADER_SIZE];
-    PLAT_UI8 digest_size_array[STSAFEA_GENERIC_LENGTH_SIZE];
-    PLAT_UI8 rsp_header;
-    stse_frame_t CmdFrame;
-    stse_frame_element_t eCmd_header_elem;
-    stse_frame_element_t eMessage_elem;
-    stse_frame_t RspFrame;
-    stse_frame_element_t eRsp_header_elem;
-    stse_frame_element_t eDigestSize_elem;
-    stse_frame_element_t eDigest_elem;
-} stsafea_finish_hash_ctx_t;
+stse_ReturnCode_t stsafea_process_hash_finalize(void);
 
 stse_ReturnCode_t stsafea_finish_hash_start(
-    stsafea_finish_hash_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     stse_hash_algorithm_t sha_algorithm,
     PLAT_UI8 *pMessage,
@@ -227,9 +181,9 @@ stse_ReturnCode_t stsafea_finish_hash_start(
     PLAT_UI8 *pDigest,
     PLAT_UI16 *pDigest_size);
 
-stse_ReturnCode_t stsafea_finish_hash_transfer(stsafea_finish_hash_ctx_t *pCtx);
+stse_ReturnCode_t stsafea_finish_hash_transfer(void);
 
-stse_ReturnCode_t stsafea_finish_hash_finalize(stsafea_finish_hash_ctx_t *pCtx);
+stse_ReturnCode_t stsafea_finish_hash_finalize(void);
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */
 

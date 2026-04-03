@@ -22,6 +22,18 @@
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
+static PLAT_UI8 s_random_cmd_header;
+static PLAT_UI8 s_random_subject;
+static PLAT_UI8 s_random_size;
+static PLAT_UI8 s_random_rsp_header;
+static stse_frame_t s_random_CmdFrame;
+static stse_frame_t s_random_RspFrame;
+static stse_frame_element_t s_random_eCmd_header;
+static stse_frame_element_t s_random_eSubject;
+static stse_frame_element_t s_random_eSize;
+static stse_frame_element_t s_random_eRsp_header;
+static stse_frame_element_t s_random_eRandom;
+
 stse_ReturnCode_t stsafea_generate_random(
     stse_Handler_t *pSTSE,
     PLAT_UI8 *pRandom,
@@ -59,51 +71,43 @@ stse_ReturnCode_t stsafea_generate_random(
 }
 
 stse_ReturnCode_t stsafea_generate_random_start(
-    stsafea_generate_random_ctx_t *pCtx,
     stse_Handler_t *pSTSE,
     PLAT_UI8 *pRandom,
     PLAT_UI8 random_size) {
-    if (pCtx == NULL || pSTSE == NULL) {
+    if (pSTSE == NULL) {
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
     if (pRandom == NULL || random_size == 0) {
         return STSE_SERVICE_INVALID_PARAMETER;
     }
 
-    pCtx->pSTSE = pSTSE;
-    pCtx->cmd_header = STSAFEA_CMD_GENERATE_RANDOM;
-    pCtx->subject = 0x00;
-    pCtx->random_size = random_size;
+    s_random_cmd_header = STSAFEA_CMD_GENERATE_RANDOM;
+    s_random_subject = 0x00;
+    s_random_size = random_size;
 
-    pCtx->CmdFrame = (stse_frame_t){0};
-    pCtx->eCmd_header_elem = (stse_frame_element_t){1, &pCtx->cmd_header, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eCmd_header_elem);
-    pCtx->eSubject_elem = (stse_frame_element_t){1, &pCtx->subject, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eSubject_elem);
-    pCtx->eSize_elem = (stse_frame_element_t){1, &pCtx->random_size, NULL};
-    stse_frame_push_element(&pCtx->CmdFrame, &pCtx->eSize_elem);
+    s_random_CmdFrame = (stse_frame_t){0};
+    s_random_eCmd_header = (stse_frame_element_t){1, &s_random_cmd_header, NULL};
+    stse_frame_push_element(&s_random_CmdFrame, &s_random_eCmd_header);
+    s_random_eSubject = (stse_frame_element_t){1, &s_random_subject, NULL};
+    stse_frame_push_element(&s_random_CmdFrame, &s_random_eSubject);
+    s_random_eSize = (stse_frame_element_t){1, &s_random_size, NULL};
+    stse_frame_push_element(&s_random_CmdFrame, &s_random_eSize);
 
-    pCtx->RspFrame = (stse_frame_t){0};
-    pCtx->eRsp_header_elem = (stse_frame_element_t){1, &pCtx->rsp_header, NULL};
-    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRsp_header_elem);
-    pCtx->eRandom_elem = (stse_frame_element_t){random_size, pRandom, NULL};
-    stse_frame_push_element(&pCtx->RspFrame, &pCtx->eRandom_elem);
+    s_random_RspFrame = (stse_frame_t){0};
+    s_random_eRsp_header = (stse_frame_element_t){1, &s_random_rsp_header, NULL};
+    stse_frame_push_element(&s_random_RspFrame, &s_random_eRsp_header);
+    s_random_eRandom = (stse_frame_element_t){random_size, pRandom, NULL};
+    stse_frame_push_element(&s_random_RspFrame, &s_random_eRandom);
 
-    return stsafea_frame_transfer_start(pSTSE, &pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+    return stsafea_frame_transfer_start(pSTSE, &s_random_CmdFrame, &s_random_RspFrame, &stsafea_nb_ctx);
 }
 
-stse_ReturnCode_t stsafea_generate_random_transfer(stsafea_generate_random_ctx_t *pCtx) {
-    if (pCtx == NULL) {
-        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
-    }
-    return stsafea_frame_transfer_check(&pCtx->nb_ctx);
+stse_ReturnCode_t stsafea_generate_random_transfer(void) {
+    return stsafea_frame_transfer_check(&stsafea_nb_ctx);
 }
 
-stse_ReturnCode_t stsafea_generate_random_finalize(stsafea_generate_random_ctx_t *pCtx) {
-    if (pCtx == NULL) {
-        return STSE_SERVICE_HANDLER_NOT_INITIALISED;
-    }
-    return stsafea_frame_transfer_finalize(&pCtx->CmdFrame, &pCtx->RspFrame, &pCtx->nb_ctx);
+stse_ReturnCode_t stsafea_generate_random_finalize(void) {
+    return stsafea_frame_transfer_finalize(&s_random_CmdFrame, &s_random_RspFrame, &stsafea_nb_ctx);
 }
 
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */
