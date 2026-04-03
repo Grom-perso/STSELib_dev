@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stsafel_echo.c
- * \brief   Echo services for STSAFE-L
+ * \brief   STSAFE-L services for echo (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -16,8 +16,11 @@
  ******************************************************************************
  */
 
-#include "services/stsafel/stsafel_echo.h"
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
+
 #include "services/stsafel/stsafel_commands.h"
+#include "services/stsafel/stsafel_echo.h"
 #include "services/stsafel/stsafel_frame_transfer.h"
 
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
@@ -43,12 +46,12 @@ stse_ReturnCode_t stsafel_echo(stse_Handler_t *pSTSE,
     }
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eMessage, message_length, pMessage);
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEL_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eEchoed_message, message_length, pEchoed_message);
 

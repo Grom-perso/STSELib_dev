@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
- * \file	stsafea_data_partition.h
- * \brief   Data partition services for STSAFE-A
+ * \file	stsafea_ecc.h
+ * \brief   STSAFE-A services for ECC (header)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -101,9 +101,9 @@ stse_ReturnCode_t stsafea_stop_volatile_KEK_session(
 stse_ReturnCode_t stsafea_ecc_verify_signature(
     stse_Handler_t *pSTSE,
     stse_ecc_key_type_t key_type,
-    PLAT_UI8 *pPublic_key,
-    PLAT_UI8 *pSignature,
-    PLAT_UI8 *pMessage,
+    const PLAT_UI8 *pPublic_key,
+    const PLAT_UI8 *pSignature,
+    const PLAT_UI8 *pMessage,
     PLAT_UI16 message_length,
     PLAT_UI8 eddsa_variant,
     PLAT_UI8 *pSignature_validity);
@@ -124,7 +124,7 @@ stse_ReturnCode_t stsafea_ecc_generate_signature(
     stse_Handler_t *pSTSE,
     PLAT_UI8 slot_number,
     stse_ecc_key_type_t key_type,
-    PLAT_UI8 *pMessage,
+    const PLAT_UI8 *pMessage,
     PLAT_UI16 message_length,
     PLAT_UI8 *pSignature);
 

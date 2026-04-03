@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stsafea_data_partition.c
- * \brief   Data partition services for STSAFE-A
+ * \brief   STSAFE-A services for data partition (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -15,6 +15,9 @@
  *
  ******************************************************************************
  */
+
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
 
 #include "services/stsafea/stsafea_data_partition.h"
 #include "services/stsafea/stsafea_frame_transfer.h"
@@ -56,12 +59,12 @@ stse_ReturnCode_t stsafea_get_total_partition_count(stse_Handler_t *pSTSE,
     }
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &tag);
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eTotal_partition_count, 1, pTotal_partition_count);
 
@@ -88,12 +91,12 @@ stse_ReturnCode_t stsafea_get_data_partitions_configuration(stse_Handler_t *pSTS
     }
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &tag);
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eRaw, record_table_length, raw_data);
 
@@ -161,7 +164,7 @@ stse_ReturnCode_t stsafea_decrement_counter_zone(stse_Handler_t *pSTSE,
 #endif
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmdHeader, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eOption, STSAFEA_ZONE_ACCESS_OPTION_SIZE, (PLAT_UI8 *)&option);
     stse_frame_element_allocate_push(&CmdFrame, eZoneIndex, STSAFEA_ZONE_INDEX_SIZE, &zone_index);
@@ -174,7 +177,7 @@ stse_ReturnCode_t stsafea_decrement_counter_zone(stse_Handler_t *pSTSE,
     }
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eNewCounterVal, STSAFEA_COUNTER_VALUE_SIZE, (PLAT_UI8 *)pNew_counter_value);
 
@@ -231,7 +234,7 @@ stse_ReturnCode_t stsafea_read_counter_zone(stse_Handler_t *pSTSE,
 #endif
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmdHeader, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eOption, STSAFEA_ZONE_ACCESS_OPTION_SIZE, (PLAT_UI8 *)&option);
     stse_frame_element_allocate_push(&CmdFrame, eZoneIndex, STSAFEA_ZONE_INDEX_SIZE, (PLAT_UI8 *)&zone_index);
@@ -243,7 +246,7 @@ stse_ReturnCode_t stsafea_read_counter_zone(stse_Handler_t *pSTSE,
     }
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eCounterVal, STSAFEA_COUNTER_VALUE_SIZE, (PLAT_UI8 *)pCounter_value);
     stse_frame_element_allocate_push(&RspFrame, eAssociatedData, Associated_data_length, pAssociated_data);
@@ -300,7 +303,7 @@ stse_ReturnCode_t stsafea_read_data_zone(stse_Handler_t *pSTSE,
 #endif
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmdHeader, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eOption, STSAFEA_ZONE_ACCESS_OPTION_SIZE, (PLAT_UI8 *)&option);
     stse_frame_element_allocate_push(&CmdFrame, eZoneIndex, STSAFEA_ZONE_INDEX_SIZE, (PLAT_UI8 *)&zone_index);
@@ -312,7 +315,7 @@ stse_ReturnCode_t stsafea_read_data_zone(stse_Handler_t *pSTSE,
     }
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     if (read_length != 0) {
         stse_frame_element_allocate_push(&RspFrame, eData, read_length, (PLAT_UI8 *)pReadBuffer);
@@ -368,7 +371,7 @@ stse_ReturnCode_t stsafea_update_data_zone(stse_Handler_t *pSTSE,
 #endif
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmdHeader, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eOption, STSAFEA_ZONE_ACCESS_OPTION_SIZE, (PLAT_UI8 *)&option);
     stse_frame_element_allocate_push(&CmdFrame, eZoneIndex, STSAFEA_ZONE_INDEX_SIZE, (PLAT_UI8 *)&zone_index);
@@ -380,7 +383,7 @@ stse_ReturnCode_t stsafea_update_data_zone(stse_Handler_t *pSTSE,
     }
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
     /*- Swap Elements byte order before sending*/

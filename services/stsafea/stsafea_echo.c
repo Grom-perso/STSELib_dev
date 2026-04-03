@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stsafea_echo.c
- * \brief   Echo services for STSAFE-A
+ * \brief   STSAFE-A services for echo (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -15,6 +15,9 @@
  *
  ******************************************************************************
  */
+
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
 
 #include "services/stsafea/stsafea_echo.h"
 #include "services/stsafea/stsafea_frame_transfer.h"
@@ -37,12 +40,12 @@ stse_ReturnCode_t stsafea_echo(stse_Handler_t *pSTSE,
     }
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eMessage, message_length, pMessage);
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eEchoed_message, message_length, pEchoed_message);
 

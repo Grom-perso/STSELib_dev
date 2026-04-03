@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stsafea_derive_keys.c
- * \brief   STSAFE Middleware services for derive keys command (source)
+ * \brief   STSAFE-A services for derive keys command (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -14,6 +14,9 @@
  * If no LICENSE file comes with this software, it is provided AS-IS.
  *
  *****************************************************************************/
+
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
 
 #include "services/stsafea/stsafea_derive_keys.h"
 #include "services/stsafea/stsafea_frame_transfer.h"
@@ -81,8 +84,8 @@ stse_ReturnCode_t stsafea_derive_keys(
     PLAT_UI8 okm_key_len_buf[okm_count][2];
 
     /* Initialize Frames */
-    stse_cmd_frame_allocate(CmdFrame);
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(CmdFrame);
+    stse_frame_allocate(RspFrame);
 
     /* 3. Build Command Frame */
     /* Header */

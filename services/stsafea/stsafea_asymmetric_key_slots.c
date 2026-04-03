@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stsafea_asymmetric_key_slots.c
- * \brief   STSAFEA services for symmetric key slots management (source)
+ * \brief   STSAFE-A services for asymmetric key slots management (source)
  * \author  STMicroelectronics - SMD application team
  *
  ******************************************************************************
@@ -16,6 +16,8 @@
  *****************************************************************************/
 
 /* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
+#include <string.h>
 
 #include "services/stsafea/stsafea_asymmetric_key_slots.h"
 #include "services/stsafea/stsafea_frame_transfer.h"
@@ -38,11 +40,11 @@ stse_ReturnCode_t stsafea_query_private_key_slots_count(
     PLAT_UI8 subject_tag = STSAFEA_SUBJECT_TAG_PRIVATE_KEY_TABLE;
     PLAT_UI8 rsp_header;
 
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSubject_tag, 1, &subject_tag);
 
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, ePrivate_key_slot_count, 1, pPrivate_key_slot_count);
 
@@ -78,11 +80,11 @@ stse_ReturnCode_t stsafea_query_private_key_table(
     PLAT_UI16 raw_table_length = private_key_slot_count * sizeof(stsafea_private_key_slot_information_t);
     PLAT_UI8 pTable_raw[raw_table_length];
 
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSubject_tag, 1, &subject_tag);
 
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eSlot_count, 1, &slot_count);
     stse_frame_element_allocate_push(&RspFrame, efiller, 1, &filler);
@@ -161,7 +163,7 @@ stse_ReturnCode_t stsafea_generate_ecc_key_pair(
     stse_frame_element_allocate(ePublic_key_first_element, 0, NULL);
     stse_frame_element_allocate(ePublic_key_second_element, 0, NULL);
 
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eAttribute_tag, 1, &attribute_tag);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, STSAFEA_SLOT_NUMBER_ID_SIZE, &slot_number);
@@ -172,7 +174,7 @@ stse_ReturnCode_t stsafea_generate_ecc_key_pair(
                                      stse_ecc_info_table[key_type].curve_id_total_length,
                                      (PLAT_UI8 *)&stse_ecc_info_table[key_type].curve_id);
 
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
 
 #if defined(STSE_CONF_ECC_CURVE_25519) || defined(STSE_CONF_ECC_EDWARD_25519)
@@ -242,13 +244,13 @@ stse_ReturnCode_t stsafea_generate_ECDHE_key_pair(
     stse_frame_element_allocate(ePublic_key_first_element, 0, NULL);
     stse_frame_element_allocate(ePublic_key_second_element, 0, NULL);
 
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_EXT_HEADER_SIZE, cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eCurve_id_cmd,
                                      stse_ecc_info_table[key_type].curve_id_total_length,
                                      (PLAT_UI8 *)&stse_ecc_info_table[key_type].curve_id);
 
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eCurve_id_rsp,
                                      stse_ecc_info_table[key_type].curve_id_total_length,

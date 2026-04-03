@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stsafea_random.c
- * \brief   Random services for STSAFE
+ * \brief   STSAFE-A services for random (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -16,8 +16,12 @@
  ******************************************************************************
  */
 
-#include "services/stsafea/stsafea_random.h"
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
+//#include <string.h>
+
 #include "services/stsafea/stsafea_frame_transfer.h"
+#include "services/stsafea/stsafea_random.h"
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
@@ -39,13 +43,13 @@ stse_ReturnCode_t stsafea_generate_random(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSubject, 1, &subject);
     stse_frame_element_allocate_push(&CmdFrame, eSize, 1, &random_size);
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eRandom, random_size, pRandom);
 

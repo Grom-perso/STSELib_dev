@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stsafea_reset.c
- * \brief   Reset services for STSAFE
+ * \brief   STSAFE-A services for reset (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -16,8 +16,11 @@
  ******************************************************************************
  */
 
-#include "services/stsafea/stsafea_reset.h"
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
+
 #include "services/stsafea/stsafea_frame_transfer.h"
+#include "services/stsafea/stsafea_reset.h"
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
@@ -30,11 +33,11 @@ stse_ReturnCode_t stsafea_reset(stse_Handler_t *pSTSE) {
     }
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
 
     /*- Perform Transfer*/

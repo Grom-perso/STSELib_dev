@@ -56,7 +56,8 @@ typedef struct stse_frame_element_t stse_frame_element_t;
 
 /**
  * \brief Frame element structure
- * \details Represents a single element in a frame with its data pointer and length
+ * \details Represents a single element in a frame with its data pointer and length.
+ *          Array-based storage: no linked-list next pointer.
  */
 struct stse_frame_element_t {
     PLAT_UI16 length;    /*!< Length of the element data */
@@ -65,13 +66,14 @@ struct stse_frame_element_t {
 
 /**
  * \brief Frame structure using array-based element storage
- * \details Contains an array of frame elements and metadata for frame management
+ * \details Contains an array of frame elements and metadata for frame management.
+ *          Replaces the previous linked-list (first_element/last_element) design.
  */
 struct stse_frame_t {
-    PLAT_UI8 element_count;  /*!< Current number of elements in the frame */
-    PLAT_UI16 length;        /*!< Total length of all element data in the frame */
-    PLAT_UI8 max_elements;   /*!< Maximum number of elements allowed in this frame */
-    stse_frame_element_t *pElements;  /*!< Pointer to the array of frame elements */
+    PLAT_UI8 element_count;          /*!< Current number of elements in the frame */
+    PLAT_UI16 length;                /*!< Total length of all element data in the frame */
+    PLAT_UI8 max_elements;           /*!< Maximum number of elements allowed in this frame */
+    stse_frame_element_t *pElements; /*!< Pointer to the RAM array of frame elements */
 };
 
 typedef enum {
@@ -80,35 +82,58 @@ typedef enum {
 } stse_frame_encrypt_flag_t;
 
 /**
- * \brief RAM arrays for command and response frame elements
+ * \brief Global RAM arrays for command and response frame elements.
+ *        Array depth is configured via STSE_CONF_CMD_FRAME_MAX_ELEMENTS and
+ *        STSE_CONF_RSP_FRAME_MAX_ELEMENTS in stse_conf.h.
  */
 extern stse_frame_element_t stse_cmd_frame_elements[STSE_CONF_CMD_FRAME_MAX_ELEMENTS];
 extern stse_frame_element_t stse_rsp_frame_elements[STSE_CONF_RSP_FRAME_MAX_ELEMENTS];
 
 /**
- * \brief RAM variables for tracking element counts
+ * \brief Global RAM counters tracking current element counts in each frame array.
+ *        stse_cmd_frame_element_count is updated whenever elements are pushed/popped
+ *        to/from a frame backed by stse_cmd_frame_elements[].
+ *        stse_rsp_frame_element_count is updated whenever elements are pushed/popped
+ *        to/from a frame backed by stse_rsp_frame_elements[].
  */
 extern PLAT_UI8 stse_cmd_frame_element_count;
 extern PLAT_UI8 stse_rsp_frame_element_count;
 
 /**
- * \brief Allocate a command frame using the global command frame element array
+ * \brief Allocate a command frame using the global command frame element array.
+ *        Resets stse_cmd_frame_element_count to 0.
  */
 #define stse_cmd_frame_allocate(frame) \
     stse_cmd_frame_element_count = 0; \
     stse_frame_t frame = {0, 0, STSE_CONF_CMD_FRAME_MAX_ELEMENTS, stse_cmd_frame_elements};
 
 /**
- * \brief Allocate a response frame using the global response frame element array
+ * \brief Allocate a response frame using the global response frame element array.
+ *        Resets stse_rsp_frame_element_count to 0.
  */
 #define stse_rsp_frame_allocate(frame) \
     stse_rsp_frame_element_count = 0; \
     stse_frame_t frame = {0, 0, STSE_CONF_RSP_FRAME_MAX_ELEMENTS, stse_rsp_frame_elements};
 
 /**
- * \brief Allocate a local/temporary frame with its own stack-based element array
- * \details Use this for temporary frames that should not conflict with global arrays
- * \param frame Frame variable name
+ * \brief Backward-compatible generic frame allocation macro.
+ * \details Dispatches to stse_cmd_frame_allocate or stse_rsp_frame_allocate based on
+ *          the frame variable name. All service wrapper files use the standard names
+ *          CmdFrame (dispatched to global cmd array) and RspFrame (dispatched to global
+ *          rsp array), so no changes are needed in those files.
+ *          For custom frame names (e.g. in session MAC computation), use
+ *          stse_frame_allocate_local() instead.
+ */
+#define CmdFrame_frame_dispatch_impl(f) stse_cmd_frame_allocate(f)
+#define RspFrame_frame_dispatch_impl(f) stse_rsp_frame_allocate(f)
+#define stse_frame_allocate(frame)      frame##_frame_dispatch_impl(frame)
+
+/**
+ * \brief Allocate a local/temporary frame with its own stack-based element array.
+ * \details Use this for temporary frames with custom names (e.g. c_mac_frame,
+ *          r_mac_frame in session MAC computation) that must not conflict with the
+ *          global cmd/rsp arrays.
+ * \param frame    Frame variable name
  * \param max_elem Maximum number of elements for this frame
  */
 #define stse_frame_allocate_local(frame, max_elem) \
@@ -116,42 +141,44 @@ extern PLAT_UI8 stse_rsp_frame_element_count;
     stse_frame_t frame = {0, 0, max_elem, frame##_elements};
 
 /**
- * \brief Allocate a frame element (for temporary/local use)
+ * \brief Allocate a standalone frame element (not pushed to any frame).
  */
 #define stse_frame_element_allocate(element, len, data) \
     stse_frame_element_t element = {len, data};
 
 /**
- * \brief Allocate a frame element and push it to the frame
+ * \brief Allocate a frame element and push it to the given frame.
  */
 #define stse_frame_element_allocate_push(pFrame, element, len, data) \
     stse_frame_element_t element = {len, data}; \
     stse_frame_push_element(pFrame, &element);
 
 /**
- * \brief Allocate a strap element (for temporary/local use)
+ * \brief Allocate a strap element (zero-length placeholder).
  */
 #define stse_frame_strap_allocate(strap) \
     stse_frame_element_t strap = {0, NULL};
 
 /**
- * \brief Create and insert a strap between two elements
+ * \brief Allocate, insert, and update a strap element between two frame elements.
  */
 #define stse_frame_strap(pFrame, strap, pBaseElement, pStrappedElement) \
     stse_frame_strap_allocate(strap);                                   \
-    stse_frame_insert_strap(pFrame, &strap, pBaseElement, pStrappedElement);    \
+    stse_frame_insert_strap(pFrame, &strap, pBaseElement, pStrappedElement); \
     stse_frame_update(pFrame);
 
 /**
- * \brief 			Attach a strap element that reroute a frame element (Element1) to another (Element2)
- * \details 		This core function attach a strap element that link Element1 to Element2 until un-strap command is executed
+ * \brief 			Insert a strap element that reroutes frame traversal from Element1 to Element2.
+ * \details 		This core function inserts a zero-length strap element into the frame array
+ *                  between Element_1 and Element_2, enabling selective frame content substitution
+ *                  (e.g. replacing plaintext payload with encrypted payload for transmission).
  * \param[in] 		pFrame 			Pointer to the frame
- * \param[in] 		pStrap 			Pointer to strap element
- * \param[in] 		pElement_1 		Pointer to frame element 1
- * \param[in] 		pElement_2 		Pointer to frame element 2
+ * \param[in] 		pStrap 			Pointer to strap element (zero-length marker)
+ * \param[in] 		pElement_1 		Pointer to frame element after which the strap is inserted
+ * \param[in] 		pElement_2 		Pointer to frame element to which the strap redirects
  */
-void stse_frame_insert_strap(stse_frame_t *pFrame, stse_frame_element_t *pStrap, stse_frame_element_t *pElement_1,
-                             stse_frame_element_t *pElement_2);
+void stse_frame_insert_strap(stse_frame_t *pFrame, stse_frame_element_t *pStrap,
+                             stse_frame_element_t *pElement_1, stse_frame_element_t *pElement_2);
 
 /**
  * \brief 			Frame un-strap

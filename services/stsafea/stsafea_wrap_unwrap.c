@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stsafea_wrap_unwrap.c
- * \brief   Wrap & unwrap services for STSAFE-A
+ * \brief   STSAFE-A services for wrap & unwrap (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -16,8 +16,11 @@
  ******************************************************************************
  */
 
-#include "services/stsafea/stsafea_wrap_unwrap.h"
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
+
 #include "services/stsafea/stsafea_frame_transfer.h"
+#include "services/stsafea/stsafea_wrap_unwrap.h"
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
@@ -40,12 +43,12 @@ stse_ReturnCode_t stsafea_wrap_payload(stse_Handler_t *pSTSE,
 
     PLAT_UI8 rsp_header;
 
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &wrap_key_slot);
     stse_frame_element_allocate_push(&CmdFrame, ePayload, payload_size, pPayload);
 
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eWrapped, wrapped_payload_size, pWrapped_Payload);
 
@@ -74,12 +77,12 @@ stse_ReturnCode_t stsafea_unwrap_payload(stse_Handler_t *pSTSE,
 
     PLAT_UI8 rsp_header;
 
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEA_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eSlot_number, 1, &wrap_key_slot);
     stse_frame_element_allocate_push(&CmdFrame, ePayload, wrapped_payload_size, pWrapped_Payload);
 
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eWrapped, payload_size, pPayload);
 

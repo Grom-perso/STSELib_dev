@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stsafel_device_info.c
- * \brief   Device info services for STSAFE-L
+ * \brief   STSAFE-L services for device info (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -16,8 +16,11 @@
  ******************************************************************************
  */
 
-#include "services/stsafel/stsafel_device_info.h"
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
+
 #include "services/stsafel/stsafel_commands.h"
+#include "services/stsafel/stsafel_device_info.h"
 #include "services/stsafel/stsafel_frame_transfer.h"
 
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
@@ -66,13 +69,13 @@ stse_ReturnCode_t stsafel_get_data(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eTag, 1, (PLAT_UI8 *)&tag);
     stse_frame_element_allocate_push(&CmdFrame, eAdditional_data, additional_data_length, pAdditional_data);
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEL_HEADER_SIZE, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eDevice_info, device_info_expected_length, pDevice_info);
 
@@ -99,13 +102,13 @@ stse_ReturnCode_t stsafel_put_data(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eTag, 1, (PLAT_UI8 *)&tag);
     stse_frame_element_allocate_push(&CmdFrame, eDevice_info, device_info_length, pDevice_info);
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEL_HEADER_SIZE, &rsp_header);
 
     /*- Perform Transfer*/

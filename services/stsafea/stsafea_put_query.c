@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stsafea_put_query.c
- * \brief   Put and query services for STSAFE-A
+ * \brief   STSAFE-A services for put and query (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -16,8 +16,11 @@
  ******************************************************************************
  */
 
-#include "services/stsafea/stsafea_put_query.h"
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
+
 #include "services/stsafea/stsafea_frame_transfer.h"
+#include "services/stsafea/stsafea_put_query.h"
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
@@ -33,13 +36,13 @@ stse_ReturnCode_t stsafea_put_life_cyle_state(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &tag);
     stse_frame_element_allocate_push(&CmdFrame, eLifeCycleState, 1, (PLAT_UI8 *)&life_cycle_state);
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
 
     /*- Perform Transfer*/
@@ -61,12 +64,12 @@ stse_ReturnCode_t stsafea_query_life_cycle_state(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &tag);
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eLife_cycle_state, 1, (PLAT_UI8 *)pLife_cycle_state);
 
@@ -101,13 +104,13 @@ stse_ReturnCode_t stsafea_put_i2c_parameters(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &tag);
     stse_frame_element_allocate_push(&CmdFrame, eI2cParameters, sizeof(stsafea_i2c_parameters_t), (PLAT_UI8 *)pI2c_parameters);
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
 
     /*- Perform Transfer*/
@@ -129,12 +132,12 @@ stse_ReturnCode_t stsafea_query_i2c_parameters(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &tag);
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eLife_cycle_state, sizeof(stsafea_i2c_parameters_t), (PLAT_UI8 *)pI2c_parameters);
 

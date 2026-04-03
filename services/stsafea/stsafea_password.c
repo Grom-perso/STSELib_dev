@@ -1,7 +1,7 @@
 /*!
  ******************************************************************************
  * \file	stsafea_password.c
- * \brief   password services for STSAFE-A
+ * \brief   STSAFE-A services for password (source)
  * \author  STMicroelectronics - CS application team
  *
  ******************************************************************************
@@ -16,8 +16,11 @@
  ******************************************************************************
  */
 
-#include "services/stsafea/stsafea_password.h"
+/* Includes ------------------------------------------------------------------*/
+#include <stddef.h>
+
 #include "services/stsafea/stsafea_frame_transfer.h"
+#include "services/stsafea/stsafea_password.h"
 
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
 
@@ -39,12 +42,12 @@ stse_ReturnCode_t stsafea_verify_password(
     }
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, ePassword, password_length, pPassword_buffer);
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
     stse_frame_element_allocate_push(&RspFrame, eVerStat, 1, pVerification_status);
     stse_frame_element_allocate_push(&RspFrame, eRemTri, 1, pRemaining_tries);
@@ -65,12 +68,12 @@ stse_ReturnCode_t stsafea_delete_password(stse_Handler_t *pSTSE) {
     }
 
     /*- Create CMD frame and populate elements */
-    stse_cmd_frame_allocate(CmdFrame);
+    stse_frame_allocate(CmdFrame);
     stse_frame_element_allocate_push(&CmdFrame, eCmd_header, 1, &cmd_header);
     stse_frame_element_allocate_push(&CmdFrame, eTag, 1, &tag);
 
     /*- Create Rsp frame and populate elements*/
-    stse_rsp_frame_allocate(RspFrame);
+    stse_frame_allocate(RspFrame);
     stse_frame_element_allocate_push(&RspFrame, eRsp_header, 1, &rsp_header);
 
     /*- Perform Transfer*/

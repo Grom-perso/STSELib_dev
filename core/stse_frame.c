@@ -1,6 +1,6 @@
 /*!
  * ******************************************************************************
- * \file	stse_frame.c
+ * \filestse_frame.c
  * \brief   STSAFE Frame layer (sources)
  * \author  STMicroelectronics - CS application team
  *
@@ -16,13 +16,21 @@
  ******************************************************************************
  */
 
+#include <stdio.h>
 #include "core/stse_frame.h"
 
-/* Global RAM arrays for command and response frame elements */
+/**
+ * \brief Global RAM arrays for command and response frame elements.
+ *        Array depth is configured via STSE_CONF_CMD_FRAME_MAX_ELEMENTS and
+ *        STSE_CONF_RSP_FRAME_MAX_ELEMENTS (default 16 each).
+ */
 stse_frame_element_t stse_cmd_frame_elements[STSE_CONF_CMD_FRAME_MAX_ELEMENTS];
 stse_frame_element_t stse_rsp_frame_elements[STSE_CONF_RSP_FRAME_MAX_ELEMENTS];
 
-/* Global RAM variables for tracking element counts */
+/**
+ * \brief Global RAM counters for current element count in each frame array.
+ *        Updated by stse_frame_push_element() and stse_frame_pop_element().
+ */
 PLAT_UI8 stse_cmd_frame_element_count = 0;
 PLAT_UI8 stse_rsp_frame_element_count = 0;
 
@@ -55,8 +63,12 @@ stse_ReturnCode_t stse_frame_crc16_compute(stse_frame_t *pFrame, PLAT_UI16 *pCrc
 
 void stse_frame_element_swap_byte_order(stse_frame_element_t *pElement) {
     PLAT_UI8 tmp;
+    PLAT_UI16 i;
 
-    for (PLAT_UI16 i = 0; i < pElement->length / 2; ++i) {
+    if (pElement == NULL) {
+        return;
+    }
+    for (i = 0; i < pElement->length / 2; ++i) {
         tmp = *(pElement->pData + i);
         *(pElement->pData + i) = *(pElement->pData + (pElement->length - 1 - i));
         *(pElement->pData + (pElement->length - 1 - i)) = tmp;
@@ -80,35 +92,41 @@ void stse_append_frame(stse_frame_t *pFrame1, stse_frame_t *pFrame2) {
     }
 }
 
-void stse_frame_insert_strap(stse_frame_t *pFrame, stse_frame_element_t *pStrap, stse_frame_element_t *pElement_1,
-                             stse_frame_element_t *pElement_2) {
+void stse_frame_insert_strap(stse_frame_t *pFrame, stse_frame_element_t *pStrap,
+                             stse_frame_element_t *pElement_1, stse_frame_element_t *pElement_2) {
     PLAT_UI8 i;
     PLAT_UI8 element1_index = 0xFF;
-    PLAT_UI8 element2_index = 0xFF;
 
     if (pFrame == NULL || pStrap == NULL || pElement_1 == NULL || pElement_2 == NULL) {
         return;
     }
 
-    /* Find indices of Element_1 and Element_2 in the frame */
+    /* Find index of Element_1 in the frame */
     for (i = 0; i < pFrame->element_count; i++) {
         if (&pFrame->pElements[i] == pElement_1) {
             element1_index = i;
-        }
-        if (&pFrame->pElements[i] == pElement_2) {
-            element2_index = i;
+            break;
         }
     }
 
-    /* If both elements found and there's space for strap */
-    if (element1_index != 0xFF && element2_index != 0xFF && pFrame->element_count < pFrame->max_elements) {
-        /* Insert strap element after Element_1 by shifting elements */
+    /* If Element_1 found and there's space for the strap and Element_2 */
+    if (element1_index != 0xFF && pFrame->element_count < pFrame->max_elements) {
+        /* Shift elements from element1_index+1 onwards to make room for strap+element2 */
         for (i = pFrame->element_count; i > element1_index + 1; i--) {
             pFrame->pElements[i] = pFrame->pElements[i - 1];
         }
-        /* Insert the strap */
+        /* Insert the strap (zero-length marker) after Element_1 */
         pFrame->pElements[element1_index + 1] = *pStrap;
         pFrame->element_count++;
+        /* Insert Element_2 at next position if there is space */
+        if (pFrame->element_count < pFrame->max_elements) {
+            for (i = pFrame->element_count; i > element1_index + 2; i--) {
+                pFrame->pElements[i] = pFrame->pElements[i - 1];
+            }
+            pFrame->pElements[element1_index + 2] = *pElement_2;
+            pFrame->element_count++;
+            pFrame->length += pElement_2->length;
+        }
     }
 }
 
@@ -119,15 +137,14 @@ void stse_frame_unstrap(stse_frame_t *pFrame) {
         return;
     }
 
-    /* Remove strap elements (elements with length 0 and non-NULL pData used as strap marker) */
+    /* Remove strap elements (zero-length elements with NULL pData acting as placeholders) */
     pFrame->length = 0;
     j = 0;
     for (i = 0; i < pFrame->element_count; i++) {
-        /* Skip strap elements (length == 0 and pData != NULL indicates a strap) */
-        if (pFrame->pElements[i].length == 0 && pFrame->pElements[i].pData != NULL) {
+        /* Skip strap elements: length == 0 and pData == NULL */
+        if (pFrame->pElements[i].length == 0 && pFrame->pElements[i].pData == NULL) {
             continue;
         }
-        /* Keep non-strap elements */
         if (i != j) {
             pFrame->pElements[j] = pFrame->pElements[i];
         }
@@ -144,16 +161,14 @@ void stse_frame_update(stse_frame_t *pFrame) {
         return;
     }
 
-    /* Recalculate total length */
+    /* Recalculate total length from all elements */
     pFrame->length = 0;
     for (i = 0; i < pFrame->element_count; i++) {
         pFrame->length += pFrame->pElements[i].length;
     }
 }
 
-void stse_frame_push_element(stse_frame_t *pFrame,
-                             stse_frame_element_t *pElement)
-{
+void stse_frame_push_element(stse_frame_t *pFrame, stse_frame_element_t *pElement) {
     if (pFrame == NULL || pElement == NULL || pFrame->pElements == NULL) {
         return;
     }
@@ -163,14 +178,14 @@ void stse_frame_push_element(stse_frame_t *pFrame,
         return;
     }
 
-    /* Copy element to the next position in the array */
+    /* Copy element into the next slot in the array */
     pFrame->pElements[pFrame->element_count] = *pElement;
 
-    /* Increment Frame length and frame element count */
-    pFrame->element_count += 1;
+    /* Increment element count and total length */
+    pFrame->element_count++;
     pFrame->length += pElement->length;
 
-    /* Update the global element count based on which array is being used */
+    /* Maintain global element count for the two standard global arrays */
     if (pFrame->pElements == stse_cmd_frame_elements) {
         stse_cmd_frame_element_count = pFrame->element_count;
     } else if (pFrame->pElements == stse_rsp_frame_elements) {
@@ -179,22 +194,20 @@ void stse_frame_push_element(stse_frame_t *pFrame,
 }
 
 void stse_frame_pop_element(stse_frame_t *pFrame) {
-    if (pFrame == NULL || pFrame->pElements == NULL) {
+    if (pFrame == NULL || pFrame->pElements == NULL || pFrame->element_count == 0) {
         return;
     }
 
-    if (pFrame->element_count > 0) {
-        /* Subtract the length of the last element */
-        pFrame->length -= pFrame->pElements[pFrame->element_count - 1].length;
-        /* Decrement element count */
-        pFrame->element_count--;
+    /* Subtract the length of the last element */
+    pFrame->length -= pFrame->pElements[pFrame->element_count - 1].length;
+    /* Decrement element count */
+    pFrame->element_count--;
 
-        /* Update the global element count based on which array is being used */
-        if (pFrame->pElements == stse_cmd_frame_elements) {
-            stse_cmd_frame_element_count = pFrame->element_count;
-        } else if (pFrame->pElements == stse_rsp_frame_elements) {
-            stse_rsp_frame_element_count = pFrame->element_count;
-        }
+    /* Maintain global element count for the two standard global arrays */
+    if (pFrame->pElements == stse_cmd_frame_elements) {
+        stse_cmd_frame_element_count = pFrame->element_count;
+    } else if (pFrame->pElements == stse_rsp_frame_elements) {
+        stse_rsp_frame_element_count = pFrame->element_count;
     }
 }
 
@@ -226,14 +239,9 @@ void stse_frame_debug_print(stse_frame_t *pFrame) {
 }
 
 stse_frame_element_t *stse_frame_get_element(stse_frame_t *pFrame, PLAT_UI8 index) {
-    if (pFrame == NULL || pFrame->pElements == NULL) {
+    if (pFrame == NULL || pFrame->pElements == NULL || index >= pFrame->element_count) {
         return NULL;
     }
-
-    if (index >= pFrame->element_count) {
-        return NULL;
-    }
-
     return &pFrame->pElements[index];
 }
 
@@ -241,7 +249,6 @@ stse_frame_element_t *stse_frame_get_first_element(stse_frame_t *pFrame) {
     if (pFrame == NULL || pFrame->pElements == NULL || pFrame->element_count == 0) {
         return NULL;
     }
-
     return &pFrame->pElements[0];
 }
 
@@ -249,7 +256,6 @@ stse_frame_element_t *stse_frame_get_last_element(stse_frame_t *pFrame) {
     if (pFrame == NULL || pFrame->pElements == NULL || pFrame->element_count == 0) {
         return NULL;
     }
-
     return &pFrame->pElements[pFrame->element_count - 1];
 }
 
@@ -260,10 +266,9 @@ stse_frame_element_t *stse_frame_get_next_element(stse_frame_t *pFrame, stse_fra
         return NULL;
     }
 
-    /* Find the current element's index */
+    /* Find the current element's index and return the next one */
     for (i = 0; i < pFrame->element_count; i++) {
         if (&pFrame->pElements[i] == pElement) {
-            /* Return the next element if it exists */
             if (i + 1 < pFrame->element_count) {
                 return &pFrame->pElements[i + 1];
             }
