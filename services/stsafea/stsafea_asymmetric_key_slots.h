@@ -75,26 +75,26 @@ typedef struct stsafea_private_key_slot_information_t {
  * \brief 		Get private key slot count
  * \details 	This service format and send the get private key slot count command
  * \param[in] 	p_stse 						Pointer to STSE Handler
- * \param[out] 	pPrivate_key_slot_count 	Target STSAFE-A total Private key slot count
+ * \param[out] 	p_private_key_slot_count 	Target STSAFE-A total Private key slot count
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
 stse_return_code_t stsafea_query_private_key_slots_count(
     stse_handler_t *p_stse,
-    PLAT_UI8 *pPrivate_key_slot_count);
+    PLAT_UI8 *p_private_key_slot_count);
 
 /**
  * \brief 		Query private key table information
  * \details 	This service formats and sends the query private key table command
  * \param[in] 	p_stse 					Pointer to STSE Handler
  * \param[in] 	private_key_slot_count	Number of private key slots
- * \param[out] 	pGlobal_usage_limit		Pointer to global usage limit value
+ * \param[out] 	p_global_usage_limit		Pointer to global usage limit value
  * \param[out] 	private_key_table_info	Pointer to private key table information structure
  * \return 		\ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
 stse_return_code_t stsafea_query_private_key_table(
     stse_handler_t *p_stse,
     PLAT_UI8 private_key_slot_count,
-    PLAT_UI16 *pGlobal_usage_limit,
+    PLAT_UI16 *p_global_usage_limit,
     stsafea_private_key_slot_information_t *private_key_table_info);
 
 /**

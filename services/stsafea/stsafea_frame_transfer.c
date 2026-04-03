@@ -37,7 +37,7 @@ const PLAT_UI16 stsafea_maximum_frame_length[STSAFEA_PRODUCT_COUNT] = {
 stse_return_code_t stsafea_frame_transmit(stse_handler_t *p_stse, stse_frame_t *p_frame) {
     stse_return_code_t ret = STSE_PLATFORM_BUS_ACK_ERROR;
     PLAT_UI16 retry_count = STSE_MAX_POLLING_RETRY;
-    stse_frame_element_t *pCurrent_element;
+    stse_frame_element_t *p_current_element;
     PLAT_UI16 crc_ret;
     PLAT_UI8 crc[STSE_FRAME_CRC_SIZE] = {0};
 
@@ -80,26 +80,26 @@ stse_return_code_t stsafea_frame_transmit(stse_handler_t *p_stse, stse_frame_t *
             p_frame->length);
 
         if (ret == STSE_OK) {
-            pCurrent_element = p_frame->first_element;
-            while (pCurrent_element != p_frame->last_element) {
+            p_current_element = p_frame->first_element;
+            while (p_current_element != p_frame->last_element) {
                 ret = p_stse->io.bus_send_continue(
                     p_stse->io.bus_id,
                     p_stse->io.devaddr,
                     p_stse->io.bus_speed,
-                    pCurrent_element->p_data,
-                    pCurrent_element->length);
+                    p_current_element->p_data,
+                    p_current_element->length);
                 if (ret != STSE_OK) {
                     break;
                 }
-                pCurrent_element = pCurrent_element->next;
+                p_current_element = p_current_element->next;
             }
             if (ret == STSE_OK) {
                 ret = p_stse->io.bus_send_stop(
                     p_stse->io.bus_id,
                     p_stse->io.devaddr,
                     p_stse->io.bus_speed,
-                    pCurrent_element->p_data,
-                    pCurrent_element->length);
+                    p_current_element->p_data,
+                    p_current_element->length);
             }
         }
 
@@ -116,7 +116,7 @@ stse_return_code_t stsafea_frame_transmit(stse_handler_t *p_stse, stse_frame_t *
 
 stse_return_code_t stsafea_frame_receive(stse_handler_t *p_stse, stse_frame_t *p_frame) {
     stse_return_code_t ret = STSE_PLATFORM_BUS_ACK_ERROR;
-    stse_frame_element_t *pCurrent_element;
+    stse_frame_element_t *p_current_element;
     PLAT_UI8 received_header;
     PLAT_UI16 received_length;
     PLAT_UI8 received_crc[STSE_FRAME_CRC_SIZE];
@@ -277,30 +277,30 @@ stse_return_code_t stsafea_frame_receive(stse_handler_t *p_stse, stse_frame_t *p
     }
 
     /* - Perform frame element reception and populate local RSP Frame */
-    pCurrent_element = p_frame->first_element->next;
-    while (pCurrent_element != p_frame->last_element) {
-        if (received_length < pCurrent_element->length) {
-            pCurrent_element->length = received_length;
+    p_current_element = p_frame->first_element->next;
+    while (p_current_element != p_frame->last_element) {
+        if (received_length < p_current_element->length) {
+            p_current_element->length = received_length;
         }
         ret = p_stse->io.bus_recv_continue(
             p_stse->io.bus_id,
             p_stse->io.devaddr,
             p_stse->io.bus_speed,
-            pCurrent_element->p_data,
-            pCurrent_element->length);
+            p_current_element->p_data,
+            p_current_element->length);
         if (ret != STSE_OK) {
             return ret;
         }
 
-        received_length -= pCurrent_element->length;
-        pCurrent_element = pCurrent_element->next;
+        received_length -= p_current_element->length;
+        p_current_element = p_current_element->next;
     }
     ret = p_stse->io.bus_recv_stop(
         p_stse->io.bus_id,
         p_stse->io.devaddr,
         p_stse->io.bus_speed,
-        pCurrent_element->p_data,
-        pCurrent_element->length);
+        p_current_element->p_data,
+        p_current_element->length);
     if (ret != STSE_OK) {
         return ret;
     }
@@ -403,7 +403,7 @@ stse_return_code_t stsafea_frame_transfer(stse_handler_t *p_stse, stse_frame_t *
     /*- Perform Transfer*/
 #ifdef STSE_CONF_USE_HOST_SESSION
     if (cmd_encryption_flag || rsp_encryption_flag) {
-        ret = stsafea_session_encrypted_transfer(p_stse->pActive_host_session,
+        ret = stsafea_session_encrypted_transfer(p_stse->p_active_host_session,
                                                  p_cmd_frame,
                                                  p_rsp_frame,
                                                  cmd_encryption_flag,
@@ -411,7 +411,7 @@ stse_return_code_t stsafea_frame_transfer(stse_handler_t *p_stse, stse_frame_t *
                                                  cmd_ac_info,
                                                  inter_frame_delay);
     } else if (cmd_ac_info != STSE_CMD_AC_FREE) {
-        ret = stsafea_session_authenticated_transfer(p_stse->pActive_host_session,
+        ret = stsafea_session_authenticated_transfer(p_stse->p_active_host_session,
                                                      p_cmd_frame,
                                                      p_rsp_frame,
                                                      cmd_ac_info,

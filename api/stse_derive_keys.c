@@ -24,11 +24,11 @@
 stse_return_code_t stse_derive_key(
     stse_handler_t *p_stse,
     PLAT_UI8 master_slot,
-    PLAT_UI8 *pSalt,
+    PLAT_UI8 *p_salt,
     PLAT_UI16 salt_length,
-    PLAT_UI8 *pContext,
+    PLAT_UI8 *p_context,
     PLAT_UI16 context_len,
-    PLAT_UI8 *pOutput_key,
+    PLAT_UI8 *p_output_key,
     PLAT_UI16 key_length) {
     stsafea_hkdf_input_key_t input_key = {0};
     stsafea_hkdf_salt_t salt = {0};
@@ -38,7 +38,7 @@ stse_return_code_t stse_derive_key(
     stsafea_hkdf_derived_key_output_t derived_key_out = {0};
 
     /* Validate parameters */
-    if (p_stse == NULL || pOutput_key == NULL || key_length == 0) {
+    if (p_stse == NULL || p_output_key == NULL || key_length == 0) {
         return STSE_API_INVALID_PARAMETER;
     }
 
@@ -49,18 +49,18 @@ stse_return_code_t stse_derive_key(
     /* Setup salt */
     salt.source = STSAFEA_KEY_SOURCE_COMMAND;
     salt.command.length = salt_length;
-    salt.command.data = pSalt;
+    salt.command.data = p_salt;
 
     /* Setup context/info */
     info.length = context_len;
-    info.data = pContext;
+    info.data = p_context;
 
     /* Setup output to response */
     okm_map.destination = STSAFEA_KEY_SOURCE_RESPONSE;
     okm_map.response.key_length = key_length;
 
     /* Pre-allocate output buffer */
-    derived_key_out.response.data = pOutput_key;
+    derived_key_out.response.data = p_output_key;
     output.derived_keys = &derived_key_out;
 
     /* Perform HKDF Extract+Expand */
@@ -78,9 +78,9 @@ stse_return_code_t stse_derive_key(
 stse_return_code_t stse_derive_key_simple(
     stse_handler_t *p_stse,
     PLAT_UI8 master_slot,
-    PLAT_UI8 *pContext,
+    PLAT_UI8 *p_context,
     PLAT_UI16 context_len,
-    PLAT_UI8 *pOutput_key,
+    PLAT_UI8 *p_output_key,
     PLAT_UI16 key_length) {
     /* Directly call the main function with NULL salt */
     return stse_derive_key(
@@ -88,25 +88,25 @@ stse_return_code_t stse_derive_key_simple(
         master_slot,
         NULL, /* No salt */
         0,    /* Salt length 0 */
-        pContext,
+        p_context,
         context_len,
-        pOutput_key,
+        p_output_key,
         key_length);
 }
 
 stse_return_code_t stse_derive_key_extract(
     stse_handler_t *p_stse,
     PLAT_UI8 master_slot,
-    PLAT_UI8 *pSalt,
+    PLAT_UI8 *p_salt,
     PLAT_UI16 salt_length,
-    PLAT_UI8 *pPrk_slot) {
+    PLAT_UI8 *p_prk_slot) {
     stsafea_hkdf_input_key_t input_key = {0};
     stsafea_hkdf_salt_t salt = {0};
     stsafea_hkdf_output_t output = {0};
     stse_return_code_t ret;
 
     /* Validate parameters */
-    if (p_stse == NULL || pPrk_slot == NULL) {
+    if (p_stse == NULL || p_prk_slot == NULL) {
         return STSE_API_INVALID_PARAMETER;
     }
 
@@ -117,7 +117,7 @@ stse_return_code_t stse_derive_key_extract(
     /* Setup salt */
     salt.source = STSAFEA_KEY_SOURCE_COMMAND;
     salt.command.length = salt_length;
-    salt.command.data = pSalt;
+    salt.command.data = p_salt;
 
     /* Perform HKDF Extract only */
     ret = stsafea_derive_keys(
@@ -131,7 +131,7 @@ stse_return_code_t stse_derive_key_extract(
         &output);
 
     if (ret == STSE_OK) {
-        *pPrk_slot = output.prk_slot;
+        *p_prk_slot = output.prk_slot;
     }
 
     return ret;
@@ -140,9 +140,9 @@ stse_return_code_t stse_derive_key_extract(
 stse_return_code_t stse_derive_key_expand(
     stse_handler_t *p_stse,
     PLAT_UI8 prk_slot,
-    PLAT_UI8 *pContext,
+    PLAT_UI8 *p_context,
     PLAT_UI16 context_len,
-    PLAT_UI8 *pOutput_key,
+    PLAT_UI8 *p_output_key,
     PLAT_UI16 key_length) {
     stsafea_hkdf_input_key_t input_key = {0};
     stsafea_hkdf_info_t info = {0};
@@ -151,7 +151,7 @@ stse_return_code_t stse_derive_key_expand(
     stsafea_hkdf_derived_key_output_t derived_key_out = {0};
 
     /* Validate parameters */
-    if (p_stse == NULL || pOutput_key == NULL || key_length == 0) {
+    if (p_stse == NULL || p_output_key == NULL || key_length == 0) {
         return STSE_API_INVALID_PARAMETER;
     }
 
@@ -161,14 +161,14 @@ stse_return_code_t stse_derive_key_expand(
 
     /* Setup context/info */
     info.length = context_len;
-    info.data = pContext;
+    info.data = p_context;
 
     /* Setup output to response */
     okm_map.destination = STSAFEA_KEY_SOURCE_RESPONSE;
     okm_map.response.key_length = key_length;
 
     /* Pre-allocate output buffer */
-    derived_key_out.response.data = pOutput_key;
+    derived_key_out.response.data = p_output_key;
     output.derived_keys = &derived_key_out;
 
     /* Perform HKDF Expand only */
@@ -187,16 +187,16 @@ stse_return_code_t stse_derive_session_keys(
     stse_handler_t *p_stse,
     PLAT_UI8 master_slot,
     PLAT_UI32 session_id,
-    PLAT_UI8 *pEnc_key,
+    PLAT_UI8 *p_enc_key,
     PLAT_UI16 enc_key_len,
-    PLAT_UI8 *pMac_key,
+    PLAT_UI8 *p_mac_key,
     PLAT_UI16 mac_key_len) {
     stse_return_code_t ret;
     PLAT_UI8 prk_slot;
     PLAT_UI8 salt[4];
 
     /* Validate parameters */
-    if (p_stse == NULL || pEnc_key == NULL || pMac_key == NULL) {
+    if (p_stse == NULL || p_enc_key == NULL || p_mac_key == NULL) {
         return STSE_API_INVALID_PARAMETER;
     }
 
@@ -214,14 +214,14 @@ stse_return_code_t stse_derive_session_keys(
 
     /* Step 2: Derive encryption key with context "ENC" */
     ret = stse_derive_key_expand(p_stse, prk_slot, (PLAT_UI8 *)"ENC", 3,
-                                 pEnc_key, enc_key_len);
+                                 p_enc_key, enc_key_len);
     if (ret != STSE_OK) {
         return ret;
     }
 
     /* Step 3: Derive MAC key with context "MAC" */
     ret = stse_derive_key_expand(p_stse, prk_slot, (PLAT_UI8 *)"MAC", 3,
-                                 pMac_key, mac_key_len);
+                                 p_mac_key, mac_key_len);
 
     return ret;
 }
@@ -229,12 +229,12 @@ stse_return_code_t stse_derive_session_keys(
 stse_return_code_t stse_derive_key_to_slot(
     stse_handler_t *p_stse,
     PLAT_UI8 master_slot,
-    PLAT_UI8 *pSalt,
+    PLAT_UI8 *p_salt,
     PLAT_UI16 salt_length,
-    PLAT_UI8 *pContext,
+    PLAT_UI8 *p_context,
     PLAT_UI16 context_len,
-    stsafe_output_key_description_information_t *pKey_info,
-    PLAT_UI8 *pOutput_slot) {
+    stsafe_output_key_description_information_t *p_key_info,
+    PLAT_UI8 *p_output_slot) {
     stsafea_hkdf_input_key_t input_key = {0};
     stsafea_hkdf_salt_t salt = {0};
     stsafea_hkdf_info_t info = {0};
@@ -244,7 +244,7 @@ stse_return_code_t stse_derive_key_to_slot(
     stse_return_code_t ret;
 
     /* Validate parameters */
-    if (p_stse == NULL || pKey_info == NULL || pOutput_slot == NULL) {
+    if (p_stse == NULL || p_key_info == NULL || p_output_slot == NULL) {
         return STSE_API_INVALID_PARAMETER;
     }
 
@@ -255,15 +255,15 @@ stse_return_code_t stse_derive_key_to_slot(
     /* Setup salt */
     salt.source = STSAFEA_KEY_SOURCE_COMMAND;
     salt.command.length = salt_length;
-    salt.command.data = pSalt;
+    salt.command.data = p_salt;
 
     /* Setup context/info */
     info.length = context_len;
-    info.data = pContext;
+    info.data = p_context;
 
     /* Setup output to slot */
     okm_map.destination = STSAFEA_KEY_SOURCE_SYMMKEY;
-    okm_map.symmkey.key_info = pKey_info;
+    okm_map.symmkey.key_info = p_key_info;
 
     /* Setup output structure */
     output.derived_keys = &derived_key_out;
@@ -280,7 +280,7 @@ stse_return_code_t stse_derive_key_to_slot(
         &output);
 
     if (ret == STSE_OK) {
-        *pOutput_slot = output.derived_keys[0].symmkey.slot_number;
+        *p_output_slot = output.derived_keys[0].symmkey.slot_number;
     }
 
     return ret;
@@ -289,10 +289,10 @@ stse_return_code_t stse_derive_key_to_slot(
 stse_return_code_t stse_derive_key_expand_multiple(
     stse_handler_t *p_stse,
     PLAT_UI8 prk_slot,
-    PLAT_UI8 **pContexts,
-    PLAT_UI16 *pContext_lens,
-    PLAT_UI8 **pOutput_keys,
-    PLAT_UI16 *pKey_lengths,
+    PLAT_UI8 **p_contexts,
+    PLAT_UI16 *p_context_lens,
+    PLAT_UI8 **p_output_keys,
+    PLAT_UI16 *p_key_lengths,
     PLAT_UI8 num_keys) {
     stsafea_hkdf_input_key_t input_key = {0};
     stsafea_hkdf_info_t info = {0};
@@ -302,7 +302,7 @@ stse_return_code_t stse_derive_key_expand_multiple(
     PLAT_UI8 i;
 
     /* Validate parameters */
-    if (p_stse == NULL || pOutput_keys == NULL || pKey_lengths == NULL ||
+    if (p_stse == NULL || p_output_keys == NULL || p_key_lengths == NULL ||
         num_keys == 0 || num_keys > 32) {
         return STSE_API_INVALID_PARAMETER;
     }
@@ -314,8 +314,8 @@ stse_return_code_t stse_derive_key_expand_multiple(
     /* Note: HKDF typically uses same info for all keys in one expand operation
      * For different contexts per key, you'd call expand multiple times
      * This function uses the first context for all keys */
-    info.length = (pContexts != NULL && pContext_lens != NULL) ? pContext_lens[0] : 0;
-    info.data = (pContexts != NULL) ? pContexts[0] : NULL;
+    info.length = (p_contexts != NULL && p_context_lens != NULL) ? p_context_lens[0] : 0;
+    info.data = (p_contexts != NULL) ? p_contexts[0] : NULL;
 
     /* Setup OKM maps and output buffers */
     memset(derived_keys_out, 0, sizeof(derived_keys_out));
@@ -323,9 +323,9 @@ stse_return_code_t stse_derive_key_expand_multiple(
 
     for (i = 0; i < num_keys; i++) {
         okm_map[i].destination = STSAFEA_KEY_SOURCE_RESPONSE;
-        okm_map[i].response.key_length = pKey_lengths[i];
+        okm_map[i].response.key_length = p_key_lengths[i];
 
-        derived_keys_out[i].response.data = pOutput_keys[i];
+        derived_keys_out[i].response.data = p_output_keys[i];
     }
 
     /* Setup output structure */
@@ -345,13 +345,13 @@ stse_return_code_t stse_derive_key_expand_multiple(
 
 stse_return_code_t stse_derive_key_from_ikm(
     stse_handler_t *p_stse,
-    PLAT_UI8 *pIkm,
+    PLAT_UI8 *p_ikm,
     PLAT_UI16 ikm_length,
-    PLAT_UI8 *pSalt,
+    PLAT_UI8 *p_salt,
     PLAT_UI16 salt_length,
-    PLAT_UI8 *pContext,
+    PLAT_UI8 *p_context,
     PLAT_UI16 context_len,
-    PLAT_UI8 *pOutput_key,
+    PLAT_UI8 *p_output_key,
     PLAT_UI16 key_length) {
     stsafea_hkdf_input_key_t input_key = {0};
     stsafea_hkdf_salt_t salt = {0};
@@ -361,7 +361,7 @@ stse_return_code_t stse_derive_key_from_ikm(
     stsafea_hkdf_derived_key_output_t derived_key_out = {0};
 
     /* Validate parameters */
-    if (p_stse == NULL || pIkm == NULL || pOutput_key == NULL ||
+    if (p_stse == NULL || p_ikm == NULL || p_output_key == NULL ||
         ikm_length == 0 || key_length == 0) {
         return STSE_API_INVALID_PARAMETER;
     }
@@ -370,23 +370,23 @@ stse_return_code_t stse_derive_key_from_ikm(
     input_key.source = STSAFEA_KEY_SOURCE_COMMAND;
     input_key.command.mode_of_operation = STSAFEA_KEY_OPERATION_MODE_HKDF;
     input_key.command.length = ikm_length;
-    input_key.command.data = pIkm;
+    input_key.command.data = p_ikm;
 
     /* Setup salt */
     salt.source = STSAFEA_KEY_SOURCE_COMMAND;
     salt.command.length = salt_length;
-    salt.command.data = pSalt;
+    salt.command.data = p_salt;
 
     /* Setup context/info */
     info.length = context_len;
-    info.data = pContext;
+    info.data = p_context;
 
     /* Setup output to response */
     okm_map.destination = STSAFEA_KEY_SOURCE_RESPONSE;
     okm_map.response.key_length = key_length;
 
     /* Pre-allocate output buffer */
-    derived_key_out.response.data = pOutput_key;
+    derived_key_out.response.data = p_output_key;
     output.derived_keys = &derived_key_out;
 
     /* Perform HKDF Extract+Expand */

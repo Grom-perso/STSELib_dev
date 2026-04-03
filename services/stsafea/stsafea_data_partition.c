@@ -49,7 +49,7 @@ stse_return_code_t stsafea_switch_data_partition_access_protection(stse_handler_
 }
 
 stse_return_code_t stsafea_get_total_partition_count(stse_handler_t *p_stse,
-                                                    PLAT_UI8 *pTotal_partition_count) {
+                                                    PLAT_UI8 *p_total_partition_count) {
     PLAT_UI8 cmd_header = STSAFEA_CMD_QUERY;
     PLAT_UI8 tag = STSAFEA_SUBJECT_TAG_DATA_PARTITION_CONFIGURATION;
     PLAT_UI8 rsp_header;
@@ -66,7 +66,7 @@ stse_return_code_t stsafea_get_total_partition_count(stse_handler_t *p_stse,
     /*- Create Rsp frame and populate elements*/
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, eRsp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eTotal_partition_count, 1, pTotal_partition_count);
+    stse_frame_element_allocate_push(&rsp_frame, eTotal_partition_count, 1, p_total_partition_count);
 
     /*- Perform Transfer*/
     return stsafea_frame_raw_transfer(p_stse,
@@ -140,7 +140,7 @@ stse_return_code_t stsafea_decrement_counter_zone(stse_handler_t *p_stse,
                                                  PLAT_UI16 offset,
                                                  PLAT_UI8 *p_data,
                                                  PLAT_UI8 data_length,
-                                                 PLAT_UI32 *pNew_counter_value,
+                                                 PLAT_UI32 *p_new_counter_value,
                                                  stse_cmd_protection_t protection) {
 
     volatile stse_return_code_t ret = STSE_SERVICE_INVALID_PARAMETER;
@@ -151,7 +151,7 @@ stse_return_code_t stsafea_decrement_counter_zone(stse_handler_t *p_stse,
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
 
-    if ((p_data == NULL) || (pNew_counter_value == NULL) || (amount == 0)) {
+    if ((p_data == NULL) || (p_new_counter_value == NULL) || (amount == 0)) {
         return STSE_SERVICE_INVALID_PARAMETER;
     }
 
@@ -179,7 +179,7 @@ stse_return_code_t stsafea_decrement_counter_zone(stse_handler_t *p_stse,
     /*- Create Rsp frame and populate elements*/
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eNewCounterVal, STSAFEA_COUNTER_VALUE_SIZE, (PLAT_UI8 *)pNew_counter_value);
+    stse_frame_element_allocate_push(&rsp_frame, eNewCounterVal, STSAFEA_COUNTER_VALUE_SIZE, (PLAT_UI8 *)p_new_counter_value);
 
     /*- Swap Elements byte order before sending*/
     stse_frame_element_swap_byte_order(&eOffset);
@@ -208,9 +208,9 @@ stse_return_code_t stsafea_read_counter_zone(stse_handler_t *p_stse,
                                             PLAT_UI32 zone_index,
                                             stsafea_read_option_t option,
                                             PLAT_UI16 offset,
-                                            PLAT_UI8 *pAssociated_data,
+                                            PLAT_UI8 *p_associated_data,
                                             PLAT_UI16 associated_data_length,
-                                            PLAT_UI32 *pCounter_value,
+                                            PLAT_UI32 *p_counter_value,
                                             stse_cmd_protection_t protection) {
 
     volatile stse_return_code_t ret = STSE_SERVICE_INVALID_PARAMETER;
@@ -221,7 +221,7 @@ stse_return_code_t stsafea_read_counter_zone(stse_handler_t *p_stse,
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
 
-    if ((pCounter_value == NULL)) {
+    if ((p_counter_value == NULL)) {
         return STSE_SERVICE_INVALID_PARAMETER;
     }
 
@@ -248,8 +248,8 @@ stse_return_code_t stsafea_read_counter_zone(stse_handler_t *p_stse,
     /*- Create Rsp frame and populate elements*/
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eCounterVal, STSAFEA_COUNTER_VALUE_SIZE, (PLAT_UI8 *)pCounter_value);
-    stse_frame_element_allocate_push(&rsp_frame, eAssociatedData, associated_data_length, pAssociated_data);
+    stse_frame_element_allocate_push(&rsp_frame, eCounterVal, STSAFEA_COUNTER_VALUE_SIZE, (PLAT_UI8 *)p_counter_value);
+    stse_frame_element_allocate_push(&rsp_frame, eAssociatedData, associated_data_length, p_associated_data);
 
     /*- Swap Elements bytes from Command frame*/
     stse_frame_element_swap_byte_order(&eOffset);
@@ -278,7 +278,7 @@ stse_return_code_t stsafea_read_data_zone(stse_handler_t *p_stse,
                                          PLAT_UI32 zone_index,
                                          stsafea_read_option_t option,
                                          PLAT_UI16 offset,
-                                         PLAT_UI8 *pReadBuffer,
+                                         PLAT_UI8 *p_read_buffer,
                                          PLAT_UI16 read_length,
                                          stse_cmd_protection_t protection) {
     volatile stse_return_code_t ret = STSE_SERVICE_INVALID_PARAMETER;
@@ -290,7 +290,7 @@ stse_return_code_t stsafea_read_data_zone(stse_handler_t *p_stse,
     }
 
     // If change access condition indicator is set to STSE_AC_CHANGE then we allow zero length and no need of a read buffer
-    if (option.change_ac_indicator != STSE_AC_CHANGE && (pReadBuffer == NULL || read_length == 0)) {
+    if (option.change_ac_indicator != STSE_AC_CHANGE && (p_read_buffer == NULL || read_length == 0)) {
         return STSE_SERVICE_INVALID_PARAMETER;
     }
 
@@ -318,7 +318,7 @@ stse_return_code_t stsafea_read_data_zone(stse_handler_t *p_stse,
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
     if (read_length != 0) {
-        stse_frame_element_allocate_push(&rsp_frame, eData, read_length, (PLAT_UI8 *)pReadBuffer);
+        stse_frame_element_allocate_push(&rsp_frame, eData, read_length, (PLAT_UI8 *)p_read_buffer);
     }
 
     /*- Swap Elements byte order before sending*/

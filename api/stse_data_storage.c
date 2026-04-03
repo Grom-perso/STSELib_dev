@@ -270,7 +270,7 @@ stse_return_code_t stse_data_storage_read_counter_zone(
     PLAT_UI8 *p_buffer,
     PLAT_UI16 length,
     PLAT_UI16 chunk_size,
-    PLAT_UI32 *pCounter_value,
+    PLAT_UI32 *p_counter_value,
     stse_cmd_protection_t protection) {
     stse_return_code_t ret = STSE_API_INVALID_PARAMETER;
     PLAT_UI16 remaning_length = length;
@@ -307,7 +307,7 @@ stse_return_code_t stse_data_storage_read_counter_zone(
                 chunk_offset,
                 p_buffer + (chunk_offset)-offset,
                 chunk_length,
-                pCounter_value,
+                p_counter_value,
                 protection);
             break;
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
@@ -323,7 +323,7 @@ stse_return_code_t stse_data_storage_read_counter_zone(
                 chunk_offset,
                 p_buffer + (chunk_offset)-offset,
                 chunk_length,
-                pCounter_value,
+                p_counter_value,
                 protection);
             break;
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

@@ -43,7 +43,7 @@ stse_return_code_t stse_set_active_session(stse_handler_t *p_stse, stse_session_
         return STSE_CORE_SESSION_ERROR;
     }
 
-    p_stse->pActive_host_session = p_session;
+    p_stse->p_active_host_session = p_session;
 
     return (STSE_OK);
 }

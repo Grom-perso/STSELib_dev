@@ -81,7 +81,7 @@ stse_return_code_t stse_finish_hash(
     PLAT_UI8 *p_message,
     PLAT_UI16 message_size,
     PLAT_UI8 *p_digest,
-    PLAT_UI16 *pDigest_size) {
+    PLAT_UI16 *p_digest_size) {
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
 
@@ -90,11 +90,11 @@ stse_return_code_t stse_finish_hash(
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    if (p_message == NULL || p_digest == NULL || pDigest_size == NULL) {
+    if (p_message == NULL || p_digest == NULL || p_digest_size == NULL) {
         return (STSE_API_INVALID_PARAMETER);
     }
 
-    ret = stsafea_finish_hash(p_stse, sha_algorithm, p_message, message_size, p_digest, pDigest_size);
+    ret = stsafea_finish_hash(p_stse, sha_algorithm, p_message, message_size, p_digest, p_digest_size);
 
     return ret;
 #else
@@ -108,7 +108,7 @@ stse_return_code_t stse_compute_hash(
     PLAT_UI8 *p_message,
     PLAT_UI16 message_size,
     PLAT_UI8 *p_digest,
-    PLAT_UI16 *pDigest_size) {
+    PLAT_UI16 *p_digest_size) {
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
     PLAT_UI16 remaining_length = message_size;
@@ -118,7 +118,7 @@ stse_return_code_t stse_compute_hash(
         return (STSE_API_HANDLER_NOT_INITIALISED);
     }
 
-    if (p_message == NULL || p_digest == NULL || pDigest_size == NULL) {
+    if (p_message == NULL || p_digest == NULL || p_digest_size == NULL) {
         return (STSE_API_INVALID_PARAMETER);
     }
 
@@ -142,7 +142,7 @@ stse_return_code_t stse_compute_hash(
         p_message += message_size;
     }
 
-    ret = stsafea_finish_hash(p_stse, sha_algorithm, NULL, 0, p_digest, pDigest_size);
+    ret = stsafea_finish_hash(p_stse, sha_algorithm, NULL, 0, p_digest, p_digest_size);
 
     return ret;
 #else

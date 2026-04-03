@@ -27,8 +27,8 @@ stse_return_code_t stse_set_default_handler_value(stse_handler_t *p_stse_handler
 
     p_stse_handler->device_type = (stse_device_t)0;
     memset(&p_stse_handler->perso_info, 0, sizeof(p_stse_handler->perso_info));
-    p_stse_handler->pActive_host_session = NULL;
-    p_stse_handler->pActive_other_session = NULL;
+    p_stse_handler->p_active_host_session = NULL;
+    p_stse_handler->p_active_other_session = NULL;
 #if defined(STSE_CONF_STSAFE_A_SUPPORT) || \
     (defined(STSE_CONF_STSAFE_L_SUPPORT) && defined(STSE_CONF_USE_I2C))
     p_stse_handler->io.bus_recv_start = stse_platform_i2c_receive_start;

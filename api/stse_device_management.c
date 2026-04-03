@@ -187,7 +187,7 @@ stse_return_code_t stse_device_power_off(stse_handler_t *p_stse) {
     return (STSE_OK);
 }
 
-stse_return_code_t stse_device_echo(stse_handler_t *p_stse, PLAT_UI8 *pIn, PLAT_UI8 *pOut, PLAT_UI16 size) {
+stse_return_code_t stse_device_echo(stse_handler_t *p_stse, PLAT_UI8 *p_in, PLAT_UI8 *p_out, PLAT_UI16 size) {
     /* - Check STSAFE handler initialization */
     if (p_stse == NULL) {
         return (STSE_API_HANDLER_NOT_INITIALISED);
@@ -196,21 +196,21 @@ stse_return_code_t stse_device_echo(stse_handler_t *p_stse, PLAT_UI8 *pIn, PLAT_
     switch (p_stse->device_type) {
 #ifdef STSE_CONF_STSAFE_L_SUPPORT
     case STSAFE_L010:
-        return stsafel_echo(p_stse, pIn, pOut, size);
+        return stsafel_echo(p_stse, p_in, p_out, size);
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
     case STSAFE_A100:
     case STSAFE_A110:
     case STSAFE_A120:
     case STSAFE_A200:
-        return stsafea_echo(p_stse, pIn, pOut, size);
+        return stsafea_echo(p_stse, p_in, p_out, size);
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */
     default:
         return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
     }
 }
 
-stse_return_code_t stse_device_lock(stse_handler_t *p_stse, PLAT_UI8 *pPassword, PLAT_UI8 password_length) {
+stse_return_code_t stse_device_lock(stse_handler_t *p_stse, PLAT_UI8 *p_password, PLAT_UI8 password_length) {
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
     PLAT_UI8 password_verification_status = 0;
@@ -226,13 +226,13 @@ stse_return_code_t stse_device_lock(stse_handler_t *p_stse, PLAT_UI8 *pPassword,
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    if (pPassword == NULL || password_length != STSAFEA_PASSWORD_LENGTH) {
+    if (p_password == NULL || password_length != STSAFEA_PASSWORD_LENGTH) {
         return STSE_API_INVALID_PARAMETER;
     }
 
     /*- Password submission */
     ret = stsafea_verify_password(p_stse,
-                                  pPassword,
+                                  p_password,
                                   password_length,
                                   &password_verification_status,
                                   NULL);
@@ -254,7 +254,7 @@ stse_return_code_t stse_device_lock(stse_handler_t *p_stse, PLAT_UI8 *pPassword,
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
-stse_return_code_t stse_device_unlock(stse_handler_t *p_stse, PLAT_UI8 *pPassword, PLAT_UI8 password_length) {
+stse_return_code_t stse_device_unlock(stse_handler_t *p_stse, PLAT_UI8 *p_password, PLAT_UI8 password_length) {
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
     stse_return_code_t ret;
     PLAT_UI8 password_verification_status = 0;
@@ -271,13 +271,13 @@ stse_return_code_t stse_device_unlock(stse_handler_t *p_stse, PLAT_UI8 *pPasswor
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    if (pPassword == NULL || password_length != STSAFEA_PASSWORD_LENGTH) {
+    if (p_password == NULL || password_length != STSAFEA_PASSWORD_LENGTH) {
         return STSE_API_INVALID_PARAMETER;
     }
 
     /*- Password submission */
     ret = stsafea_verify_password(p_stse,
-                                  pPassword,
+                                  p_password,
                                   password_length,
                                   &password_verification_status,
                                   &remaining_tries);
@@ -328,7 +328,7 @@ stse_return_code_t stse_device_reset(stse_handler_t *p_stse) {
     return ret;
 }
 
-stse_return_code_t stse_device_get_command_count(stse_handler_t *p_stse, PLAT_UI8 *pRecord_count) {
+stse_return_code_t stse_device_get_command_count(stse_handler_t *p_stse, PLAT_UI8 *p_record_count) {
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
     /* - Check STSAFE handler initialization */
     if (p_stse == NULL) {
@@ -341,7 +341,7 @@ stse_return_code_t stse_device_get_command_count(stse_handler_t *p_stse, PLAT_UI
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    return stsafea_get_command_count(p_stse, pRecord_count);
+    return stsafea_get_command_count(p_stse, p_record_count);
 #else
     return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */
@@ -349,7 +349,7 @@ stse_return_code_t stse_device_get_command_count(stse_handler_t *p_stse, PLAT_UI
 
 stse_return_code_t stse_device_get_command_AC_records(stse_handler_t *p_stse,
                                                      PLAT_UI8 record_count,
-                                                     stse_cmd_authorization_CR_t *pChange_rights,
+                                                     stse_cmd_authorization_CR_t *p_change_rights,
                                                      stse_cmd_authorization_record_t *p_record_table) {
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
     /* - Check STSAFE handler initialization */
@@ -363,14 +363,14 @@ stse_return_code_t stse_device_get_command_AC_records(stse_handler_t *p_stse,
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    return stsafea_get_command_AC_table(p_stse, record_count, pChange_rights, p_record_table);
+    return stsafea_get_command_AC_table(p_stse, record_count, p_change_rights, p_record_table);
 #else
     return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */
 }
 
 stse_return_code_t stse_device_get_life_cycle_state(stse_handler_t *p_stse,
-                                                   stsafea_life_cycle_state_t *pLife_cycle_state) {
+                                                   stsafea_life_cycle_state_t *p_life_cycle_state) {
 #ifdef STSE_CONF_STSAFE_A_SUPPORT
     /* - Check STSAFE handler initialization */
     if (p_stse == NULL) {
@@ -383,7 +383,7 @@ stse_return_code_t stse_device_get_life_cycle_state(stse_handler_t *p_stse,
     }
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */
 
-    return stsafea_query_life_cycle_state(p_stse, pLife_cycle_state);
+    return stsafea_query_life_cycle_state(p_stse, p_life_cycle_state);
 #else
     return STSE_API_INCOMPATIBLE_DEVICE_TYPE;
 #endif /* STSE_CONF_STSAFE_A_SUPPORT */

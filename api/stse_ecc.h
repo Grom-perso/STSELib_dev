@@ -49,7 +49,7 @@
  * \param[in] 	p_message 				Message used in signature
  * \param[in] 	message_length 			Message length
  * \param[in] 	eddsa_variant 			Flag indicating a pre-hashed EdDSA (1) message or a pure EdDSA (0) plaintext message. Used only in case of Edwards25519 public key
- * \param[out] 	pSignature_validity		Signature validity flag (1 = valid signature, invalid otherwise)
+ * \param[out] 	p_signature_validity		Signature validity flag (1 = valid signature, invalid otherwise)
  * \return     \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  *
  * \note The expected signature format is the concatenation of R and S values (R|S as defined in ASN.1 DER encoding).
@@ -65,7 +65,7 @@ stse_return_code_t stse_ecc_verify_signature(
     const PLAT_UI8 *p_message,
     PLAT_UI16 message_length,
     PLAT_UI8 eddsa_variant,
-    PLAT_UI8 *pSignature_validity);
+    PLAT_UI8 *p_signature_validity);
 
 /**
  * \brief 		Generate signature over message in arguments
@@ -97,7 +97,7 @@ stse_return_code_t stse_ecc_generate_signature(
  * \param[in] 	private_key_slot_number 	Private key slot
  * \param[in] 	key_type 					Private key type
  * \param[in] 	p_public_key 				Remote public key
- * \param[out] 	pShared_secret				Shared secret returned by the STSE
+ * \param[out] 	p_shared_secret				Shared secret returned by the STSE
  * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  *
  * \details 	\include{doc} stse_ecc_establish_shared_secret.dox
@@ -109,7 +109,7 @@ stse_return_code_t stse_ecc_establish_shared_secret(
     PLAT_UI8 private_key_slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key,
-    PLAT_UI8 *pShared_secret);
+    PLAT_UI8 *p_shared_secret);
 
 /**
  * \brief 		Decompress a compressed public key (NIST or Brainpool)
@@ -117,16 +117,16 @@ stse_return_code_t stse_ecc_establish_shared_secret(
  * \param[in] 	p_stse 						Pointer to STSE Handler
  * \param[in] 	key_type 					Public key type
  * \param[in] 	point_representation_id 	Parity of the Y (0x02=even & 0x03=odd Y coordinate)
- * \param[in] 	pPublic_key_X 				X coordinate given by the compressed public key
- * \param[out] 	pPublic_key_Y 				Computed Y coordinate output
+ * \param[in] 	p_public_key_x 				X coordinate given by the compressed public key
+ * \param[out] 	p_public_key_y 				Computed Y coordinate output
  * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  */
 stse_return_code_t stse_ecc_decompress_public_key(
     stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 point_representation_id,
-    PLAT_UI8 *pPublic_key_X,
-    PLAT_UI8 *pPublic_key_Y);
+    PLAT_UI8 *p_public_key_x,
+    PLAT_UI8 *p_public_key_y);
 
 /** @}*/
 

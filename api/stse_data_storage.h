@@ -35,13 +35,13 @@
  * \brief       Get the total partition count from the target STSE device
  * \details This API functions use the STSE get service to report the total partition count from the target STSE device
  * \param[in]   p_stse                   Pointer to target STSE handler
- * \param[out]  pTotal_partition_count  Pointer to total partition count applicative variable
+ * \param[out]  p_total_partition_count  Pointer to total partition count applicative variable
  * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details \include{doc} stse_data_storage_get_total_partition_count.dox
  */
 stse_return_code_t stse_data_storage_get_total_partition_count(
     stse_handler_t *p_stse,
-    PLAT_UI8 *pTotal_partition_count);
+    PLAT_UI8 *p_total_partition_count);
 
 /**
  * \brief       Get the partition table from the target STSE device

@@ -28,15 +28,15 @@
 /*!
  * \brief 		This Core function Create a session context and associate it to STSAFE handler
  * \param[in] 	*p_session 			\ref stse_session_t Pointer to session
- * \param[in] 	*pHost_MAC_key 		Pointer to MAC key buffer to be used under the session
- * \param[in] 	*pHost_cypher_key 	Pointer to cypher key buffer to be used under the session
+ * \param[in] 	*p_host_mac_key 		Pointer to MAC key buffer to be used under the session
+ * \param[in] 	*p_host_cypher_key 	Pointer to cypher key buffer to be used under the session
  * \return \ref STSE_OK on success ; \ref stse_return_code_t error code otherwise
  * \details 	\include{doc} stsafe_erase_context.dox
  */
 stse_return_code_t stsafea_open_host_session(stse_handler_t *p_stse,
                                             stse_session_t *p_session,
-                                            PLAT_UI8 *pHost_MAC_key,
-                                            PLAT_UI8 *pHost_cypher_key);
+                                            PLAT_UI8 *p_host_mac_key,
+                                            PLAT_UI8 *p_host_cypher_key);
 
 /*!
  * \brief 		This Core function Close an existing host session context

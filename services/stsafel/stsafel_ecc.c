@@ -28,7 +28,7 @@
 stse_return_code_t stsafel_ecc_generate_signature(
     stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
-    const PLAT_UI8 *pChallenge,
+    const PLAT_UI8 *p_challenge,
     PLAT_UI16 challenge_length,
     PLAT_UI8 *p_signature) {
     PLAT_UI8 cmd_header = STSAFEL_CMD_GENERATE_SIGNATURE;
@@ -39,26 +39,26 @@ stse_return_code_t stsafel_ecc_generate_signature(
         return STSE_SERVICE_HANDLER_NOT_INITIALISED;
     }
     if ((challenge_length != STSAFEL_ECC_SIGNATURE_CHALLENGE_LENGTH) ||
-        (pChallenge == NULL) ||
+        (p_challenge == NULL) ||
         (p_signature == NULL)) {
         return STSE_SERVICE_INVALID_PARAMETER;
     }
 
     /*- Create CMD frame and populate elements */
-    stse_frame_allocate(CmdFrame);
-    stse_frame_element_allocate_push(&CmdFrame, eCmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
-    stse_frame_element_allocate_push(&CmdFrame, eChallenge, challenge_length, (PLAT_UI8 *)pChallenge);
-    stse_frame_element_allocate_push(&CmdFrame, eInternal_data_subject, 1, &internal_data_subject);
+    stse_frame_allocate(cmd_frame);
+    stse_frame_element_allocate_push(&cmd_frame, eCmd_header, STSAFEL_HEADER_SIZE, &cmd_header);
+    stse_frame_element_allocate_push(&cmd_frame, eChallenge, challenge_length, (PLAT_UI8 *)p_challenge);
+    stse_frame_element_allocate_push(&cmd_frame, eInternal_data_subject, 1, &internal_data_subject);
 
     /*- Create Rsp frame and populate elements*/
-    stse_frame_allocate(RspFrame);
-    stse_frame_element_allocate_push(&RspFrame, eRsp_header, STSAFEL_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&RspFrame, eSignature, stse_ecc_info_table[key_type].signature_size, p_signature);
+    stse_frame_allocate(rsp_frame);
+    stse_frame_element_allocate_push(&rsp_frame, eRsp_header, STSAFEL_HEADER_SIZE, &rsp_header);
+    stse_frame_element_allocate_push(&rsp_frame, eSignature, stse_ecc_info_table[key_type].signature_size, p_signature);
 
     /*- Perform Transfer*/
     return stsafel_frame_transfer(p_stse,
-                                  &CmdFrame,
-                                  &RspFrame);
+                                  &cmd_frame,
+                                  &rsp_frame);
 }
 
 #endif /* STSE_CONF_STSAFE_L_SUPPORT */

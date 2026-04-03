@@ -54,7 +54,7 @@ stse_return_code_t stsafea_put_life_cyle_state(
 
 stse_return_code_t stsafea_query_life_cycle_state(
     stse_handler_t *p_stse,
-    stsafea_life_cycle_state_t *pLife_cycle_state) {
+    stsafea_life_cycle_state_t *p_life_cycle_state) {
     PLAT_UI8 cmd_header = STSAFEA_CMD_QUERY;
     PLAT_UI8 tag = STSAFEA_SUBJECT_TAG_LIFE_CYCLE_STATE;
     PLAT_UI8 rsp_header;
@@ -71,7 +71,7 @@ stse_return_code_t stsafea_query_life_cycle_state(
     /*- Create Rsp frame and populate elements*/
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, eRsp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eLife_cycle_state, 1, (PLAT_UI8 *)pLife_cycle_state);
+    stse_frame_element_allocate_push(&rsp_frame, eLife_cycle_state, 1, (PLAT_UI8 *)p_life_cycle_state);
 
     /*- Perform Transfer*/
     return stsafea_frame_raw_transfer(p_stse,

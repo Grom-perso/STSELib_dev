@@ -45,12 +45,12 @@ stse_return_code_t stsafea_start_volatile_KEK_session(
     PLAT_UI8 point_representation_id = STSE_NIST_BRAINPOOL_POINT_REPRESENTATION_ID;
     stse_frame_element_allocate(ePoint_representation_id, 1, &point_representation_id);
 
-    PLAT_UI8 pPublic_key_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
+    PLAT_UI8 p_public_key_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
         UI16_B1(stse_ecc_info_table[key_type].coordinate_or_key_size),
         UI16_B0(stse_ecc_info_table[key_type].coordinate_or_key_size),
     };
-    stse_frame_element_allocate(ePublic_key_length_first_element, STSE_ECC_GENERIC_LENGTH_SIZE, pPublic_key_length_element);
-    stse_frame_element_allocate(ePublic_key_length_second_element, STSE_ECC_GENERIC_LENGTH_SIZE, pPublic_key_length_element);
+    stse_frame_element_allocate(ePublic_key_length_first_element, STSE_ECC_GENERIC_LENGTH_SIZE, p_public_key_length_element);
+    stse_frame_element_allocate(ePublic_key_length_second_element, STSE_ECC_GENERIC_LENGTH_SIZE, p_public_key_length_element);
     stse_frame_element_allocate(ePublic_key_first_element, 0, NULL);
     stse_frame_element_allocate(ePublic_key_second_element, 0, NULL);
 
@@ -115,12 +115,12 @@ stse_return_code_t stsafea_start_volatile_KEK_session_authenticated(
     PLAT_UI8 point_representation_id = STSE_NIST_BRAINPOOL_POINT_REPRESENTATION_ID;
     stse_frame_element_allocate(ePoint_representation_id, 1, &point_representation_id);
 
-    PLAT_UI8 pPublic_key_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
+    PLAT_UI8 p_public_key_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
         UI16_B1(stse_ecc_info_table[ecdhe_key_type].coordinate_or_key_size),
         UI16_B0(stse_ecc_info_table[ecdhe_key_type].coordinate_or_key_size),
     };
-    stse_frame_element_allocate(ePublic_key_length_first_element, STSE_ECC_GENERIC_LENGTH_SIZE, pPublic_key_length_element);
-    stse_frame_element_allocate(ePublic_key_length_second_element, STSE_ECC_GENERIC_LENGTH_SIZE, pPublic_key_length_element);
+    stse_frame_element_allocate(ePublic_key_length_first_element, STSE_ECC_GENERIC_LENGTH_SIZE, p_public_key_length_element);
+    stse_frame_element_allocate(ePublic_key_length_second_element, STSE_ECC_GENERIC_LENGTH_SIZE, p_public_key_length_element);
 
     stse_frame_element_allocate(ePublic_key_first_element, 0, NULL);
     stse_frame_element_allocate(ePublic_key_second_element, 0, NULL);
@@ -128,12 +128,12 @@ stse_return_code_t stsafea_start_volatile_KEK_session_authenticated(
     PLAT_UI8 kdf_algorithm_id = STSAFEA_ALGORITHM_ID_KEK_UNWRAPPING;
     PLAT_UI8 filler_1_byte = 0;
 
-    PLAT_UI8 pEmpty_hash_algo_id[STSAFEA_GENERIC_LENGTH_SIZE] = {0x00, 0x00};
-    stse_frame_element_allocate(eHash_algo_id, STSAFEA_GENERIC_LENGTH_SIZE, pEmpty_hash_algo_id);
+    PLAT_UI8 p_empty_hash_algo_id[STSAFEA_GENERIC_LENGTH_SIZE] = {0x00, 0x00};
+    stse_frame_element_allocate(eHash_algo_id, STSAFEA_GENERIC_LENGTH_SIZE, p_empty_hash_algo_id);
 
     /* Divide Signature length By 2 to get R or S length */
     PLAT_UI16 signature_r_s_length = stse_ecc_info_table[signature_key_type].signature_size >> 1;
-    PLAT_UI8 pSignature_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
+    PLAT_UI8 p_signature_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
         UI16_B1(signature_r_s_length),
         UI16_B0(signature_r_s_length),
     };
@@ -192,9 +192,9 @@ stse_return_code_t stsafea_start_volatile_KEK_session_authenticated(
     stse_frame_push_element(&cmd_frame, &eHash_algo_id);
 
     /* FRAME : [HEADER] [EXT HEADER] [CURVE ID] [PUBLIC KEY] [KDF ID] [FILLER] [SIGNATURE KEY SLOT] [HASH ALGO] [SIGNATURE] */
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_R_length, STSE_ECC_GENERIC_LENGTH_SIZE, pSignature_length_element);
+    stse_frame_element_allocate_push(&cmd_frame, eSignature_R_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
     stse_frame_element_allocate_push(&cmd_frame, eSignature_R, signature_r_s_length, p_signature);
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_S_length, STSE_ECC_GENERIC_LENGTH_SIZE, pSignature_length_element);
+    stse_frame_element_allocate_push(&cmd_frame, eSignature_S_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
     stse_frame_element_allocate_push(&cmd_frame, eSignature_S, signature_r_s_length, p_signature + signature_r_s_length);
 
     stse_frame_allocate(rsp_frame);
@@ -237,20 +237,20 @@ stse_return_code_t stsafea_ecc_verify_signature(
     const PLAT_UI8 *p_message,
     PLAT_UI16 message_length,
     PLAT_UI8 eddsa_variant,
-    PLAT_UI8 *pSignature_validity) {
+    PLAT_UI8 *p_signature_validity) {
     stse_return_code_t ret;
     PLAT_UI8 cmd_header = STSAFEA_CMD_VERIFY_SIGNATURE;
 
     PLAT_UI8 subject = 0x00;
 
     PLAT_UI8 point_representation_id = STSE_NIST_BRAINPOOL_POINT_REPRESENTATION_ID;
-    PLAT_UI8 pPublic_key_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
+    PLAT_UI8 p_public_key_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
         UI16_B1(stse_ecc_info_table[key_type].coordinate_or_key_size),
         UI16_B0(stse_ecc_info_table[key_type].coordinate_or_key_size),
     };
 
     /* Signature elements */
-    PLAT_UI8 pSignature_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
+    PLAT_UI8 p_signature_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
         UI16_B1(stse_ecc_info_table[key_type].signature_size >> 1),
         UI16_B0(stse_ecc_info_table[key_type].signature_size >> 1),
     };
@@ -261,15 +261,15 @@ stse_return_code_t stsafea_ecc_verify_signature(
     }
 
     if (p_public_key == NULL || p_signature == NULL ||
-        p_message == NULL || pSignature_validity == NULL ||
+        p_message == NULL || p_signature_validity == NULL ||
         key_type >= STSE_ECC_KT_INVALID) {
         return (STSE_SERVICE_INVALID_PARAMETER);
     }
 
     /* Public key elements */
     stse_frame_element_allocate(ePoint_representation_id, 1, &point_representation_id);
-    stse_frame_element_allocate(ePublic_key_length_first_element, STSE_ECC_GENERIC_LENGTH_SIZE, pPublic_key_length_element);
-    stse_frame_element_allocate(ePublic_key_length_second_element, STSE_ECC_GENERIC_LENGTH_SIZE, pPublic_key_length_element);
+    stse_frame_element_allocate(ePublic_key_length_first_element, STSE_ECC_GENERIC_LENGTH_SIZE, p_public_key_length_element);
+    stse_frame_element_allocate(ePublic_key_length_second_element, STSE_ECC_GENERIC_LENGTH_SIZE, p_public_key_length_element);
     stse_frame_element_allocate(ePublic_key_first_element, 0, NULL);
     stse_frame_element_allocate(ePublic_key_second_element, 0, NULL);
 
@@ -311,9 +311,9 @@ stse_return_code_t stsafea_ecc_verify_signature(
         stse_frame_push_element(&cmd_frame, &ePublic_key_second_element);
     }
 
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_R_length, STSE_ECC_GENERIC_LENGTH_SIZE, pSignature_length_element);
+    stse_frame_element_allocate_push(&cmd_frame, eSignature_R_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
     stse_frame_element_allocate_push(&cmd_frame, eSignature_R, (stse_ecc_info_table[key_type].signature_size >> 1), (PLAT_UI8 *)p_signature);
-    stse_frame_element_allocate_push(&cmd_frame, eSignature_S_length, STSE_ECC_GENERIC_LENGTH_SIZE, pSignature_length_element);
+    stse_frame_element_allocate_push(&cmd_frame, eSignature_S_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
     stse_frame_element_allocate_push(&cmd_frame, eSignature_S, (stse_ecc_info_table[key_type].signature_size >> 1), (PLAT_UI8 *)p_signature + (stse_ecc_info_table[key_type].signature_size >> 1));
 
 #ifdef STSE_CONF_ECC_EDWARD_25519
@@ -328,7 +328,7 @@ stse_return_code_t stsafea_ecc_verify_signature(
 
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eSignature_validity, 1, pSignature_validity);
+    stse_frame_element_allocate_push(&rsp_frame, eSignature_validity, 1, p_signature_validity);
 
     /* - Perform Transfer*/
     ret = stsafea_frame_transfer(p_stse,
@@ -336,7 +336,7 @@ stse_return_code_t stsafea_ecc_verify_signature(
                                  &rsp_frame);
 
     if (ret != STSE_OK) {
-        *pSignature_validity = STSAFEA_FALSE;
+        *p_signature_validity = STSAFEA_FALSE;
     }
 
     return ret;
@@ -353,7 +353,7 @@ stse_return_code_t stsafea_ecc_generate_signature(
 
     PLAT_UI8 rsp_header;
     /* Signature elements */
-    PLAT_UI8 pSignature_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
+    PLAT_UI8 p_signature_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
         UI16_B1(stse_ecc_info_table[key_type].signature_size >> 1),
         UI16_B0(stse_ecc_info_table[key_type].signature_size >> 1),
     };
@@ -376,9 +376,9 @@ stse_return_code_t stsafea_ecc_generate_signature(
 
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eSignature_R_length, STSE_ECC_GENERIC_LENGTH_SIZE, pSignature_length_element);
+    stse_frame_element_allocate_push(&rsp_frame, eSignature_R_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
     stse_frame_element_allocate_push(&rsp_frame, eSignature_R, (stse_ecc_info_table[key_type].signature_size >> 1), p_signature);
-    stse_frame_element_allocate_push(&rsp_frame, eSignature_S_length, STSE_ECC_GENERIC_LENGTH_SIZE, pSignature_length_element);
+    stse_frame_element_allocate_push(&rsp_frame, eSignature_S_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_signature_length_element);
     stse_frame_element_allocate_push(&rsp_frame, eSignature_S, (stse_ecc_info_table[key_type].signature_size >> 1), p_signature + (stse_ecc_info_table[key_type].signature_size >> 1));
 
     /* - Perform Transfer*/
@@ -392,7 +392,7 @@ stse_return_code_t stsafea_ecc_establish_shared_secret(
     PLAT_UI8 private_key_slot_number,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 *p_public_key,
-    PLAT_UI8 *pShared_secret) {
+    PLAT_UI8 *p_shared_secret) {
     PLAT_UI8 cmd_header = STSAFEA_CMD_ESTABLISH_KEY;
 
     /* - Check stsafe handler initialization */
@@ -400,24 +400,24 @@ stse_return_code_t stsafea_ecc_establish_shared_secret(
         return (STSE_SERVICE_HANDLER_NOT_INITIALISED);
     }
 
-    if (p_public_key == NULL || pShared_secret == NULL || key_type >= STSE_ECC_KT_INVALID) {
+    if (p_public_key == NULL || p_shared_secret == NULL || key_type >= STSE_ECC_KT_INVALID) {
         return (STSE_SERVICE_INVALID_PARAMETER);
     }
 
     /* Public key elements */
     PLAT_UI8 point_representation_id = STSE_NIST_BRAINPOOL_POINT_REPRESENTATION_ID;
     stse_frame_element_allocate(ePoint_representation_id, 1, &point_representation_id);
-    PLAT_UI8 pPublic_key_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
+    PLAT_UI8 p_public_key_length_element[STSE_ECC_GENERIC_LENGTH_SIZE] = {
         UI16_B1(stse_ecc_info_table[key_type].coordinate_or_key_size),
         UI16_B0(stse_ecc_info_table[key_type].coordinate_or_key_size),
     };
-    stse_frame_element_allocate(ePublic_key_length_first_element, STSE_ECC_GENERIC_LENGTH_SIZE, pPublic_key_length_element);
-    stse_frame_element_allocate(ePublic_key_length_second_element, STSE_ECC_GENERIC_LENGTH_SIZE, pPublic_key_length_element);
+    stse_frame_element_allocate(ePublic_key_length_first_element, STSE_ECC_GENERIC_LENGTH_SIZE, p_public_key_length_element);
+    stse_frame_element_allocate(ePublic_key_length_second_element, STSE_ECC_GENERIC_LENGTH_SIZE, p_public_key_length_element);
     stse_frame_element_allocate(ePublic_key_first_element, 0, NULL);
     stse_frame_element_allocate(ePublic_key_second_element, 0, NULL);
 
     PLAT_UI8 rsp_header;
-    PLAT_UI8 pShared_secret_length[STSE_ECC_GENERIC_LENGTH_SIZE] = {
+    PLAT_UI8 p_shared_secret_length[STSE_ECC_GENERIC_LENGTH_SIZE] = {
         UI16_B1(stse_ecc_info_table[key_type].shared_secret_size),
         UI16_B0(stse_ecc_info_table[key_type].shared_secret_size),
     };
@@ -458,8 +458,8 @@ stse_return_code_t stsafea_ecc_establish_shared_secret(
 
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eShared_secret_length, STSE_ECC_GENERIC_LENGTH_SIZE, pShared_secret_length);
-    stse_frame_element_allocate_push(&rsp_frame, eShared_secret, stse_ecc_info_table[key_type].shared_secret_size, pShared_secret);
+    stse_frame_element_allocate_push(&rsp_frame, eShared_secret_length, STSE_ECC_GENERIC_LENGTH_SIZE, p_shared_secret_length);
+    stse_frame_element_allocate_push(&rsp_frame, eShared_secret, stse_ecc_info_table[key_type].shared_secret_size, p_shared_secret);
 
     /* - Perform Transfer*/
     return stsafea_frame_transfer(p_stse,
@@ -471,8 +471,8 @@ stse_return_code_t stsafea_ecc_decompress_public_key(
     stse_handler_t *p_stse,
     stse_ecc_key_type_t key_type,
     PLAT_UI8 point_representation_id,
-    PLAT_UI8 *pPublic_key_X,
-    PLAT_UI8 *pPublic_key_Y) {
+    PLAT_UI8 *p_public_key_x,
+    PLAT_UI8 *p_public_key_y) {
     PLAT_UI8 cmd_header[STSAFEA_EXT_HEADER_SIZE] = {STSAFEA_EXTENDED_COMMAND_PREFIX, STSAFEA_EXTENDED_CMD_DECOMPRESS_PUBLIC_KEY};
 
     /* - Check stsafe handler initialization */
@@ -480,7 +480,7 @@ stse_return_code_t stsafea_ecc_decompress_public_key(
         return (STSE_SERVICE_HANDLER_NOT_INITIALISED);
     }
 
-    if (pPublic_key_X == NULL || pPublic_key_Y == NULL || key_type >= STSE_ECC_KT_INVALID) {
+    if (p_public_key_x == NULL || p_public_key_y == NULL || key_type >= STSE_ECC_KT_INVALID) {
         return (STSE_SERVICE_INVALID_PARAMETER);
     }
 
@@ -491,11 +491,11 @@ stse_return_code_t stsafea_ecc_decompress_public_key(
     stse_frame_element_allocate_push(&cmd_frame, eCurve_ID,
                                      stse_ecc_info_table[key_type].curve_id_total_length, (PLAT_UI8 *)&stse_ecc_info_table[key_type].curve_id);
     stse_frame_element_allocate_push(&cmd_frame, ePoint_representation_id, 1, &point_representation_id);
-    stse_frame_element_allocate_push(&cmd_frame, ePublic_key_X_coordinate, stse_ecc_info_table[key_type].coordinate_or_key_size, pPublic_key_X);
+    stse_frame_element_allocate_push(&cmd_frame, ePublic_key_X_coordinate, stse_ecc_info_table[key_type].coordinate_or_key_size, p_public_key_x);
 
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, eRsp_header, STSAFEA_HEADER_SIZE, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, ePublic_key_Y_coordinate, stse_ecc_info_table[key_type].coordinate_or_key_size, pPublic_key_Y);
+    stse_frame_element_allocate_push(&rsp_frame, ePublic_key_Y_coordinate, stse_ecc_info_table[key_type].coordinate_or_key_size, p_public_key_y);
 
     /* - Perform Transfer*/
     return stsafea_frame_transfer(p_stse,

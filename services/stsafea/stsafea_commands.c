@@ -56,7 +56,7 @@ stse_return_code_t stsafea_get_command_count(stse_handler_t *p_stse, PLAT_UI8 *p
 
 stse_return_code_t stsafea_get_command_AC_table(stse_handler_t *p_stse,
                                                PLAT_UI8 total_command_count,
-                                               stse_cmd_authorization_CR_t *pChange_rights,
+                                               stse_cmd_authorization_CR_t *p_change_rights,
                                                stse_cmd_authorization_record_t *p_record_table) {
     stse_return_code_t ret;
     PLAT_UI8 cmd_header = STSAFEA_CMD_QUERY;
@@ -78,7 +78,7 @@ stse_return_code_t stsafea_get_command_AC_table(stse_handler_t *p_stse,
     /*- Create Rsp frame and populate elements*/
     stse_frame_allocate(rsp_frame);
     stse_frame_element_allocate_push(&rsp_frame, eRsp_header, 1, &rsp_header);
-    stse_frame_element_allocate_push(&rsp_frame, eCR, sizeof(stse_cmd_authorization_CR_t), (PLAT_UI8 *)pChange_rights);
+    stse_frame_element_allocate_push(&rsp_frame, eCR, sizeof(stse_cmd_authorization_CR_t), (PLAT_UI8 *)p_change_rights);
     stse_frame_element_allocate_push(&rsp_frame, eRecordCount, 1, &record_index);
     stse_frame_element_allocate_push(&rsp_frame, eRecordTable, total_command_count * sizeof(stse_cmd_authorization_record_t), raw_data);
 
@@ -152,28 +152,28 @@ stse_return_code_t stsafea_perso_info_update(stse_handler_t *p_stse) {
     return STSE_OK;
 }
 
-void stsafea_perso_info_get_cmd_AC(stse_perso_info_t *p_perso, PLAT_UI8 command_code, stse_cmd_access_conditions_t *pProtection) {
-    *pProtection = (stse_cmd_access_conditions_t)((p_perso->cmd_AC_status >> (command_code + command_code)) & 0x03);
+void stsafea_perso_info_get_cmd_AC(stse_perso_info_t *p_perso, PLAT_UI8 command_code, stse_cmd_access_conditions_t *p_protection) {
+    *p_protection = (stse_cmd_access_conditions_t)((p_perso->cmd_AC_status >> (command_code + command_code)) & 0x03);
 }
 
-void stsafea_perso_info_get_ext_cmd_AC(stse_perso_info_t *p_perso, PLAT_UI8 command_code, stse_cmd_access_conditions_t *pProtection) {
-    *pProtection = (stse_cmd_access_conditions_t)((p_perso->ext_cmd_AC_status >> (command_code + command_code)) & 0x03);
+void stsafea_perso_info_get_ext_cmd_AC(stse_perso_info_t *p_perso, PLAT_UI8 command_code, stse_cmd_access_conditions_t *p_protection) {
+    *p_protection = (stse_cmd_access_conditions_t)((p_perso->ext_cmd_AC_status >> (command_code + command_code)) & 0x03);
 }
 
-void stsafea_perso_info_get_cmd_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *pEnc_flag) {
-    *pEnc_flag = ((p_perso->cmd_encryption_status >> command_code) & 0x01);
+void stsafea_perso_info_get_cmd_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *p_enc_flag) {
+    *p_enc_flag = ((p_perso->cmd_encryption_status >> command_code) & 0x01);
 }
 
-void stsafea_perso_info_get_rsp_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *pEnc_flag) {
-    *pEnc_flag = ((p_perso->rsp_encryption_status >> command_code) & 0x01);
+void stsafea_perso_info_get_rsp_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *p_enc_flag) {
+    *p_enc_flag = ((p_perso->rsp_encryption_status >> command_code) & 0x01);
 }
 
-void stsafea_perso_info_get_ext_cmd_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *pEnc_flag) {
-    *pEnc_flag = ((p_perso->ext_cmd_encryption_status >> command_code) & 0x01);
+void stsafea_perso_info_get_ext_cmd_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *p_enc_flag) {
+    *p_enc_flag = ((p_perso->ext_cmd_encryption_status >> command_code) & 0x01);
 }
 
-void stsafea_perso_info_get_ext_rsp_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *pEnc_flag) {
-    *pEnc_flag = ((p_perso->ext_rsp_encryption_status >> command_code) & 0x01);
+void stsafea_perso_info_get_ext_rsp_encrypt_flag(stse_perso_info_t *p_perso, PLAT_UI8 command_code, PLAT_UI8 *p_enc_flag) {
+    *p_enc_flag = ((p_perso->ext_rsp_encryption_status >> command_code) & 0x01);
 }
 
 void stsafea_perso_info_set_cmd_AC(stse_perso_info_t *p_perso, PLAT_UI8 command_code, stse_cmd_access_conditions_t protection) {
