@@ -39,16 +39,62 @@ Please note that:
 
 For support requests or any other question related to the product, the tools, the environment, you can submit a post to the **ST Community** on the appropriate topic [page](https://community.st.com/s/topiccatalog).
 
----
+## 4. Commit message guidelines
 
-### 4. Commit message guidelines
+To keep a clear and searchable history, format commit messages as:
 
-To help maintain a clear history, please format your commit messages using the following convention:
-
-```
-[scope] short summary
+```text
+[type] [layer] short summary
 ```
 
-- **Scope**: one of the directories or areas affected (e.g. `api/certificate`, `doc`, `git`, `Admin`).
-- **Short summary**: present tense, no trailing period, under 72 characters, starting with a lowercase verb; if related to an opened issue, append `#<number>`
-- **Body**: if necessary, or when the summary exceeds 72 characters, provide additional details explaining the motivation and how this change differs from previous behavior.
+### 4.1. Commit [Type]
+The type describes the nature of the change:
+
+- [refactor] : Internal code changes (structure, readability, performance) that may cause API/platform changes
+- [fix] : Bug fix with no intentional API or platform behavior change
+- [feat] : New functionality with no intentional API or platform behavior change
+- [docs] : Documentation-only changes
+
+If a change both adds a new feature and fixes a bug, choose the primary intent (usually feat).
+
+### 4.2. Commit [Layer]
+The layer indicates which part(s) of the codebase are impacted. Use one or more, separated by /:
+
+- [all] : Large cross-cutting change
+- [api] : API layer change
+- [services] : Service layer chage 
+- [core] : Core components or abstraction layers
+- [certificate] : Certificate parsing / handling
+
+### 4.3. Commit Short summary
+The short summary should:
+- Be in imperative present tense (e.g. add, fix, update, remove)
+- Start with a lowercase verb
+- Have no trailing period
+- Be ≤ 72 characters
+- Optionally reference an issue at the end using #<number>
+
+### 4.4. Commit Body (optional but recommended)
+Use the body when:
+
+- The summary alone is not enough, or
+- The change is complex, or
+- You are introducing a behavior change, or
+- The summary would exceed 72 characters.
+
+Body guidelines:
+
+Explain the motivation and why the change was needed. Describe the behavior before vs after
+Mention breaking changes, side effects, or migration steps
+Wrap lines at ~72–80 characters
+
+
+### 4.5. Commit Examples 
+
+| example                            | Notes                                |
+|------------------------------------|--------------------------------------|
+| `[fix] [api] implement null pointer check in api` | Bug fix in API layer                 |
+| `[feat] [api/services] add stsafe-a120 derive key support `| New feature touching multiple layers |
+| `[refactor] [core] rework cryptographic platfroms initialization `  | Internal rework, possible API impact |
+| `[docs] [services] rework stsafe-a aes services documentation`  | Documentation-only change |
+
